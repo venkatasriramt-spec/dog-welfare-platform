@@ -1,0 +1,28 @@
+header nav button {
+  position: relative;
+  padding: 10px 2px;
+  color: var(--muted);
+  transition: color 160ms ease;
+}
+
+header nav button:hover,
+header nav button.active {
+  color: var(--ink);
+}
+
+header nav button.active::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  bottom: -1px;
+  left: 0;
+  height: 3px;
+  border-radius: 3px 3px 0 0;
+  background: var(--orange);
+}
+
+.outline.active {
+  border-color: var(--orange);
+  background: var(--orange);
+  color: #fff;
+}

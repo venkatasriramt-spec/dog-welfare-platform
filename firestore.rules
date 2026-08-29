@@ -1,0 +1,58 @@
+rules_version = '2';
+
+// ===============================================================
+// PawPath Data Model
+// Users/{uid}: profile with full_name, email, role, is_active, created_at,
+//   optional: works_at, created_by, title, reject_reason
+// OrganizationApplications/{id}: partner application with organization details
+// Organizations/{id}: server-created hospital/agency record
+// Dogs/{id}: comprehensive dog record with identity, medical, provenance, timeline
+// Counters/{id}: auto-increment counters (e.g. dog tag numbers)
+// ===============================================================
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() { return request.auth != null; }
+    function owns(uid) { return signedIn() && request.auth.uid == uid; }
+    function profile() { return get(/databases/$(database)/documents/Users/$(request.auth.uid)).data; }
+    function isPlatformAdmin() { return signedIn() && profile().role == 'platform_admin'; }
+
+    // --- Users ---
+    match /Users/{userId} {
+      allow read: if signedIn();
+      allow create: if owns(userId);
+      allow update: if owns(userId) || isPlatformAdmin();
+      allow delete: if false;
+    }
+
+    // --- Organization Applications ---
+    match /OrganizationApplications/{applicationId} {
+      allow read: if signedIn();
+      allow create: if signedIn();
+      allow update, delete: if false;
+    }
+
+    // --- Organizations ---
+    match /Organizations/{organizationId} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    // --- Dogs ---
+    match /Dogs/{dogId} {
+      allow read: if true;
+      allow create: if signedIn();
+      allow update: if signedIn() && (
+        isPlatformAdmin() ||
+        profile().role in ['hospital_admin', 'veterinarian', 'agency_admin', 'agency_employee'] ||
+        owns(resource.data.registered_by)
+      );
+      allow delete: if false;
+    }
+
+    // --- Counters (server-managed, admin only via Cloud Functions) ---
+    match /Counters/{counterId} {
+      allow read: if signedIn();
+      allow write: if false;
+    }
+  }
+}
