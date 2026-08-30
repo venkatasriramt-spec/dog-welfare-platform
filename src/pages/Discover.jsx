@@ -2,7 +2,7 @@ import React, { useMemo, useState } from 'react';
 import { DOG_STATUSES } from '../constants';
 import ParticleBackground from '../components/ParticleBackground';
 
-export default function Discover({ dogs, setPage, session }) {
+export default function Discover({ dogs, setPage, session, isWorkspace }) {
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
 
@@ -23,9 +23,9 @@ export default function Discover({ dogs, setPage, session }) {
   return (
     <>
       {/* Particle Background */}
-      <ParticleBackground mode="discover" colorScheme="default" particleCount={50} />
+      {!isWorkspace && <ParticleBackground mode="discover" colorScheme="default" particleCount={50} />}
 
-      <section className="page discover">
+      <section className={isWorkspace ? "workspace-page discover" : "page discover"}>
         <div className="discover-heading">
           <div>
             <p className="eyebrow"><span className="eyebrow-spark">✦</span> COMMUNITY HUB</p>

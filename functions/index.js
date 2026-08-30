@@ -576,3 +576,86 @@ exports.transferDog = functions.region("us-central1").https.onCall(async (data, 
   }
 });
 
+/**
+ * Processes a dog adoption, storing private adopter details in a subcollection.
+ * Can be called by: agency_admin, agency_employee, platform_admin
+ */
+exports.processAdoption = functions.region("us-central1").https.onCall(async (data, context) => {
+  if (!context.auth) {
+    throw new functions.https.HttpsError("unauthenticated", "You must be signed in.");
+  }
+
+  const callerUid = context.auth.uid;
+  const callerSnap = await db.collection("Users").doc(callerUid).get();
+  if (!callerSnap.exists) {
+    throw new functions.https.HttpsError("permission-denied", "Caller profile not found.");
+  }
+
+  const callerData = callerSnap.data();
+  const callerRole = callerData.role;
+  const callerOrgId = callerData.works_at || null;
+
+  if (!["platform_admin", "agency_admin", "agency_employee"].includes(callerRole)) {
+    throw new functions.https.HttpsError("permission-denied", "Only agency staff or platform admin can process adoptions.");
+  }
+
+  const dogId = requireNonEmptyString(data.dogId, "dogId");
+  const adopterName = requireNonEmptyString(data.adopterName, "adopterName");
+  const email = (data.email || "").trim();
+  const phone = (data.phone || "").trim();
+  const address = (data.address || "").trim();
+  const notes = (data.notes || "").trim();
+
+  const dogRef = db.collection("Dogs").doc(dogId);
+  const dogSnap = await dogRef.get();
+  if (!dogSnap.exists) {
+    throw new functions.https.HttpsError("not-found", "Dog record not found.");
+  }
+
+  if (callerRole !== "platform_admin" && dogSnap.data().agency_id !== callerOrgId) {
+    throw new functions.https.HttpsError("permission-denied", "You can only process adoptions for dogs at your agency.");
+  }
+
+  try {
+    const adoptionEntry = {
+      date: new Date().toISOString(),
+      type: "adoption",
+      notes: "Dog has been adopted and found a forever home!",
+      recorded_by: callerUid,
+      recorded_by_name: callerData.full_name || "Unknown",
+      agency_id: callerOrgId,
+    };
+
+    const batch = db.batch();
+
+    // 1. Update public dog status
+    batch.update(dogRef, {
+      status: "adopted",
+      treatment_timeline: FieldValue.arrayUnion(adoptionEntry),
+      updated_at: FieldValue.serverTimestamp(),
+    });
+
+    // 2. Save private adopter details in a subcollection
+    const privateRecordRef = dogRef.collection("AdoptionDetails").doc("record");
+    batch.set(privateRecordRef, {
+      adopter_name: adopterName,
+      email,
+      phone,
+      address,
+      notes,
+      processed_by: callerUid,
+      processed_by_name: callerData.full_name || "Unknown",
+      agency_id: callerOrgId,
+      processed_at: FieldValue.serverTimestamp(),
+    });
+
+    await batch.commit();
+
+    functions.logger.info("Adoption processed", {dogId, agencyId: callerOrgId});
+    return {success: true};
+  } catch (error) {
+    functions.logger.error("Failed to process adoption", error);
+    if (error instanceof functions.https.HttpsError) throw error;
+    throw new functions.https.HttpsError("internal", error.message || "Could not process adoption.");
+  }
+});

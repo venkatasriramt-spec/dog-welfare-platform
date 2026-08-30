@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default function Header({ page, setPage, session }) {
+export default function Header({ page, setPage }) {
   const selected = page === 'report' || page.startsWith('dog:') ? 'discover' : page;
 
   return (
@@ -30,18 +30,12 @@ export default function Header({ page, setPage, session }) {
           Join PawPath
         </button>
       </nav>
-      {session?.user ? (
-        <button className="outline" onClick={() => setPage('dashboard')}>
-          Dashboard →
-        </button>
-      ) : (
-        <button
-          className={`outline ${selected === 'login' ? 'active' : ''}`}
-          onClick={() => setPage('login')}
-        >
-          Sign in →
-        </button>
-      )}
+      <button
+        className={`outline ${selected === 'login' ? 'active' : ''}`}
+        onClick={() => setPage('login')}
+      >
+        Sign in →
+      </button>
     </header>
   );
 }

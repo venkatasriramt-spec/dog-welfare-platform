@@ -55,8 +55,13 @@ Use this data to populate the system and test the various workflows. The photos 
 * **Condition Notes:** Healthy, recently groomed.
 * **Vaccinated / Neutered:** Check both boxes ✅
 * **Image:** (Upload a picture of a smiling Labrador)
-
 *Next Step:* From the Agency Dashboard, open Luna's profile and click "❤️ Mark as Adopted".
+Fill out the adopter details:
+- **Adopter Name:** John Doe
+- **Email:** john.doe@example.com
+- **Phone:** +91 9876543210
+- **Address:** 123, Main Street, Bangalore
+- **Notes:** Has a large backyard, very excited to adopt Luna!
 
 ---
 
@@ -78,3 +83,9 @@ Use this data to populate the system and test the various workflows. The photos 
 
 **Step 4 (Adopt):** Agency Employee (`priya.staff@happytails.demo`) from **Happy Tails Rescue & Adoption**
 * Finds Scruffy in their Shelter tab. Opens the profile and clicks "❤️ Mark as Adopted".
+* Fills out the adopter details:
+  - **Adopter Name:** Jane Smith
+  - **Email:** jane.smith@example.com
+  - **Phone:** +91 9876543211
+  - **Address:** 456, Cross Road, Bangalore
+  - **Notes:** Experienced dog owner, will provide a loving home.

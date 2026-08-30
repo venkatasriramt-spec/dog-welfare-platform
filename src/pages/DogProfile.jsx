@@ -3,7 +3,7 @@ import MedicalRecordForm from '../components/MedicalRecordForm';
 import { DOG_STATUSES } from '../constants';
 import ParticleBackground from '../components/ParticleBackground';
 
-export default function DogProfile({ dog, setPage, session, organizations = [] }) {
+export default function DogProfile({ dog, setPage, session, organizations = [], isWorkspace }) {
   const role = session?.profile?.role;
   const canEdit = ['platform_admin', 'hospital_admin', 'veterinarian', 'agency_admin', 'agency_employee'].includes(role);
 
@@ -41,8 +41,8 @@ export default function DogProfile({ dog, setPage, session, organizations = [] }
 
   return (
     <>
-      <ParticleBackground mode="subtle" colorScheme="warm" particleCount={40} />
-      <section className="profile-page">
+      {!isWorkspace && <ParticleBackground mode="subtle" colorScheme="warm" particleCount={40} />}
+      <section className={isWorkspace ? "workspace-page profile-page" : "profile-page"}>
         <button className="back" onClick={() => setPage('discover')}>
           ← Back to discover
         </button>

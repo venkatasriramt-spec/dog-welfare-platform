@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { BREED_OPTIONS, DOG_STATUSES } from '../constants';
-import { transferDog, updateDogRecord } from '../services';
+import { processAdoption, transferDog, updateDogRecord } from '../services';
 import Confetti from './Confetti';
 
 export default function MedicalRecordForm({ dog, organizations = [], session, onUpdated }) {
@@ -23,6 +23,13 @@ export default function MedicalRecordForm({ dog, organizations = [], session, on
 
   // Discharge form
   const [dischargeStatus, setDischargeStatus] = useState('community_dog');
+
+  // Adoption form
+  const [adopterName, setAdopterName] = useState('');
+  const [adopterEmail, setAdopterEmail] = useState('');
+  const [adopterPhone, setAdopterPhone] = useState('');
+  const [adopterAddress, setAdopterAddress] = useState('');
+  const [adopterNotes, setAdopterNotes] = useState('');
 
   const role = session?.profile?.role;
   const isHospitalStaff = role === 'hospital_admin' || role === 'veterinarian';
@@ -95,15 +102,15 @@ export default function MedicalRecordForm({ dog, organizations = [], session, on
     e.preventDefault();
     setError(''); setSuccess(''); setLoading(true);
     try {
-      await updateDogRecord({
+      await processAdoption({
         dogId: dog.id,
-        status: 'adopted',
-        timeline_entry: {
-          type: 'adoption',
-          notes: 'Dog has been adopted and found a forever home!',
-        }
+        adopterName,
+        email: adopterEmail,
+        phone: adopterPhone,
+        address: adopterAddress,
+        notes: adopterNotes
       });
-      setSuccess('Dog marked as adopted! 🎉');
+      setSuccess('Dog marked as adopted and details recorded! 🎉');
       setShowConfetti(true);
       if (onUpdated) onUpdated();
     } catch (err) {
@@ -267,14 +274,36 @@ export default function MedicalRecordForm({ dog, organizations = [], session, on
 
       {/* Mark as Adopted Tab */}
       {tab === 'adopt' && isAgencyStaff && (
-        <div>
+        <form onSubmit={submitAdoption}>
           <p style={{ color: 'var(--muted)', fontSize: '14px', marginBottom: '16px' }}>
-            Mark <strong>{dog.name}</strong> as adopted. This means the dog has found a forever home!
+            Enter the details of the adopter. This information is kept strictly <strong>private</strong> and is only visible to your agency and platform administrators.
           </p>
-          <button className="primary" onClick={submitAdoption} disabled={loading}>
-            {loading ? 'Updating...' : '❤️ Confirm Adoption →'}
+          <label>
+            Adopter Name *
+            <input required value={adopterName} onChange={e => setAdopterName(e.target.value)} placeholder="Full Name" />
+          </label>
+          <div className="form-grid">
+            <label>
+              Email Address
+              <input type="email" value={adopterEmail} onChange={e => setAdopterEmail(e.target.value)} placeholder="email@example.com" />
+            </label>
+            <label>
+              Phone Number
+              <input type="tel" value={adopterPhone} onChange={e => setAdopterPhone(e.target.value)} placeholder="+91 98765 43210" />
+            </label>
+          </div>
+          <label>
+            Residential Address
+            <textarea value={adopterAddress} onChange={e => setAdopterAddress(e.target.value)} placeholder="Full address of the new home..." />
+          </label>
+          <label>
+            Adoption Notes
+            <textarea value={adopterNotes} onChange={e => setAdopterNotes(e.target.value)} placeholder="e.g. Family has a large fenced yard, previous dog owner..." />
+          </label>
+          <button className="primary" type="submit" disabled={loading || !adopterName}>
+            {loading ? 'Processing...' : '❤️ Finalize Adoption →'}
           </button>
-        </div>
+        </form>
       )}
 
       {error && <p className="form-error" style={{ marginTop: '12px' }}>{error}</p>}

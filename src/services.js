@@ -217,6 +217,14 @@ export async function transferDog(dogId, agencyId) {
   return call({ dogId, agencyId });
 }
 
+// --- Process Adoption ---
+export async function processAdoption(data) {
+  needFirebase();
+  if (!functions) throw new Error('Cloud Functions is not available.');
+  const call = httpsCallable(functions, 'processAdoption');
+  return call(data);
+}
+
 // --- Staff management ---
 export async function addOrgStaff({ name, email, password, title }) {
   needFirebase();

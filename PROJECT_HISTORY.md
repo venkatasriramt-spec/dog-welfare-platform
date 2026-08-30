@@ -9,79 +9,145 @@ This document serves as a comprehensive history and specification of the feature
 PawPath is a decentralized dog welfare platform designed to connect community members, veterinary hospitals, and adoption agencies. It facilitates the end-to-end lifecycle of street dogs—from initial sighting and reporting, through medical treatment, to eventual adoption or community release.
 
 **Tech Stack:**
-* **Frontend:** React, Vite, Vanilla CSS
-* **Backend:** Firebase (Authentication, Firestore, Cloud Functions, Cloud Storage)
-* **Hosting:** Local development (ready for Firebase Hosting)
+* **Frontend:** React 18, Vite 5, Vanilla CSS
+* **Backend:** Firebase (Authentication, Firestore, Cloud Functions v1, Cloud Storage)
+* **Hosting:** Local development via Vite dev server (ready for Firebase Hosting)
+* **Typography:** DM Sans (UI), Fraunces (headings) — served via Google Fonts
 
 ---
 
 ## 2. Authentication & Role-Based Access Control (RBAC)
-The system uses Firebase Authentication combined with a `Users` collection in Firestore to manage profiles and roles. 
+The system uses Firebase Authentication (email/password) combined with a `Users` collection in Firestore to manage profiles and roles. A single shared `Login` page handles both sign-in and community registration.
 
 ### Supported Roles:
-1. **Platform Admin (`platform_admin`)**: Oversees the entire system, approves/rejects new organization applications, and has global read/write access.
-2. **Hospital Admin (`hospital_admin`)**: Manages a specific veterinary hospital, adds veterinarians, and oversees admitted dogs.
-3. **Veterinarian (`veterinarian`)**: Admits dogs from the street, adds medical records, and transfers dogs to agencies.
-4. **Agency Admin (`agency_admin`)**: Manages a specific adoption agency, adds employees, and oversees shelter dogs.
-5. **Agency Employee (`agency_employee`)**: Updates shelter dog records and processes adoptions.
-6. **Community Member (`community_member`)**: Explores the network and reports new street dogs (with photos and location data).
+1. **Platform Admin (`platform_admin`)**: Oversees the entire system, approves/rejects new organisation applications, and has global read/write access. Auto-assigned when signing in with the email `admin@pawpath.demo`.
+2. **Hospital Admin (`hospital_admin`)**: Manages a specific veterinary hospital, adds veterinarians via the `StaffManager` component, and oversees admitted dogs.
+3. **Veterinarian (`veterinarian`)**: Admits dogs from the street, adds medical records, transfers dogs to agencies, and discharges patients.
+4. **Agency Admin (`agency_admin`)**: Manages a specific adoption agency, adds employees via the `StaffManager` component, and oversees shelter dogs.
+5. **Agency Employee (`agency_employee`)**: Updates shelter dog records and processes adoptions (including private adopter details).
+6. **Community Member (`community_member`)**: Explores the dog directory, reports new street dogs (with photos and location data), and applies to join as an organisation partner.
+7. **Pending Partner (`pending_partner`)**: Assigned after submitting an organisation application (hospital or agency). The user sees a "pending review" message on their dashboard until the Platform Admin acts on the application.
+8. **Rejected Partner (`rejected_partner`)**: Assigned if the Platform Admin declines the organisation application. The user sees a "declined" message with the rejection reason.
+
+### Login & Registration:
+* **Community Registration:** Users create an account directly from the Login page (email/password). The `createCommunityProfile` Cloud Function (or Firestore direct write as fallback) provisions their `Users` document.
+* **Partner Registration:** Organisations apply via the Application Form page. If not yet signed in, a Firebase Auth account is created alongside the application via `registerPartner`. If already signed in, the application is submitted via `submitApplication` (direct Firestore write).
 
 ---
 
-## 3. Organization Management
-A secure onboarding flow exists for new partner organizations (Hospitals and Agencies).
+## 3. Organisation Management
+A secure onboarding flow exists for new partner organisations (Hospitals and Agencies).
 
-* **Application Flow:** Organizations apply via the frontend. The application is stored in the `OrganizationApplications` collection.
-* **Approval Process:** The Platform Admin reviews applications. Approving an application (via the `approveOrganizationApplication` Cloud Function) automatically creates the organization in the `Organizations` collection and provisions an Admin account for the applicant.
-* **Staff Management:** Org Admins can add staff members to their organization (via the `addOrgStaff` Cloud Function).
+* **Application Flow:** Organisations apply via the Application Form page on the frontend. The application data is stored in the `OrganizationApplications` collection with `status: 'pending'`. If the user is not signed in, a Firebase Auth account is automatically created.
+* **Approval Process:** The Platform Admin reviews pending applications from the Admin Dashboard. Approving an application (via the `approveOrganizationApplication` Cloud Function) automatically:
+  1. Creates the organisation in the `Organizations` collection.
+  2. Upgrades the applicant's `Users` document to the appropriate admin role (`hospital_admin` or `agency_admin`) and links them via the `works_at` field.
+  3. Updates the application status to `approved`.
+* **Decline Process:** Declining an application (via the `declineOrganizationApplication` Cloud Function) sets the applicant's role to `rejected_partner` and records the decline reason.
+* **Staff Management:** Org Admins (Hospital Admins or Agency Admins) can add staff members to their organisation via the `StaffManager` component, which calls the `addOrgStaff` Cloud Function. This function creates a Firebase Auth account for the new staff member and provisions their Firestore profile with the correct role (`veterinarian` for hospitals, `agency_employee` for agencies) and `works_at` link.
 
 ---
 
 ## 4. The Dog Lifecycle & Data Model
-The core of the application revolves around the `Dogs` collection. Every dog is assigned a unique, auto-incrementing tag (e.g., `PAW-1042`).
+The core of the application revolves around the `Dogs` collection. Every dog is assigned a unique, auto-incrementing tag (e.g., `PAW-1042`) generated by the `generateDogTag()` helper using the `Counters/dogs` document.
 
 ### Lifecycle Statuses:
 1. **`street`**: The dog has been reported by a community member but not yet rescued.
 2. **`in_treatment`**: A hospital has admitted the dog for medical care.
-3. **`adoptable`**: The dog has been transferred to an adoption agency and is looking for a home.
-4. **`adopted`**: The dog has successfully found a forever home.
+3. **`adoptable`**: The dog has been transferred to an adoption agency (or directly admitted by an agency) and is looking for a home.
+4. **`adopted`**: The dog has successfully found a forever home (processed via the Adoption workflow).
 5. **`community_dog`**: The dog was treated and released back into the community (e.g., under ABC/ARV protocols).
 
-### Medical & Provenance Tracking:
-* **Identity:** Breed, estimated age, gender, location found, and photos.
-* **Medical Status:** Real-time tracking of Vaccination and Neutered/Spayed status.
-* **Treatment Timeline:** An immutable array (`treatment_timeline`) tracking every major event (Admission, Treatment, Transfer, Discharge, Adoption) with timestamps, notes, and the staff member responsible.
-* **Provenance:** Tracks the original reporter, current managing organization, and full hospital history.
+### Dog Document Fields:
+* **Identity:** `tag`, `name`, `breed`, `estimated_age`, `gender`, `location_found`, `location` (duplicate of `location_found` for backwards compatibility), `description`.
+* **Visual:** `social_photos` — an array of image URLs (typically from Firebase Cloud Storage `dog_photos/` folder).
+* **Medical Status:** `medical_status.is_vaccinated`, `medical_status.is_neutered` — real-time boolean flags.
+* **Lifecycle:** `status` — one of the five statuses listed above.
+* **Provenance:** `registered_by` (UID), `registered_by_name`, `registered_by_role`, `hospital_id` (current hospital), `agency_id` (current agency), `hospital_history` (array of all hospital IDs that have treated this dog).
+* **Treatment Timeline:** An immutable-style array (`treatment_timeline`) tracking every major event with the following entry structure:
+  * `date` (ISO string), `type` (admission | treatment | transfer | discharge | adoption | update), `notes`, `diagnosis`, `prescription`, `recorded_by` (UID), `recorded_by_name`, `hospital_id`/`agency_id`.
+* **Timestamps:** `created_at`, `updated_at` (server timestamps).
+
+### Supporting Collections:
+* **`Users/{uid}`**: Profile with `full_name`, `email`, `role`, `is_active`, `created_at`, and optionally `works_at`, `title`, `created_by`, `reject_reason`.
+* **`Organizations/{id}`**: Server-created hospital/agency record with `name`, `type`, `status`, `email`, `phone`, `address`, `admin_uid`, `created_at`, `created_by`.
+* **`OrganizationApplications/{id}`**: Partner application with `organization_name`, `type`, `contact_name`, `contact_email`, `phone`, `address`, `creator_uid`, `status` (pending | approved | declined), and approval/decline metadata.
+* **`Dogs/{dogId}/AdoptionDetails/record`**: Private subcollection storing sensitive adopter information (`adopter_name`, `email`, `phone`, `address`, `notes`, `processed_by`, `processed_by_name`, `agency_id`, `processed_at`).
+* **`Counters/dogs`**: Auto-increment counter document with `last_number` field, used by `generateDogTag()` to produce sequential `PAW-XXXX` tags.
 
 ---
 
 ## 5. Key Cloud Functions (Backend Logic)
-To ensure data integrity and bypass client-side manipulation, sensitive operations are handled via Firebase Cloud Functions:
+To ensure data integrity and bypass client-side manipulation, sensitive operations are handled via Firebase Cloud Functions (v1, region `us-central1`):
 
-* `registerDog`: Generates a secure `PAW-XXXX` tag and initializes the dog's record and status based on the user's role.
-* `updateDogRecord`: Appends medical timeline entries and updates core statuses securely.
-* `transferDog`: Safely transfers a dog from a hospital's custody to an agency's custody.
-* `createPartnerApplication` / `approveOrganizationApplication` / `declineOrganizationApplication`: Manages the organization lifecycle.
-* `addOrgStaff` / `createCommunityProfile`: Securely provisions Firebase Auth users and sets up their Firestore profiles.
+* **`registerDog`**: Generates a secure `PAW-XXXX` tag via the `Counters` collection, initialises the dog's record, and sets the initial status based on the caller's role (`street` for community members, `in_treatment` for hospital staff, `adoptable` for agency staff).
+* **`updateDogRecord`**: Appends treatment timeline entries, updates medical status flags (vaccinated, neutered), breed, and dog status. When admitting a street dog (`status → in_treatment`), it also sets `hospital_id` and appends to `hospital_history`.
+* **`transferDog`**: Safely transfers a dog from a hospital's custody to an agency's custody. Sets `status` to `adoptable`, updates `agency_id`, and appends a transfer entry to the treatment timeline. Validates that the target agency exists.
+* **`processAdoption`**: Marks a dog as `adopted`, appends an adoption timeline entry, and stores the private adopter details (name, email, phone, address, notes) in the `Dogs/{dogId}/AdoptionDetails/record` subcollection. Only callable by agency staff or platform admin. Verifies the caller's agency matches the dog's `agency_id`.
+* **`createPartnerApplication`**: Creates a partner organisation application and sets the caller's role to `pending_partner`. Prevents duplicate applications from users who already hold an active role.
+* **`approveOrganizationApplication`**: Platform Admin action — creates the `Organizations` document, upgrades the applicant's profile, and marks the application as approved. Uses a Firestore batch write for atomicity.
+* **`declineOrganizationApplication`**: Platform Admin action — marks the application as declined and sets the applicant's role to `rejected_partner` with a decline reason.
+* **`addOrgStaff`**: Called by Org Admins — creates a Firebase Auth user and provisions their Firestore profile with the correct staff role (`veterinarian` or `agency_employee`) and `works_at` link.
+* **`createCommunityProfile`**: Called during community registration — sets up the `Users` document with `community_member` role.
 
 ---
 
 ## 6. Frontend Features & UI
-The frontend features a clean, modern, and responsive design with distinct workspaces:
+The frontend features a modern, responsive design with animated particle backgrounds, scroll-reveal effects, and distinct workspaces. It uses a client-side page state (`setPage`) for navigation (no router library).
 
-* **Discover & Report:** A public-facing (for signed-in community users) directory of dogs with advanced filtering, and a comprehensive reporting form that supports image uploads directly to Firebase Storage.
-* **Hospital Dashboard:** Allows hospital staff to view total metrics, admit street dogs from the network, manage their specific patients, and update medical records.
-* **Agency Dashboard:** Allows agency staff to manage shelter inventory, receive hospital transfers, and process adoptions.
-* **Platform Admin Dashboard:** A global view for managing pending organization applications and system-wide metrics.
-* **Rich Dog Profiles:** A dedicated view for each dog displaying their identity, photo (fetched from Firebase Storage), current status, provenance, and a full chronological medical timeline.
+### Dual-Shell Layout Architecture:
+* **`PublicShell`**: Wraps all unauthenticated pages with the public header (brand logo + navigation), page content, and a footer. Pages: Home, About, Discover, Login, Apply, DogProfile.
+* **`WorkspaceShell`**: Wraps all authenticated pages with a sidebar navigation (brand, role label, navigation links, sign out) and a main content area with a particle background. Pages: Dashboard, Discover, Report, Apply, DogProfile.
+* Authenticated users are automatically redirected from public pages (`home`, `about`, `login`) to their workspace dashboard.
+
+### Pages:
+* **Home (`Home.jsx`)**: Public landing page with a vibrant hero section (tagline, CTA buttons, animated floating cards, SVG route illustration, rescue dog photo), live network stats (dogs, hospitals, agencies), and a care journey section showing the 3-step PawPath flow (Notice → Care → Home).
+* **About (`About.jsx`)**: Mission statement page showing the 3-step process (See & report → Treat & track → Love & rehome).
+* **Login (`Login.jsx`)**: Dual-mode authentication page with toggle between Sign In and Community Registration. Community registration creates a Firebase Auth account and provisions a Firestore profile.
+* **Discover (`Discover.jsx`)**: Dog directory with search (name, breed, tag, location, gender) and status filter. Displays dogs in a card grid showing photo, status badge, tag ID, breed/gender/age, location, vaccination/neutered status, and "View full profile" link. Accessible both publicly and within the workspace.
+* **Report (`Report.jsx`)**: Community dog sighting report form with fields for name, location, breed, gender, estimated age, observations, condition notes, and photo upload (to Firebase Cloud Storage). Shows a confetti animation on successful submission.
+* **DogProfile (`DogProfile.jsx`)**: Comprehensive dog record view with photo, status badge, tag, identity details, medical status, provenance (reporter, hospital, agency, hospital history), chronological treatment timeline, and a role-gated action panel (`MedicalRecordForm`).
+* **ApplicationForm (`ApplicationForm.jsx`)**: Organisation partner application form (organisation name, type, contact info, phone, address). Creates a Firebase Auth account if user is not signed in, or submits directly if already authenticated.
+* **Dashboard (`Dashboard.jsx`)**: Role-based routing hub that renders the appropriate dashboard based on the user's role:
+  * **Platform Admin → `PlatformAdminView`**: Tabbed interface with Overview (metrics: total dogs, hospitals, agencies, pending requests; recent dogs list), Pending Requests (searchable list with approve/decline actions), Hospitals (searchable directory), Adoption Agencies (searchable directory).
+  * **Hospital Admin → `HospitalDashboard`**: Tabbed interface with Overview (metrics, hospital details), Doctors & Staff (`StaffManager` component), Patients (org-specific dogs with "Admit New Dog" form via `DogRegistrationForm`), Network Dogs (street dogs from the global network available for admission).
+  * **Agency Admin → `AgencyDashboard`**: Tabbed interface with Overview (metrics, agency details), Staff & Employees (`StaffManager` component), Shelter Dogs (org-specific dogs with "Add Shelter Dog" form via `DogRegistrationForm`).
+  * **Veterinarian / Agency Employee → `StaffDashboard`**: Staff profile card, assigned organisation card, active patients/shelter dogs list, and quick-action buttons (Explore All Dogs, Report New Sighting).
+  * **Pending Partner**: Informational message about pending review.
+  * **Rejected Partner**: Decline notice with rejection reason.
+  * **Community Member (fallback)**: Basic stats and account info.
+
+### Reusable Components:
+* **`MedicalRecordForm`**: Context-aware action panel on the DogProfile page with tabs that appear based on the user's role and the dog's current status:
+  * Hospital staff: "Add Medical Record" (diagnosis, prescription, notes, breed assessment, vaccination/neutered toggles), "Admit to Hospital" (for street dogs), "Transfer to Agency" (for in-treatment dogs), "Discharge" (for in-treatment dogs, with community release or adoption pathways).
+  * Agency staff: "Update Record", "Mark as Adopted" (adopter name, email, phone, address, notes — stored in private subcollection).
+* **`DogRegistrationForm`**: Full-form dog intake used by hospitals (Admit Dog to Hospital) and agencies (Add Dog to Shelter). Includes breed, age, gender, location, description, condition notes, vaccination/neutered checkboxes, and photo upload.
+* **`StaffManager`**: Split-panel interface for Org Admins to view their staff directory (left) and add new staff members (right). Creates Firebase Auth accounts via the `addOrgStaff` Cloud Function.
+* **`Header`**: Public site header with PawPath brand (SVG paw logo), navigation (Home, About, Discover, Join PawPath), and Sign In button.
+* **`ParticleBackground`**: Animated canvas-based particle system with configurable modes (hero, login, dashboard, discover, subtle) and color schemes (vibrant, warm, cool, default). Provides ambient background animation across all pages.
+* **`Confetti`**: Canvas-based confetti celebration animation triggered on successful report submission and adoption processing.
+
+### Custom Hooks:
+* **`useScrollReveal`**: Intersection Observer-based scroll animation hook for revealing elements as they enter the viewport.
 
 ---
 
 ## 7. Security (Firestore & Storage Rules)
-* **Firestore Rules:** Enforces strict read/write access. Users can only edit their own profiles. Only authorized roles (Admins, Vets, Employees) can modify dog records, while maintaining public read access for the community.
-* **Storage Rules:** Allows public read access to dog photos (`dog_photos/`), but restricts uploads (up to 5MB, image types only) to authenticated users.
+
+### Firestore Rules:
+* **Users:** Read access for any signed-in user. Create restricted to own UID. Update allowed by the owner or Platform Admin. Delete denied.
+* **OrganizationApplications:** Read/Create allowed for signed-in users. Update/Delete denied (managed exclusively via Cloud Functions).
+* **Organizations:** Public read access. All writes denied (server-managed via Cloud Functions).
+* **Dogs:** Public read access. Create allowed for signed-in users. Update allowed for Platform Admins, hospital/agency staff roles, or the original reporter. Delete denied.
+* **Dogs/{dogId}/AdoptionDetails/{docId}:** Read restricted to Platform Admins or agency staff whose `works_at` matches the dog's `agency_id`. All writes denied (managed exclusively via the `processAdoption` Cloud Function).
+* **Counters:** Read allowed for signed-in users. All writes denied (server-managed via Cloud Functions).
+
+### Storage Rules:
+* **`dog_photos/{imageId}`:** Public read access. Write access restricted to authenticated users only. No file size or content-type restrictions are enforced at the rules level.
 
 ---
 
 ## 8. Test Data
-A complete set of test accounts representing every role in the system was created and documented in `TEST_ACCOUNTS.md`. These accounts use Gmail aliasing (e.g., `venkatasriramt+xyz@gmail.com`) for easy local testing.
+A complete set of test accounts representing every role in the system was created and documented in `TEST_ACCOUNTS.md`. These accounts use demo domain emails (e.g., `admin@pawpath.demo`, `sarah.vet@citycare.demo`) for easy local testing. A default password of `password123` is used for all accounts (except the Platform Admin, which uses `pawpath`).
+
+Test dog profiles and end-to-end workflow scenarios are documented in `TEST_DOGS.md`, covering the community reporting flow, direct hospital/agency admission, and the full lifecycle pipeline (Report → Admit → Treat → Transfer → Adopt).

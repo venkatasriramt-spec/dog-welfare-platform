@@ -573,3 +573,5 @@ footer{position:relative;z-index:1;padding:31px 7%;background:linear-gradient(11
   .reveal { opacity: 1 !important; transform: none !important; }
   .confetti-container { display: none; }
 }
+
+.dashboard main .workspace-page { padding-top: 0 !important; padding-bottom: 0 !important; }

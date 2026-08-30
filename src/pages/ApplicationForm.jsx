@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { registerPartner, submitApplication } from '../services';
 
-export default function ApplicationForm({ session, setPage }) {
+export default function ApplicationForm({ session, setPage, isWorkspace }) {
   const [form, setForm] = useState({
     organization_name: '',
     type: 'hospital',
@@ -42,7 +42,7 @@ export default function ApplicationForm({ session, setPage }) {
 
   if (submitted) {
     return (
-      <section className="page form-page">
+      <section className={isWorkspace ? "workspace-page form-page" : "page form-page"}>
         <div className="success-panel">
           <div className="success-icon">✓</div>
           <p className="eyebrow">— APPLICATION RECEIVED</p>
@@ -64,7 +64,7 @@ export default function ApplicationForm({ session, setPage }) {
   }
 
   return (
-    <section className="page form-page">
+    <section className={isWorkspace ? "workspace-page form-page" : "page form-page"}>
       <p className="eyebrow">— ORGANISATION APPLICATION</p>
       <h2>Join the <em>network.</em></h2>
       <form onSubmit={submit}>

@@ -4,7 +4,7 @@ import { reportDog, uploadImage } from '../services';
 import Confetti from '../components/Confetti';
 import ParticleBackground from '../components/ParticleBackground';
 
-export default function Report({ session, setPage }) {
+export default function Report({ session, setPage, isWorkspace }) {
   const [form, setForm] = useState({
     name: '',
     location: '',
@@ -50,7 +50,7 @@ export default function Report({ session, setPage }) {
 
   if (showSuccess) {
     return (
-      <section className="page" style={{ display: 'grid', placeItems: 'center', minHeight: '70vh' }}>
+      <section className={isWorkspace ? "workspace-page" : "page"} style={{ display: 'grid', placeItems: 'center', minHeight: '70vh' }}>
         <Confetti isActive={true} />
         <div className="success-panel" style={{ textAlign: 'center' }}>
           <div className="success-icon" style={{ margin: '0 auto 20px' }}>✓</div>
@@ -72,8 +72,8 @@ export default function Report({ session, setPage }) {
 
   return (
     <>
-      <ParticleBackground mode="subtle" colorScheme="warm" particleCount={30} />
-      <section className="page form-page">
+      {!isWorkspace && <ParticleBackground mode="subtle" colorScheme="warm" particleCount={30} />}
+      <section className={isWorkspace ? "workspace-page form-page" : "page form-page"}>
         <div>
           <p className="eyebrow">— COMMUNITY REPORT</p>
           <h2>Help a dog get <em>noticed.</em></h2>

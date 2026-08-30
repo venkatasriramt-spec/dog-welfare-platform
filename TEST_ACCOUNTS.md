@@ -2,7 +2,7 @@
 
 This document contains the complete list of test accounts, roles, and credentials created for testing the **PawPath** platform.
 
-> **Default Password:** `password123` (used for all test accounts)
+> **Default Password:** `password123` (used for all test accounts except the Platform Admin, which uses `pawpath`)
 
 ---
 
@@ -29,7 +29,7 @@ This document contains the complete list of test accounts, roles, and credential
 
 ### 1. 👑 Platform Administration
 * **Email:** `admin@pawpath.demo`
-* **Password:** `password123`
+* **Password:** `pawpath`
 * **Role:** `platform_admin`
 * **Permissions:**
   * View real-time platform statistics (Total Dogs, Registered Hospitals, Agencies, Pending Requests).

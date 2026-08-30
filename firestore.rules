@@ -47,6 +47,15 @@ service cloud.firestore {
         owns(resource.data.registered_by)
       );
       allow delete: if false;
+      
+      // --- Adoption Details (Private Subcollection) ---
+      match /AdoptionDetails/{docId} {
+        allow read: if signedIn() && (
+          isPlatformAdmin() ||
+          (profile().role in ['agency_admin', 'agency_employee'] && profile().works_at == get(/databases/$(database)/documents/Dogs/$(dogId)).data.agency_id)
+        );
+        allow write: if false; // Only written via Cloud Functions
+      }
     }
 
     // --- Counters (server-managed, admin only via Cloud Functions) ---

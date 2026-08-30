@@ -1,5 +1,4 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import Header from './components/Header';
 import About from './pages/About';
 import ApplicationForm from './pages/ApplicationForm';
 import Dashboard from './pages/Dashboard';
@@ -9,6 +8,8 @@ import Home from './pages/Home';
 import Login from './pages/Login';
 import Report from './pages/Report';
 import { watchApplications, watchDogs, watchOrganizations, watchSession } from './services';
+import WorkspaceShell from './layouts/WorkspaceShell';
+import PublicShell from './layouts/PublicShell';
 
 export default function App() {
   const [page, setPage] = useState('home');
@@ -26,62 +27,99 @@ export default function App() {
     [session.profile?.role]
   );
 
+  // Force authenticated users into workspace if they try to access public pages
   useEffect(() => {
-    if (session.profile?.role === 'platform_admin' && page !== 'dashboard') {
-      setPage('dashboard');
+    if (session.user && !session.loading) {
+      if (['home', 'about', 'login'].includes(page)) {
+        setPage('dashboard');
+      }
     }
-  }, [session.profile?.role, page]);
+  }, [session.user, session.loading, page]);
 
   const dog = useMemo(
     () => (page.startsWith('dog:') ? dogs.find(d => d.id === page.slice(4)) : null),
     [page, dogs]
   );
 
-  let body =
-    page === 'home' ? (
-      <Home setPage={setPage} dogs={dogs} organizations={organizations} />
-    ) : page === 'about' ? (
-      <About />
-    ) : page === 'discover' ? (
-      <Discover dogs={dogs} setPage={setPage} session={session} />
-    ) : page === 'login' ? (
-      <Login setPage={setPage} />
-    ) : page === 'apply' ? (
-      <ApplicationForm session={session} setPage={setPage} />
-    ) : page === 'report' && session.user ? (
-      <Report session={session} setPage={setPage} />
-    ) : page === 'dashboard' && session.user ? (
-      <Dashboard
-        session={session}
-        dogs={dogs}
-        organizations={organizations}
-        applications={applications}
-        setPage={setPage}
-      />
-    ) : page.startsWith('dog:') ? (
+  if (session.loading) return null;
+
+  if (session.user) {
+    // WORKSPACE ROUTES
+    let body;
+    if (page === 'dashboard') {
+      body = (
+        <Dashboard
+          session={session}
+          dogs={dogs}
+          organizations={organizations}
+          applications={applications}
+          setPage={setPage}
+        />
+      );
+    } else if (page === 'discover') {
+      body = <Discover dogs={dogs} setPage={setPage} session={session} isWorkspace={true} />;
+    } else if (page === 'report') {
+      body = <Report session={session} setPage={setPage} isWorkspace={true} />;
+    } else if (page === 'apply') {
+      body = <ApplicationForm session={session} setPage={setPage} isWorkspace={true} />;
+    } else if (page.startsWith('dog:')) {
+      body = (
+        <DogProfile
+          dog={dog}
+          setPage={setPage}
+          session={session}
+          organizations={organizations}
+          isWorkspace={true}
+        />
+      );
+    } else {
+      // Fallback
+      body = (
+        <Dashboard
+          session={session}
+          dogs={dogs}
+          organizations={organizations}
+          applications={applications}
+          setPage={setPage}
+        />
+      );
+    }
+
+    return (
+      <WorkspaceShell session={session} page={page} setPage={setPage}>
+        {body}
+      </WorkspaceShell>
+    );
+  }
+
+  // PUBLIC ROUTES
+  let body;
+  if (page === 'home') {
+    body = <Home setPage={setPage} dogs={dogs} organizations={organizations} />;
+  } else if (page === 'about') {
+    body = <About />;
+  } else if (page === 'discover') {
+    body = <Discover dogs={dogs} setPage={setPage} session={session} />;
+  } else if (page === 'login') {
+    body = <Login setPage={setPage} />;
+  } else if (page === 'apply') {
+    body = <ApplicationForm session={session} setPage={setPage} />;
+  } else if (page.startsWith('dog:')) {
+    body = (
       <DogProfile
         dog={dog}
         setPage={setPage}
         session={session}
         organizations={organizations}
       />
-    ) : (
-      <Home setPage={setPage} dogs={dogs} organizations={organizations} />
     );
+  } else {
+    body = <Home setPage={setPage} dogs={dogs} organizations={organizations} />;
+  }
 
   return (
-    <div className={`app-shell ${page === 'dashboard' ? 'workspace-shell' : ''}`}>
-      {page !== 'dashboard' && session.profile?.role !== 'platform_admin' && (
-        <Header page={page} setPage={setPage} session={session} />
-      )}
-      <div className="route-view" key={page}>
-        {body}
-      </div>
-      {page !== 'dashboard' && session.profile?.role !== 'platform_admin' && (
-        <footer>
-          ✦ PawPath <span>Every dog deserves to be seen.</span>
-        </footer>
-      )}
-    </div>
+    <PublicShell session={session} page={page} setPage={setPage}>
+      {body}
+    </PublicShell>
   );
 }

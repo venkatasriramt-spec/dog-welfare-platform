@@ -73,3 +73,10 @@ dist/
 
 # IDE files
 .codex/
+
+# Playwright
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+/playwright/.auth/
