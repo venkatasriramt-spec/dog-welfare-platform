@@ -38,8 +38,11 @@ export default function AgencyDashboard({ session, dogs = [], organizations = []
         <button className={tab === 'employees' ? 'selected' : ''} onClick={() => setTab('employees')}>
           👥 Staff & Employees
         </button>
-        <button className={tab === 'shelter' ? 'selected' : ''} onClick={() => setTab('shelter')}>
-          🏡 Shelter Dogs ({orgDogs.length})
+        <button className={tab === 'residents' ? 'selected' : ''} onClick={() => setTab('residents')}>
+          🏡 Current Residents ({adoptableDogs.length})
+        </button>
+        <button className={tab === 'history' ? 'selected' : ''} onClick={() => setTab('history')}>
+          ❤️ Adoption History ({adoptedDogs.length})
         </button>
       </div>
 
@@ -85,33 +88,33 @@ export default function AgencyDashboard({ session, dogs = [], organizations = []
         />
       )}
 
-      {/* Shelter Tab */}
-      {tab === 'shelter' && (
+      {/* Current Residents Tab */}
+      {tab === 'residents' && (
         <div className="agency-shelter">
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
             <div>
-              <h3>Shelter & Adoption Listings</h3>
+              <h3>Current Residents</h3>
               <p className="lead" style={{ fontSize: '14px', margin: 0 }}>
-                Dogs managed by your shelter. Click any record to view details or process adoption.
+                Dogs currently available for adoption at your agency.
               </p>
             </div>
             <button className="primary" onClick={() => setShowAddForm(!showAddForm)}>
-              {showAddForm ? '✕ Close' : '+ Add Shelter Dog'}
+              {showAddForm ? '✕ Close' : '+ Register Walk-in Dog'}
             </button>
           </div>
 
           {showAddForm && (
             <div style={{ background: '#fff', padding: '24px', borderRadius: '6px', border: '1px solid var(--line)', marginBottom: '24px' }}>
               <DogRegistrationForm
-                contextLabel="Add Dog to Shelter"
+                contextLabel="Add Walk-in Dog to Agency"
                 onDogRegistered={() => setShowAddForm(false)}
               />
             </div>
           )}
 
-          {orgDogs.length > 0 ? (
+          {adoptableDogs.length > 0 ? (
             <div className="dog-grid" style={{ gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px' }}>
-              {orgDogs.map(d => (
+              {adoptableDogs.map(d => (
                 <article className="dog-card" key={d.id} style={{ background: '#fff' }}>
                   {d.social_photos && d.social_photos.length > 0 ? (
                     <img src={d.social_photos[0]} alt={d.name} />
@@ -124,14 +127,53 @@ export default function AgencyDashboard({ session, dogs = [], organizations = []
                     <h3>{d.name}</h3>
                     <p>{d.breed || 'Breed pending'} · {d.gender || ''} · {d.estimated_age || ''}</p>
                     <button className="link" onClick={() => setPage(`dog:${d.id}`)}>
-                      {d.status === 'adoptable' ? 'View adoption profile →' : 'View record →'}
+                      View & Manage Adoption →
                     </button>
                   </div>
                 </article>
               ))}
             </div>
           ) : (
-            <div className="empty">No dogs in this shelter yet. Use "+ Add Shelter Dog" or receive transfers from hospitals.</div>
+            <div className="empty">No dogs currently available for adoption.</div>
+          )}
+        </div>
+      )}
+
+      {/* Adoption History Tab */}
+      {tab === 'history' && (
+        <div className="agency-shelter">
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+            <div>
+              <h3>Adoption History</h3>
+              <p className="lead" style={{ fontSize: '14px', margin: 0 }}>
+                Dogs that have been successfully adopted from your agency.
+              </p>
+            </div>
+          </div>
+
+          {adoptedDogs.length > 0 ? (
+            <div className="dog-grid" style={{ gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px' }}>
+              {adoptedDogs.map(d => (
+                <article className="dog-card" key={d.id} style={{ background: '#fff' }}>
+                  {d.social_photos && d.social_photos.length > 0 ? (
+                    <img src={d.social_photos[0]} alt={d.name} />
+                  ) : (
+                    <div className="dog-placeholder">🐾</div>
+                  )}
+                  <span className={`status ${d.status}`}>{DOG_STATUSES[d.status] || d.status}</span>
+                  <div style={{ padding: '16px' }}>
+                    {d.tag && <small style={{ color: 'var(--orange)', fontWeight: 'bold' }}>{d.tag}</small>}
+                    <h3>{d.name}</h3>
+                    <p>{d.breed || 'Breed pending'} · {d.gender || ''}</p>
+                    <button className="link" onClick={() => setPage(`dog:${d.id}`)}>
+                      View Historical Record →
+                    </button>
+                  </div>
+                </article>
+              ))}
+            </div>
+          ) : (
+            <div className="empty">No adoption records found.</div>
           )}
         </div>
       )}

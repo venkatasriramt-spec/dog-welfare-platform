@@ -1,91 +1,543 @@
 # Test Dog Profiles
 
-Use this data to populate the system and test the various workflows. The photos can be anything you find online or take yourself.
+Use this data to populate the system and test the various role-based workflows.
+
+## Group A: The Street Dogs (Incoming Queue)
+**Goal:** Test community reporting and the Hospital Admin's 'Incoming Queue'.
+
+### Apollo
+* **Scenario:** Community Report
+* **Who uploads this:** Community Member
+* **Where to upload / perform:** Log in, click '+ Report a dog' from Discover
+* **Action to Perform:** Hospital Admin logs in -> 'Incoming Queue' -> clicks 'Admit to Hospital'.
+* **Details:**
+  - Location: Marathahalli, Bangalore
+  - Breed: Pomeranian Mix
+  - Gender: Male
+  - Estimated Age: Puppy (6 months)
+  - Condition/Description: Puppy found crying alone near the garbage dump.
+* **Image Name:** `Apollo.jpg`
+
+### Bella
+* **Scenario:** Community Report
+* **Who uploads this:** Community Member
+* **Where to upload / perform:** Log in, click '+ Report a dog' from Discover
+* **Action to Perform:** Hospital Admin logs in -> 'Incoming Queue' -> clicks 'Admit to Hospital'.
+* **Details:**
+  - Location: Koramangala, Bangalore
+  - Breed: Labrador Retriever
+  - Gender: Female
+  - Estimated Age: Adult (~3 years)
+  - Condition/Description: Limping on the back left leg, needs checking.
+* **Image Name:** `Bella.jpg`
+
+### Charlie
+* **Scenario:** Community Report
+* **Who uploads this:** Community Member
+* **Where to upload / perform:** Log in, click '+ Report a dog' from Discover
+* **Action to Perform:** Hospital Admin logs in -> 'Incoming Queue' -> clicks 'Admit to Hospital'.
+* **Details:**
+  - Location: Jayanagar, Bangalore
+  - Breed: Boxer Mix
+  - Gender: Female
+  - Estimated Age: Senior (8+ years)
+  - Condition/Description: Weak and lethargic, refusing to eat.
+* **Image Name:** `Charlie.jpg`
+
+### Daisy
+* **Scenario:** Community Report
+* **Who uploads this:** Community Member
+* **Where to upload / perform:** Log in, click '+ Report a dog' from Discover
+* **Action to Perform:** Hospital Admin logs in -> 'Incoming Queue' -> clicks 'Admit to Hospital'.
+* **Details:**
+  - Location: Hebbal, Bangalore
+  - Breed: Pug
+  - Gender: Male
+  - Estimated Age: Adult (~3 years)
+  - Condition/Description: Limping on the back left leg, needs checking.
+* **Image Name:** `Daisy.jpg`
+
+### Einstein
+* **Scenario:** Community Report
+* **Who uploads this:** Community Member
+* **Where to upload / perform:** Log in, click '+ Report a dog' from Discover
+* **Action to Perform:** Hospital Admin logs in -> 'Incoming Queue' -> clicks 'Admit to Hospital'.
+* **Details:**
+  - Location: Marathahalli, Bangalore
+  - Breed: Pug
+  - Gender: Female
+  - Estimated Age: Adult (~2 years)
+  - Condition/Description: Puppy found crying alone near the garbage dump.
+* **Image Name:** `Einstein.jpg`
+
+### Fiona
+* **Scenario:** Community Report
+* **Who uploads this:** Community Member
+* **Where to upload / perform:** Log in, click '+ Report a dog' from Discover
+* **Action to Perform:** Hospital Admin logs in -> 'Incoming Queue' -> clicks 'Admit to Hospital'.
+* **Details:**
+  - Location: BTM Layout, Bangalore
+  - Breed: Boxer Mix
+  - Gender: Female
+  - Estimated Age: Adult (~2 years)
+  - Condition/Description: Skin infection visible, constantly scratching.
+* **Image Name:** `Fiona.jpg`
+
+### Gatsby
+* **Scenario:** Community Report
+* **Who uploads this:** Community Member
+* **Where to upload / perform:** Log in, click '+ Report a dog' from Discover
+* **Action to Perform:** Hospital Admin logs in -> 'Incoming Queue' -> clicks 'Admit to Hospital'.
+* **Details:**
+  - Location: Koramangala, Bangalore
+  - Breed: Boxer Mix
+  - Gender: Female
+  - Estimated Age: Adult (~5 years)
+  - Condition/Description: Hit by a two-wheeler, lying on the side of the road.
+* **Image Name:** `Gatsby.jpg`
+
+### Hazel
+* **Scenario:** Community Report
+* **Who uploads this:** Community Member
+* **Where to upload / perform:** Log in, click '+ Report a dog' from Discover
+* **Action to Perform:** Hospital Admin logs in -> 'Incoming Queue' -> clicks 'Admit to Hospital'.
+* **Details:**
+  - Location: Electronic City, Bangalore
+  - Breed: Boxer Mix
+  - Gender: Female
+  - Estimated Age: Adult (~3 years)
+  - Condition/Description: Collar on but no owner in sight for 2 days.
+* **Image Name:** `Hazel.jpg`
+
+### Iggy
+* **Scenario:** Community Report
+* **Who uploads this:** Community Member
+* **Where to upload / perform:** Log in, click '+ Report a dog' from Discover
+* **Action to Perform:** Hospital Admin logs in -> 'Incoming Queue' -> clicks 'Admit to Hospital'.
+* **Details:**
+  - Location: Hebbal, Bangalore
+  - Breed: Rottweiler Mix
+  - Gender: Male
+  - Estimated Age: Young Adult (1 year)
+  - Condition/Description: Hit by a two-wheeler, lying on the side of the road.
+* **Image Name:** `Iggy.jpg`
+
+### Jasper
+* **Scenario:** Community Report
+* **Who uploads this:** Community Member
+* **Where to upload / perform:** Log in, click '+ Report a dog' from Discover
+* **Action to Perform:** Hospital Admin logs in -> 'Incoming Queue' -> clicks 'Admit to Hospital'.
+* **Details:**
+  - Location: HSR Layout, Bangalore
+  - Breed: Doberman Mix
+  - Gender: Male
+  - Estimated Age: Puppy (2 months)
+  - Condition/Description: Collar on but no owner in sight for 2 days.
+* **Image Name:** `Jasper.jpg`
 
 ---
+## Group B: Active Patients (In Treatment)
+**Goal:** Test direct admission by Hospital Admin and medical record updates by Veterinarian.
 
-## 1. The "Street Dog" Scenario
-**Goal:** Test community reporting and the public network view.
-**Who uploads this:** Community Member (`rahul.community@pawpath.demo`)
-**Where to upload:** Log in, click "+ Report a dog" from the Discover page.
+### Kiki
+* **Scenario:** Direct Admission & Treatment
+* **Who uploads this:** Hospital Admin
+* **Where to upload / perform:** Hospital Dashboard -> 'Incoming Queue' -> '+ Register Walk-in Patient'
+* **Action to Perform:** Veterinarian logs in -> 'Active Patients' -> Adds a Medical Record.
+* **Details:**
+  - Location: Bellandur, Bangalore
+  - Breed: Cocker Spaniel
+  - Gender: Male
+  - Estimated Age: Senior (8+ years)
+  - Condition/Description: Parvovirus treatment in isolation ward.
+* **Image Name:** `Kiki.jpg`
 
-* **Dog Name / Identity:** "Brownie with the white paw"
-* **Location:** "Indiranagar 100ft road, near the metro station"
-* **Breed:** INDie / Pariah
-* **Gender:** Male
-* **Estimated Age:** Adult (~3 years)
-* **What did you observe? (Description):** Very friendly but seems lost. Hangs around the tea stall.
-* **Condition notes:** Slight limp on the back left leg, needs checking.
-* **Image:** (Upload a picture of a brown dog)
+### Leo
+* **Scenario:** Direct Admission & Treatment
+* **Who uploads this:** Hospital Admin
+* **Where to upload / perform:** Hospital Dashboard -> 'Incoming Queue' -> '+ Register Walk-in Patient'
+* **Action to Perform:** Veterinarian logs in -> 'Active Patients' -> Adds a Medical Record.
+* **Details:**
+  - Location: Malleswaram, Bangalore
+  - Breed: German Shepherd Mix
+  - Gender: Male
+  - Estimated Age: Senior (8+ years)
+  - Condition/Description: Fractured hind leg, surgery scheduled.
+* **Image Name:** `Leo.jpg`
 
-*Next Step:* Log in as the Hospital Vet to "Admit" this dog from the Network tab.
+### Milo
+* **Scenario:** Direct Admission & Treatment
+* **Who uploads this:** Hospital Admin
+* **Where to upload / perform:** Hospital Dashboard -> 'Incoming Queue' -> '+ Register Walk-in Patient'
+* **Action to Perform:** Veterinarian logs in -> 'Active Patients' -> Adds a Medical Record.
+* **Details:**
+  - Location: Hebbal, Bangalore
+  - Breed: Dachshund
+  - Gender: Male
+  - Estimated Age: Adult (~2 years)
+  - Condition/Description: Wound management from dog bite.
+* **Image Name:** `Milo.jpg`
+
+### Nala
+* **Scenario:** Direct Admission & Treatment
+* **Who uploads this:** Hospital Admin
+* **Where to upload / perform:** Hospital Dashboard -> 'Incoming Queue' -> '+ Register Walk-in Patient'
+* **Action to Perform:** Veterinarian logs in -> 'Active Patients' -> Adds a Medical Record.
+* **Details:**
+  - Location: Jayanagar, Bangalore
+  - Breed: Pug
+  - Gender: Female
+  - Estimated Age: Puppy (2 months)
+  - Condition/Description: Skin dermatitis treatment.
+* **Image Name:** `Nala.jpg`
+
+### Oscar
+* **Scenario:** Direct Admission & Treatment
+* **Who uploads this:** Hospital Admin
+* **Where to upload / perform:** Hospital Dashboard -> 'Incoming Queue' -> '+ Register Walk-in Patient'
+* **Action to Perform:** Veterinarian logs in -> 'Active Patients' -> Adds a Medical Record.
+* **Details:**
+  - Location: Electronic City, Bangalore
+  - Breed: Husky Mix
+  - Gender: Male
+  - Estimated Age: Adult (~3 years)
+  - Condition/Description: Severe malnutrition and dehydration.
+* **Image Name:** `Oscar.jpg`
+
+### Penny
+* **Scenario:** Direct Admission & Treatment
+* **Who uploads this:** Hospital Admin
+* **Where to upload / perform:** Hospital Dashboard -> 'Incoming Queue' -> '+ Register Walk-in Patient'
+* **Action to Perform:** Veterinarian logs in -> 'Active Patients' -> Adds a Medical Record.
+* **Details:**
+  - Location: Malleswaram, Bangalore
+  - Breed: Pug
+  - Gender: Female
+  - Estimated Age: Young Adult (1 year)
+  - Condition/Description: Wound management from dog bite.
+* **Image Name:** `Penny.jpg`
+
+### Quinn
+* **Scenario:** Direct Admission & Treatment
+* **Who uploads this:** Hospital Admin
+* **Where to upload / perform:** Hospital Dashboard -> 'Incoming Queue' -> '+ Register Walk-in Patient'
+* **Action to Perform:** Veterinarian logs in -> 'Active Patients' -> Adds a Medical Record.
+* **Details:**
+  - Location: Koramangala, Bangalore
+  - Breed: Labrador Retriever
+  - Gender: Male
+  - Estimated Age: Puppy (6 months)
+  - Condition/Description: Wound management from dog bite.
+* **Image Name:** `Quinn.jpg`
+
+### Rocky
+* **Scenario:** Direct Admission & Treatment
+* **Who uploads this:** Hospital Admin
+* **Where to upload / perform:** Hospital Dashboard -> 'Incoming Queue' -> '+ Register Walk-in Patient'
+* **Action to Perform:** Veterinarian logs in -> 'Active Patients' -> Adds a Medical Record.
+* **Details:**
+  - Location: JP Nagar, Bangalore
+  - Breed: Golden Retriever
+  - Gender: Female
+  - Estimated Age: Adult (~5 years)
+  - Condition/Description: Routine spay/neuter surgery recovery.
+* **Image Name:** `Rocky.jpg`
+
+### Stella
+* **Scenario:** Direct Admission & Treatment
+* **Who uploads this:** Hospital Admin
+* **Where to upload / perform:** Hospital Dashboard -> 'Incoming Queue' -> '+ Register Walk-in Patient'
+* **Action to Perform:** Veterinarian logs in -> 'Active Patients' -> Adds a Medical Record.
+* **Details:**
+  - Location: BTM Layout, Bangalore
+  - Breed: Shih Tzu
+  - Gender: Male
+  - Estimated Age: Young Adult (1 year)
+  - Condition/Description: Severe tick fever, undergoing treatment.
+* **Image Name:** `Stella.jpg`
+
+### Toby
+* **Scenario:** Direct Admission & Treatment
+* **Who uploads this:** Hospital Admin
+* **Where to upload / perform:** Hospital Dashboard -> 'Incoming Queue' -> '+ Register Walk-in Patient'
+* **Action to Perform:** Veterinarian logs in -> 'Active Patients' -> Adds a Medical Record.
+* **Details:**
+  - Location: Jayanagar, Bangalore
+  - Breed: Husky Mix
+  - Gender: Female
+  - Estimated Age: Senior (10+ years)
+  - Condition/Description: Severe tick fever, undergoing treatment.
+* **Image Name:** `Toby.jpg`
 
 ---
+## Group C: Ready to Leave (Fit for Discharge)
+**Goal:** Test Veterinarian signing off on treatment and Hospital Admin processing the transfer/discharge.
 
-## 2. The "Direct Hospital Admission" Scenario
-**Goal:** Test hospital direct intake and medical record updates.
-**Who uploads this:** Veterinarian (`sarah.vet@citycare.demo`) or Hospital Admin.
-**Where to upload:** Log in, go to Hospital Dashboard > Patients tab > click "+ Admit New Dog".
+### Uma
+* **Scenario:** Medical Clearance
+* **Who uploads this:** Hospital Admin (to admit) -> Veterinarian (to clear)
+* **Where to upload / perform:** Vet logs into Staff Dashboard -> 'Active Patients'
+* **Action to Perform:** Hospital Admin logs in -> 'Ready to Leave' -> clicks 'Transfer to Agency' OR 'Discharge'.
+* **Details:**
+  - Location: Indiranagar, Bangalore
+  - Breed: Boxer Mix
+  - Gender: Male
+  - Estimated Age: Adult (~2 years)
+  - Condition/Description: Fractured hind leg, surgery scheduled.
+* **Image Name:** `Uma.jpg`
 
-* **Dog Name / Identity:** "Sheru (Accident Case)"
-* **Location Found:** "Koramangala 4th Block"
-* **Breed:** German Shepherd Mix
-* **Gender:** Male
-* **Estimated Age:** Puppy (6 months)
-* **Description:** Brought in by a local feeder after a minor accident.
-* **Condition Notes:** Scrapes on the side, minor fracture in tail.
-* **Vaccinated / Neutered:** Uncheck both.
-* **Image:** (Upload a picture of a German Shepherd puppy)
+### Vigo
+* **Scenario:** Medical Clearance
+* **Who uploads this:** Hospital Admin (to admit) -> Veterinarian (to clear)
+* **Where to upload / perform:** Vet logs into Staff Dashboard -> 'Active Patients'
+* **Action to Perform:** Hospital Admin logs in -> 'Ready to Leave' -> clicks 'Transfer to Agency' OR 'Discharge'.
+* **Details:**
+  - Location: Indiranagar, Bangalore
+  - Breed: Doberman Mix
+  - Gender: Male
+  - Estimated Age: Adult (~5 years)
+  - Condition/Description: Routine spay/neuter surgery recovery.
+* **Image Name:** `Vigo.jpg`
 
-*Next Step:* Once admitted, open Sheru's profile and add a Medical Record (Diagnosis: "Minor abrasions", Prescription: "Painkillers and rest").
+### Winston
+* **Scenario:** Medical Clearance
+* **Who uploads this:** Hospital Admin (to admit) -> Veterinarian (to clear)
+* **Where to upload / perform:** Vet logs into Staff Dashboard -> 'Active Patients'
+* **Action to Perform:** Hospital Admin logs in -> 'Ready to Leave' -> clicks 'Transfer to Agency' OR 'Discharge'.
+* **Details:**
+  - Location: JP Nagar, Bangalore
+  - Breed: Beagle
+  - Gender: Male
+  - Estimated Age: Puppy (6 months)
+  - Condition/Description: Parvovirus treatment in isolation ward.
+* **Image Name:** `Winston.jpg`
+
+### Xena
+* **Scenario:** Medical Clearance
+* **Who uploads this:** Hospital Admin (to admit) -> Veterinarian (to clear)
+* **Where to upload / perform:** Vet logs into Staff Dashboard -> 'Active Patients'
+* **Action to Perform:** Hospital Admin logs in -> 'Ready to Leave' -> clicks 'Transfer to Agency' OR 'Discharge'.
+* **Details:**
+  - Location: Hebbal, Bangalore
+  - Breed: Bulldog Mix
+  - Gender: Female
+  - Estimated Age: Adult (~2 years)
+  - Condition/Description: Parvovirus treatment in isolation ward.
+* **Image Name:** `Xena.jpg`
+
+### Yoshi
+* **Scenario:** Medical Clearance
+* **Who uploads this:** Hospital Admin (to admit) -> Veterinarian (to clear)
+* **Where to upload / perform:** Vet logs into Staff Dashboard -> 'Active Patients'
+* **Action to Perform:** Hospital Admin logs in -> 'Ready to Leave' -> clicks 'Transfer to Agency' OR 'Discharge'.
+* **Details:**
+  - Location: Marathahalli, Bangalore
+  - Breed: Doberman Mix
+  - Gender: Female
+  - Estimated Age: Senior (10+ years)
+  - Condition/Description: Parvovirus treatment in isolation ward.
+* **Image Name:** `Yoshi.jpg`
 
 ---
+## Group D: Shelter Residents (Available for Adoption)
+**Goal:** Test direct shelter intake and Agency Employee's ability to update records.
 
-## 3. The "Direct Shelter Intake" Scenario
-**Goal:** Test agency direct intake and adoption marking.
-**Who uploads this:** Agency Employee (`priya.staff@happytails.demo`) or Agency Admin.
-**Where to upload:** Log in, go to Agency Dashboard > Shelter tab > click "+ Add Shelter Dog".
+### Zoe
+* **Scenario:** Shelter Intake
+* **Who uploads this:** Agency Admin
+* **Where to upload / perform:** Agency Dashboard -> 'Current Residents' -> '+ Register Walk-in Dog'
+* **Action to Perform:** Agency Employee logs in -> 'Current Residents' -> Adds an update note to the record. (Verify they CANNOT see the 'Mark Adopted' button).
+* **Details:**
+  - Location: HSR Layout, Bangalore
+  - Breed: INDie
+  - Gender: Male
+  - Estimated Age: Senior (10+ years)
+  - Condition/Description: High energy, would do well in a house with a yard.
+* **Image Name:** `Zoe.jpg`
 
-* **Dog Name / Identity:** "Luna"
-* **Location Found:** "Surrendered by previous owner"
-* **Breed:** Labrador Retriever
-* **Gender:** Female
-* **Estimated Age:** ~2 years
-* **Description:** Very calm and affectionate. Good with kids and other dogs. Ready for her forever home!
-* **Condition Notes:** Healthy, recently groomed.
-* **Vaccinated / Neutered:** Check both boxes ✅
-* **Image:** (Upload a picture of a smiling Labrador)
-*Next Step:* From the Agency Dashboard, open Luna's profile and click "❤️ Mark as Adopted".
-Fill out the adopter details:
-- **Adopter Name:** John Doe
-- **Email:** john.doe@example.com
-- **Phone:** +91 9876543210
-- **Address:** 123, Main Street, Bangalore
-- **Notes:** Has a large backyard, very excited to adopt Luna!
+### Archie
+* **Scenario:** Shelter Intake
+* **Who uploads this:** Agency Admin
+* **Where to upload / perform:** Agency Dashboard -> 'Current Residents' -> '+ Register Walk-in Dog'
+* **Action to Perform:** Agency Employee logs in -> 'Current Residents' -> Adds an update note to the record. (Verify they CANNOT see the 'Mark Adopted' button).
+* **Details:**
+  - Location: Malleswaram, Bangalore
+  - Breed: Pug
+  - Gender: Female
+  - Estimated Age: Adult (~3 years)
+  - Condition/Description: Senior dog looking for a quiet retirement home.
+* **Image Name:** `Archie.jpg`
+
+### Bailey
+* **Scenario:** Shelter Intake
+* **Who uploads this:** Agency Admin
+* **Where to upload / perform:** Agency Dashboard -> 'Current Residents' -> '+ Register Walk-in Dog'
+* **Action to Perform:** Agency Employee logs in -> 'Current Residents' -> Adds an update note to the record. (Verify they CANNOT see the 'Mark Adopted' button).
+* **Details:**
+  - Location: Electronic City, Bangalore
+  - Breed: Bulldog Mix
+  - Gender: Male
+  - Estimated Age: Adult (~3 years)
+  - Condition/Description: Surrendered by previous owner, good with kids.
+* **Image Name:** `Bailey.jpg`
+
+### Coco
+* **Scenario:** Shelter Intake
+* **Who uploads this:** Agency Admin
+* **Where to upload / perform:** Agency Dashboard -> 'Current Residents' -> '+ Register Walk-in Dog'
+* **Action to Perform:** Agency Employee logs in -> 'Current Residents' -> Adds an update note to the record. (Verify they CANNOT see the 'Mark Adopted' button).
+* **Details:**
+  - Location: Whitefield, Bangalore
+  - Breed: Golden Retriever
+  - Gender: Female
+  - Estimated Age: Puppy (6 months)
+  - Condition/Description: Surrendered by previous owner, good with kids.
+* **Image Name:** `Coco.jpg`
+
+### Duke
+* **Scenario:** Shelter Intake
+* **Who uploads this:** Agency Admin
+* **Where to upload / perform:** Agency Dashboard -> 'Current Residents' -> '+ Register Walk-in Dog'
+* **Action to Perform:** Agency Employee logs in -> 'Current Residents' -> Adds an update note to the record. (Verify they CANNOT see the 'Mark Adopted' button).
+* **Details:**
+  - Location: Whitefield, Bangalore
+  - Breed: Beagle
+  - Gender: Female
+  - Estimated Age: Adult (~2 years)
+  - Condition/Description: High energy, would do well in a house with a yard.
+* **Image Name:** `Duke.jpg`
+
+### Echo
+* **Scenario:** Shelter Intake
+* **Who uploads this:** Agency Admin
+* **Where to upload / perform:** Agency Dashboard -> 'Current Residents' -> '+ Register Walk-in Dog'
+* **Action to Perform:** Agency Employee logs in -> 'Current Residents' -> Adds an update note to the record. (Verify they CANNOT see the 'Mark Adopted' button).
+* **Details:**
+  - Location: JP Nagar, Bangalore
+  - Breed: German Shepherd Mix
+  - Gender: Male
+  - Estimated Age: Adult (~2 years)
+  - Condition/Description: Rescued as a puppy, now fully vaccinated and ready.
+* **Image Name:** `Echo.jpg`
+
+### Frankie
+* **Scenario:** Shelter Intake
+* **Who uploads this:** Agency Admin
+* **Where to upload / perform:** Agency Dashboard -> 'Current Residents' -> '+ Register Walk-in Dog'
+* **Action to Perform:** Agency Employee logs in -> 'Current Residents' -> Adds an update note to the record. (Verify they CANNOT see the 'Mark Adopted' button).
+* **Details:**
+  - Location: JP Nagar, Bangalore
+  - Breed: Labrador Retriever
+  - Gender: Female
+  - Estimated Age: Senior (10+ years)
+  - Condition/Description: Healthy, recently groomed, very playful.
+* **Image Name:** `Frankie.jpg`
+
+### Ginger
+* **Scenario:** Shelter Intake
+* **Who uploads this:** Agency Admin
+* **Where to upload / perform:** Agency Dashboard -> 'Current Residents' -> '+ Register Walk-in Dog'
+* **Action to Perform:** Agency Employee logs in -> 'Current Residents' -> Adds an update note to the record. (Verify they CANNOT see the 'Mark Adopted' button).
+* **Details:**
+  - Location: BTM Layout, Bangalore
+  - Breed: Golden Retriever
+  - Gender: Male
+  - Estimated Age: Senior (10+ years)
+  - Condition/Description: Recovered from leg injury, ready for a loving home.
+* **Image Name:** `Ginger.jpg`
+
+### Hank
+* **Scenario:** Shelter Intake
+* **Who uploads this:** Agency Admin
+* **Where to upload / perform:** Agency Dashboard -> 'Current Residents' -> '+ Register Walk-in Dog'
+* **Action to Perform:** Agency Employee logs in -> 'Current Residents' -> Adds an update note to the record. (Verify they CANNOT see the 'Mark Adopted' button).
+* **Details:**
+  - Location: Koramangala, Bangalore
+  - Breed: German Shepherd Mix
+  - Gender: Female
+  - Estimated Age: Senior (8+ years)
+  - Condition/Description: Bonded pair with another dog, very affectionate.
+* **Image Name:** `Hank.jpg`
+
+### Ivy
+* **Scenario:** Shelter Intake
+* **Who uploads this:** Agency Admin
+* **Where to upload / perform:** Agency Dashboard -> 'Current Residents' -> '+ Register Walk-in Dog'
+* **Action to Perform:** Agency Employee logs in -> 'Current Residents' -> Adds an update note to the record. (Verify they CANNOT see the 'Mark Adopted' button).
+* **Details:**
+  - Location: Whitefield, Bangalore
+  - Breed: Labrador Retriever
+  - Gender: Male
+  - Estimated Age: Adult (~3 years)
+  - Condition/Description: Rescued as a puppy, now fully vaccinated and ready.
+* **Image Name:** `Ivy.jpg`
 
 ---
+## Group E: Adopted Dogs (Adoption History)
+**Goal:** Test Agency Admin processing adoptions.
 
-## 4. The "Full Lifecycle" Scenario
-**Goal:** Test the entire pipeline: Report -> Admit -> Treat -> Transfer -> Adopt.
+### Jack
+* **Scenario:** Adoption Processing
+* **Who uploads this:** Agency Admin
+* **Where to upload / perform:** Agency Dashboard -> 'Current Residents'
+* **Action to Perform:** Agency Admin fills out adopter details -> Verify dog moves to 'Adoption History' tab.
+* **Details:**
+  - Location: Bellandur, Bangalore
+  - Breed: Boxer Mix
+  - Gender: Female
+  - Estimated Age: Adult (~5 years)
+  - Condition/Description: Healthy, recently groomed, very playful.
+* **Image Name:** `Jack.jpg`
 
-**Step 1 (Report):** Community Member (`rahul.community@pawpath.demo`) reports:
-* **Name:** "Scruffy"
-* **Location:** "Jayanagar 4th T Block"
-* **Breed:** INDie
-* **Description:** Hiding under cars, looks terrified and malnourished.
+### Kona
+* **Scenario:** Adoption Processing
+* **Who uploads this:** Agency Admin
+* **Where to upload / perform:** Agency Dashboard -> 'Current Residents'
+* **Action to Perform:** Agency Admin fills out adopter details -> Verify dog moves to 'Adoption History' tab.
+* **Details:**
+  - Location: Bellandur, Bangalore
+  - Breed: Boxer Mix
+  - Gender: Female
+  - Estimated Age: Young Adult (1 year)
+  - Condition/Description: Surrendered by previous owner, good with kids.
+* **Image Name:** `Kona.jpg`
 
-**Step 2 (Admit & Treat):** Veterinarian (`sarah.vet@citycare.demo`) from **CityCare Veterinary Hospital**
-* Goes to "Network Dogs", finds Scruffy, clicks "View & Admit".
-* Adds a medical record: "Malnutrition. Given IV fluids and deworming."
+### Loki
+* **Scenario:** Adoption Processing
+* **Who uploads this:** Agency Admin
+* **Where to upload / perform:** Agency Dashboard -> 'Current Residents'
+* **Action to Perform:** Agency Admin fills out adopter details -> Verify dog moves to 'Adoption History' tab.
+* **Details:**
+  - Location: Bellandur, Bangalore
+  - Breed: Cocker Spaniel
+  - Gender: Female
+  - Estimated Age: Adult (~2 years)
+  - Condition/Description: Bonded pair with another dog, very affectionate.
+* **Image Name:** `Loki.jpg`
 
-**Step 3 (Transfer):** Veterinarian (`sarah.vet@citycare.demo`) from **CityCare Veterinary Hospital**
-* Goes to Scruffy's profile, clicks the "Transfer to Agency" tab, and selects **Happy Tails Rescue & Adoption** as the destination.
+### Maya
+* **Scenario:** Adoption Processing
+* **Who uploads this:** Agency Admin
+* **Where to upload / perform:** Agency Dashboard -> 'Current Residents'
+* **Action to Perform:** Agency Admin fills out adopter details -> Verify dog moves to 'Adoption History' tab.
+* **Details:**
+  - Location: JP Nagar, Bangalore
+  - Breed: INDie
+  - Gender: Female
+  - Estimated Age: Puppy (2 months)
+  - Condition/Description: Recovered from leg injury, ready for a loving home.
+* **Image Name:** `Maya.jpg`
 
-**Step 4 (Adopt):** Agency Employee (`priya.staff@happytails.demo`) from **Happy Tails Rescue & Adoption**
-* Finds Scruffy in their Shelter tab. Opens the profile and clicks "❤️ Mark as Adopted".
-* Fills out the adopter details:
-  - **Adopter Name:** Jane Smith
-  - **Email:** jane.smith@example.com
-  - **Phone:** +91 9876543211
-  - **Address:** 456, Cross Road, Bangalore
-  - **Notes:** Experienced dog owner, will provide a loving home.
+### Nova
+* **Scenario:** Adoption Processing
+* **Who uploads this:** Agency Admin
+* **Where to upload / perform:** Agency Dashboard -> 'Current Residents'
+* **Action to Perform:** Agency Admin fills out adopter details -> Verify dog moves to 'Adoption History' tab.
+* **Details:**
+  - Location: HSR Layout, Bangalore
+  - Breed: Cocker Spaniel
+  - Gender: Male
+  - Estimated Age: Puppy (2 months)
+  - Condition/Description: High energy, would do well in a house with a yard.
+* **Image Name:** `Nova.jpg`
+

@@ -12,6 +12,7 @@ export const ROLES = {
 export const DOG_STATUSES = {
   street: 'Street / Reported',
   in_treatment: 'In Treatment',
+  fit_for_discharge: 'Fit for Discharge / Transfer',
   adoptable: 'Available for Adoption',
   community_dog: 'Community Dog (Released)',
   adopted: 'Adopted'

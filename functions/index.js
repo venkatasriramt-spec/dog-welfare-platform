@@ -340,8 +340,8 @@ exports.registerDog = functions.region("us-central1").https.onCall(async (data, 
   const callerOrgId = callerData.works_at || null;
 
   const allowedRoles = [
-    "platform_admin", "hospital_admin", "veterinarian",
-    "agency_admin", "agency_employee", "community_member",
+    "platform_admin", "hospital_admin",
+    "agency_admin", "community_member",
   ];
   if (!allowedRoles.includes(callerRole)) {
     throw new functions.https.HttpsError("permission-denied", "You do not have permission to register dogs.");
@@ -363,10 +363,10 @@ exports.registerDog = functions.region("us-central1").https.onCall(async (data, 
   let hospitalId = null;
   let agencyId = null;
 
-  if (callerRole === "hospital_admin" || callerRole === "veterinarian") {
+  if (callerRole === "hospital_admin") {
     status = "in_treatment";
     hospitalId = callerOrgId;
-  } else if (callerRole === "agency_admin" || callerRole === "agency_employee") {
+  } else if (callerRole === "agency_admin") {
     status = "adoptable";
     agencyId = callerOrgId;
   }
@@ -472,12 +472,19 @@ exports.updateDogRecord = functions.region("us-central1").https.onCall(async (da
     }
 
     // Update status if provided
-    const validStatuses = ["street", "in_treatment", "adoptable", "community_dog", "adopted"];
+    const validStatuses = ["street", "in_treatment", "adoptable", "community_dog", "adopted", "fit_for_discharge"];
     if (data.status && validStatuses.includes(data.status)) {
+      if (callerRole === "veterinarian" && data.status !== "fit_for_discharge") {
+        throw new functions.https.HttpsError("permission-denied", "Veterinarians can only change status to 'fit_for_discharge'.");
+      }
+      if (callerRole === "agency_employee") {
+        throw new functions.https.HttpsError("permission-denied", "Agency employees cannot change a dog's status.");
+      }
+
       updates.status = data.status;
 
       // If admitting to hospital, set hospital_id
-      if (data.status === "in_treatment" && (callerRole === "hospital_admin" || callerRole === "veterinarian")) {
+      if (data.status === "in_treatment" && callerRole === "hospital_admin") {
         updates.hospital_id = callerOrgId;
         // Add to hospital history if not already there
         const currentHistory = dogSnap.data().hospital_history || [];
@@ -531,8 +538,8 @@ exports.transferDog = functions.region("us-central1").https.onCall(async (data, 
   const callerData = callerSnap.data();
   const callerRole = callerData.role;
 
-  if (!["platform_admin", "hospital_admin", "veterinarian"].includes(callerRole)) {
-    throw new functions.https.HttpsError("permission-denied", "Only hospital staff or platform admin can transfer dogs.");
+  if (!["platform_admin", "hospital_admin"].includes(callerRole)) {
+    throw new functions.https.HttpsError("permission-denied", "Only hospital administrators or platform admin can transfer dogs.");
   }
 
   const dogId = requireNonEmptyString(data.dogId, "dogId");
@@ -595,8 +602,8 @@ exports.processAdoption = functions.region("us-central1").https.onCall(async (da
   const callerRole = callerData.role;
   const callerOrgId = callerData.works_at || null;
 
-  if (!["platform_admin", "agency_admin", "agency_employee"].includes(callerRole)) {
-    throw new functions.https.HttpsError("permission-denied", "Only agency staff or platform admin can process adoptions.");
+  if (!["platform_admin", "agency_admin"].includes(callerRole)) {
+    throw new functions.https.HttpsError("permission-denied", "Only agency administrators or platform admin can process adoptions.");
   }
 
   const dogId = requireNonEmptyString(data.dogId, "dogId");

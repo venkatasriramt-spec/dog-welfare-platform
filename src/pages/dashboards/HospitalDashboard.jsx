@@ -17,8 +17,9 @@ export default function HospitalDashboard({ session, dogs = [], organizations = 
     return watchOrgDogs(userOrgId, 'hospital', setOrgDogs);
   }, [userOrgId]);
 
-  const inTreatment = useMemo(() => orgDogs.filter(d => d.status === 'in_treatment'), [orgDogs]);
-  const discharged = useMemo(() => orgDogs.filter(d => d.status !== 'in_treatment' && d.status !== 'street'), [orgDogs]);
+  const activePatients = useMemo(() => orgDogs.filter(d => d.status === 'in_treatment'), [orgDogs]);
+  const readyToLeave = useMemo(() => orgDogs.filter(d => d.status === 'fit_for_discharge'), [orgDogs]);
+  const discharged = useMemo(() => orgDogs.filter(d => d.status !== 'in_treatment' && d.status !== 'fit_for_discharge' && d.status !== 'street'), [orgDogs]);
 
   // Also show street dogs from the network that can be admitted
   const streetDogs = useMemo(() => dogs.filter(d => d.status === 'street'), [dogs]);
@@ -41,11 +42,14 @@ export default function HospitalDashboard({ session, dogs = [], organizations = 
         <button className={tab === 'doctors' ? 'selected' : ''} onClick={() => setTab('doctors')}>
           👨‍⚕️ Doctors & Staff
         </button>
-        <button className={tab === 'patients' ? 'selected' : ''} onClick={() => setTab('patients')}>
-          🩺 Patients ({orgDogs.length})
+        <button className={tab === 'queue' ? 'selected' : ''} onClick={() => setTab('queue')}>
+          🚨 Incoming Queue ({streetDogs.length})
         </button>
-        <button className={tab === 'network' ? 'selected' : ''} onClick={() => setTab('network')}>
-          🌐 Network Dogs ({streetDogs.length} on street)
+        <button className={tab === 'active' ? 'selected' : ''} onClick={() => setTab('active')}>
+          🩺 Active Patients ({activePatients.length})
+        </button>
+        <button className={tab === 'ready' ? 'selected' : ''} onClick={() => setTab('ready')}>
+          🏡 Ready to Leave ({readyToLeave.length})
         </button>
       </div>
 
@@ -58,7 +62,7 @@ export default function HospitalDashboard({ session, dogs = [], organizations = 
               <span>Total Hospital Dogs</span>
             </article>
             <article>
-              <b>{inTreatment.length}</b>
+              <b>{activePatients.length}</b>
               <span>Currently In Treatment</span>
             </article>
             <article>
@@ -95,33 +99,21 @@ export default function HospitalDashboard({ session, dogs = [], organizations = 
         />
       )}
 
-      {/* Patients Tab */}
-      {tab === 'patients' && (
+      {/* Active Patients Tab */}
+      {tab === 'active' && (
         <div className="hospital-patients">
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
             <div>
-              <h3>Hospital Patients</h3>
+              <h3>Active Patients</h3>
               <p className="lead" style={{ fontSize: '14px', margin: 0 }}>
-                Dogs currently admitted or previously treated at your hospital.
+                Dogs currently admitted at your hospital for treatment.
               </p>
             </div>
-            <button className="primary" onClick={() => setShowAdmitForm(!showAdmitForm)}>
-              {showAdmitForm ? '✕ Close' : '+ Admit New Dog'}
-            </button>
           </div>
 
-          {showAdmitForm && (
-            <div style={{ background: '#fff', padding: '24px', borderRadius: '6px', border: '1px solid var(--line)', marginBottom: '24px' }}>
-              <DogRegistrationForm
-                contextLabel="Admit Dog to Hospital"
-                onDogRegistered={() => setShowAdmitForm(false)}
-              />
-            </div>
-          )}
-
-          {orgDogs.length > 0 ? (
+          {activePatients.length > 0 ? (
             <div className="dog-grid" style={{ gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px' }}>
-              {orgDogs.map(d => (
+              {activePatients.map(d => (
                 <article className="dog-card" key={d.id} style={{ background: '#fff' }}>
                   {d.social_photos && d.social_photos.length > 0 ? (
                     <img src={d.social_photos[0]} alt={d.name} />
@@ -132,11 +124,7 @@ export default function HospitalDashboard({ session, dogs = [], organizations = 
                   <div style={{ padding: '16px' }}>
                     {d.tag && <small style={{ color: 'var(--orange)', fontWeight: 'bold' }}>{d.tag}</small>}
                     <h3>{d.name}</h3>
-                    <p>{d.breed || 'Breed pending'} · {d.gender || ''} · {d.estimated_age || ''}</p>
-                    <div style={{ fontSize: '12px', color: 'var(--muted)', margin: '8px 0' }}>
-                      <div>Vaccinated: <strong>{d.medical_status?.is_vaccinated ? 'Yes ✓' : 'No'}</strong></div>
-                      <div>Neutered: <strong>{d.medical_status?.is_neutered ? 'Yes ✓' : 'No'}</strong></div>
-                    </div>
+                    <p>{d.breed || 'Breed pending'} · {d.gender || ''}</p>
                     <button className="link" onClick={() => setPage(`dog:${d.id}`)}>
                       View full record →
                     </button>
@@ -145,18 +133,73 @@ export default function HospitalDashboard({ session, dogs = [], organizations = 
               ))}
             </div>
           ) : (
-            <div className="empty">No dogs admitted to this hospital yet. Use "+ Admit New Dog" to get started.</div>
+            <div className="empty">No active patients currently.</div>
           )}
         </div>
       )}
 
-      {/* Network Dogs Tab */}
-      {tab === 'network' && (
+      {/* Ready to Leave Tab */}
+      {tab === 'ready' && (
+        <div className="hospital-patients">
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+            <div>
+              <h3>Ready to Leave</h3>
+              <p className="lead" style={{ fontSize: '14px', margin: 0 }}>
+                Dogs marked as "Fit for Discharge" by a veterinarian. Awaiting administrative transfer or release.
+              </p>
+            </div>
+          </div>
+
+          {readyToLeave.length > 0 ? (
+            <div className="dog-grid" style={{ gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px' }}>
+              {readyToLeave.map(d => (
+                <article className="dog-card" key={d.id} style={{ background: '#fff' }}>
+                  {d.social_photos && d.social_photos.length > 0 ? (
+                    <img src={d.social_photos[0]} alt={d.name} />
+                  ) : (
+                    <div className="dog-placeholder">🐾</div>
+                  )}
+                  <span className={`status ${d.status}`}>{DOG_STATUSES[d.status] || d.status}</span>
+                  <div style={{ padding: '16px' }}>
+                    {d.tag && <small style={{ color: 'var(--orange)', fontWeight: 'bold' }}>{d.tag}</small>}
+                    <h3>{d.name}</h3>
+                    <p>{d.breed || 'Breed pending'} · {d.gender || ''}</p>
+                    <button className="link" onClick={() => setPage(`dog:${d.id}`)}>
+                      Process Discharge / Transfer →
+                    </button>
+                  </div>
+                </article>
+              ))}
+            </div>
+          ) : (
+            <div className="empty">No dogs are currently waiting to leave.</div>
+          )}
+        </div>
+      )}
+
+      {/* Incoming Queue Tab */}
+      {tab === 'queue' && (
         <div className="hospital-network">
-          <h3>Street Dogs in Network</h3>
-          <p className="lead" style={{ fontSize: '14px', marginBottom: '20px' }}>
-            These dogs have been reported by community members and are awaiting rescue or hospital admission. Click "View full record" to admit them to your hospital.
-          </p>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+            <div>
+              <h3>Incoming Queue (Street Dogs)</h3>
+              <p className="lead" style={{ fontSize: '14px', margin: 0 }}>
+                Dogs reported by community members awaiting rescue or hospital admission.
+              </p>
+            </div>
+            <button className="primary" onClick={() => setShowAdmitForm(!showAdmitForm)}>
+              {showAdmitForm ? '✕ Close' : '+ Register Walk-in Patient'}
+            </button>
+          </div>
+
+          {showAdmitForm && (
+            <div style={{ background: '#fff', padding: '24px', borderRadius: '6px', border: '1px solid var(--line)', marginBottom: '24px' }}>
+              <DogRegistrationForm
+                contextLabel="Admit Walk-in Dog to Hospital"
+                onDogRegistered={() => setShowAdmitForm(false)}
+              />
+            </div>
+          )}
 
           {streetDogs.length > 0 ? (
             <div className="dog-grid" style={{ gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px' }}>

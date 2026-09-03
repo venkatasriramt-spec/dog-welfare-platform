@@ -32,8 +32,10 @@ export default function MedicalRecordForm({ dog, organizations = [], session, on
   const [adopterNotes, setAdopterNotes] = useState('');
 
   const role = session?.profile?.role;
-  const isHospitalStaff = role === 'hospital_admin' || role === 'veterinarian';
-  const isAgencyStaff = role === 'agency_admin' || role === 'agency_employee';
+  const isHospitalAdmin = role === 'hospital_admin' || role === 'platform_admin';
+  const isVet = role === 'veterinarian';
+  const isAgencyAdmin = role === 'agency_admin' || role === 'platform_admin';
+  const isAgencyEmployee = role === 'agency_employee';
   const agencies = organizations.filter(o => o.type === 'agency');
 
   const submitRecord = async e => {
@@ -141,22 +143,43 @@ export default function MedicalRecordForm({ dog, organizations = [], session, on
     }
   };
 
+  const submitRelease = async e => {
+    e.preventDefault();
+    setError(''); setSuccess(''); setLoading(true); setShowConfetti(false);
+    try {
+      await updateDogRecord({
+        dogId: dog.id,
+        status: 'fit_for_discharge',
+        timeline_entry: {
+          type: 'medical',
+          notes: 'Marked as Fit for Discharge / Transfer by veterinarian.',
+        }
+      });
+      setSuccess('Dog marked as fit for discharge.');
+      if (onUpdated) onUpdated();
+    } catch (err) {
+      setError(err.message || 'Failed to update status.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="medical-record-form">
       <Confetti isActive={showConfetti} />
       {/* Action tabs based on role */}
       <div className="tabs" style={{ marginTop: '10px', marginBottom: '20px' }}>
-        {(isHospitalStaff || role === 'platform_admin') && (
+        {(isHospitalAdmin || isVet) && (
           <>
             <button className={tab === 'record' ? 'selected' : ''} onClick={() => { setTab('record'); setError(''); setSuccess(''); }}>
               🩺 Add Medical Record
             </button>
-            {dog.status === 'street' && (
+            {isHospitalAdmin && dog.status === 'street' && (
               <button className={tab === 'admit' ? 'selected' : ''} onClick={() => { setTab('admit'); setError(''); setSuccess(''); }}>
                 🏥 Admit to Hospital
               </button>
             )}
-            {(dog.status === 'in_treatment') && (
+            {isHospitalAdmin && (dog.status === 'in_treatment' || dog.status === 'fit_for_discharge') && (
               <>
                 <button className={tab === 'transfer' ? 'selected' : ''} onClick={() => { setTab('transfer'); setError(''); setSuccess(''); }}>
                   🏡 Transfer to Agency
@@ -166,14 +189,19 @@ export default function MedicalRecordForm({ dog, organizations = [], session, on
                 </button>
               </>
             )}
+            {isVet && dog.status === 'in_treatment' && (
+              <button className={tab === 'release' ? 'selected' : ''} onClick={() => { setTab('release'); setError(''); setSuccess(''); }}>
+                🩺 Mark Fit for Discharge
+              </button>
+            )}
           </>
         )}
-        {isAgencyStaff && (
+        {(isAgencyAdmin || isAgencyEmployee) && (
           <>
             <button className={tab === 'record' ? 'selected' : ''} onClick={() => { setTab('record'); setError(''); setSuccess(''); }}>
               📝 Update Record
             </button>
-            {dog.status === 'adoptable' && (
+            {isAgencyAdmin && dog.status === 'adoptable' && (
               <button className={tab === 'adopt' ? 'selected' : ''} onClick={() => { setTab('adopt'); setError(''); setSuccess(''); }}>
                 ❤️ Mark as Adopted
               </button>
@@ -220,7 +248,7 @@ export default function MedicalRecordForm({ dog, organizations = [], session, on
       )}
 
       {/* Admit to Hospital Tab */}
-      {tab === 'admit' && isHospitalStaff && (
+      {tab === 'admit' && isHospitalAdmin && (
         <div>
           <p style={{ color: 'var(--muted)', fontSize: '14px', marginBottom: '16px' }}>
             Admitting <strong>{dog.name}</strong> (currently on street) to your hospital for treatment.
@@ -231,8 +259,20 @@ export default function MedicalRecordForm({ dog, organizations = [], session, on
         </div>
       )}
 
+      {/* Medical Release Tab */}
+      {tab === 'release' && isVet && (
+        <div>
+          <p style={{ color: 'var(--muted)', fontSize: '14px', marginBottom: '16px' }}>
+            Mark <strong>{dog.name}</strong> as <strong>Fit for Discharge</strong>. This will notify the hospital administrator to formally discharge or transfer the dog.
+          </p>
+          <button className="primary" onClick={submitRelease} disabled={loading}>
+            {loading ? 'Processing...' : '🩺 Mark Fit for Discharge →'}
+          </button>
+        </div>
+      )}
+
       {/* Transfer to Agency Tab */}
-      {tab === 'transfer' && isHospitalStaff && (
+      {tab === 'transfer' && isHospitalAdmin && (
         <form onSubmit={submitTransfer}>
           <p style={{ color: 'var(--muted)', fontSize: '14px', marginBottom: '16px' }}>
             Transfer <strong>{dog.name}</strong> to an adoption agency after treatment is complete.
@@ -254,7 +294,7 @@ export default function MedicalRecordForm({ dog, organizations = [], session, on
       )}
 
       {/* Discharge Tab */}
-      {tab === 'discharge' && isHospitalStaff && (
+      {tab === 'discharge' && isHospitalAdmin && (
         <form onSubmit={submitDischarge}>
           <p style={{ color: 'var(--muted)', fontSize: '14px', marginBottom: '16px' }}>
             Discharge <strong>{dog.name}</strong> from the hospital after treatment.
@@ -273,7 +313,7 @@ export default function MedicalRecordForm({ dog, organizations = [], session, on
       )}
 
       {/* Mark as Adopted Tab */}
-      {tab === 'adopt' && isAgencyStaff && (
+      {tab === 'adopt' && isAgencyAdmin && (
         <form onSubmit={submitAdoption}>
           <p style={{ color: 'var(--muted)', fontSize: '14px', marginBottom: '16px' }}>
             Enter the details of the adopter. This information is kept strictly <strong>private</strong> and is only visible to your agency and platform administrators.

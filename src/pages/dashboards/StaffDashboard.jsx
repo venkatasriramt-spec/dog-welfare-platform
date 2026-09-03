@@ -22,6 +22,11 @@ export default function StaffDashboard({ session, dogs = [], organizations = [],
     return orgDogs.filter(d => d.status === 'adoptable');
   }, [orgDogs, isVet]);
 
+  const readyToLeaveDogs = useMemo(() => {
+    if (isVet) return orgDogs.filter(d => d.status === 'fit_for_discharge');
+    return [];
+  }, [orgDogs, isVet]);
+
   return (
     <div className="staff-dashboard">
       <div className="staff-header" style={{ marginBottom: '24px' }}>
@@ -87,6 +92,44 @@ export default function StaffDashboard({ session, dogs = [], organizations = [],
           </div>
         )}
       </div>
+
+      {isVet && (
+        <div style={{ background: '#fff', padding: '24px', borderRadius: '6px', border: '1px solid var(--line)', marginBottom: '24px' }}>
+          <h3 style={{ margin: '0 0 16px 0' }}>
+            🏡 Awaiting Admin Action (Ready to Leave)
+            <span style={{ fontWeight: 'normal', fontSize: '14px', color: 'var(--muted)', marginLeft: '10px' }}>
+              ({readyToLeaveDogs.length} dogs)
+            </span>
+          </h3>
+
+          {readyToLeaveDogs.length > 0 ? (
+            <div className="dog-grid" style={{ gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px' }}>
+              {readyToLeaveDogs.map(d => (
+                <article className="dog-card" key={d.id} style={{ background: '#f7f5f0' }}>
+                  {d.social_photos && d.social_photos.length > 0 ? (
+                    <img src={d.social_photos[0]} alt={d.name} />
+                  ) : (
+                    <div className="dog-placeholder">🐾</div>
+                  )}
+                  <span className={`status ${d.status}`}>{DOG_STATUSES[d.status] || d.status}</span>
+                  <div style={{ padding: '16px' }}>
+                    {d.tag && <small style={{ color: 'var(--orange)', fontWeight: 'bold' }}>{d.tag}</small>}
+                    <h3>{d.name}</h3>
+                    <p>{d.breed || 'Breed pending'} · {d.gender || ''}</p>
+                    <button className="link" onClick={() => setPage(`dog:${d.id}`)}>
+                      View record →
+                    </button>
+                  </div>
+                </article>
+              ))}
+            </div>
+          ) : (
+            <div className="empty">
+              No dogs waiting for administrative release.
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Quick Actions */}
       <div style={{ background: '#fff', padding: '24px', borderRadius: '6px', border: '1px solid var(--line)' }}>
