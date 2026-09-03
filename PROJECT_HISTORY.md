@@ -54,9 +54,10 @@ The core of the application revolves around the `Dogs` collection. Every dog is 
 ### Lifecycle Statuses:
 1. **`street`**: The dog has been reported by a community member but not yet rescued.
 2. **`in_treatment`**: A hospital has admitted the dog for medical care.
-3. **`adoptable`**: The dog has been transferred to an adoption agency (or directly admitted by an agency) and is looking for a home.
-4. **`adopted`**: The dog has successfully found a forever home (processed via the Adoption workflow).
-5. **`community_dog`**: The dog was treated and released back into the community (e.g., under ABC/ARV protocols).
+3. **`fit_for_discharge`**: A veterinarian has marked the dog as ready for discharge or transfer.
+4. **`adoptable`**: The dog has been transferred to an adoption agency (or directly admitted by an agency) and is looking for a home.
+5. **`adopted`**: The dog has successfully found a forever home (processed via the Adoption workflow).
+6. **`community_dog`**: The dog was treated and released back into the community (e.g., under ABC/ARV protocols).
 
 ### Dog Document Fields:
 * **Identity:** `tag`, `name`, `breed`, `estimated_age`, `gender`, `location_found`, `location` (duplicate of `location_found` for backwards compatibility), `description`.
@@ -82,8 +83,8 @@ To ensure data integrity and bypass client-side manipulation, sensitive operatio
 
 * **`registerDog`**: Generates a secure `PAW-XXXX` tag via the `Counters` collection, initialises the dog's record, and sets the initial status based on the caller's role (`street` for community members, `in_treatment` for hospital staff, `adoptable` for agency staff).
 * **`updateDogRecord`**: Appends treatment timeline entries, updates medical status flags (vaccinated, neutered), breed, and dog status. When admitting a street dog (`status → in_treatment`), it also sets `hospital_id` and appends to `hospital_history`.
-* **`transferDog`**: Safely transfers a dog from a hospital's custody to an agency's custody. Sets `status` to `adoptable`, updates `agency_id`, and appends a transfer entry to the treatment timeline. Validates that the target agency exists.
-* **`processAdoption`**: Marks a dog as `adopted`, appends an adoption timeline entry, and stores the private adopter details (name, email, phone, address, notes) in the `Dogs/{dogId}/AdoptionDetails/record` subcollection. Only callable by agency staff or platform admin. Verifies the caller's agency matches the dog's `agency_id`.
+* **`transferDog`**: Safely transfers a dog from a hospital's custody to an agency's custody. Sets `status` to `adoptable`, updates `agency_id`, and appends a transfer entry to the treatment timeline. Validates that the target agency exists. Restricted to platform and hospital administrators.
+* **`processAdoption`**: Marks a dog as `adopted`, appends an adoption timeline entry, and stores the private adopter details (name, email, phone, address, notes) in the `Dogs/{dogId}/AdoptionDetails/record` subcollection. Restricted to platform and agency administrators. Verifies the caller's agency matches the dog's `agency_id`.
 * **`createPartnerApplication`**: Creates a partner organisation application and sets the caller's role to `pending_partner`. Prevents duplicate applications from users who already hold an active role.
 * **`approveOrganizationApplication`**: Platform Admin action — creates the `Organizations` document, upgrades the applicant's profile, and marks the application as approved. Uses a Firestore batch write for atomicity.
 * **`declineOrganizationApplication`**: Platform Admin action — marks the application as declined and sets the applicant's role to `rejected_partner` with a decline reason.
@@ -119,8 +120,10 @@ The frontend features a modern, responsive design with animated particle backgro
 
 ### Reusable Components:
 * **`MedicalRecordForm`**: Context-aware action panel on the DogProfile page with tabs that appear based on the user's role and the dog's current status:
-  * Hospital staff: "Add Medical Record" (diagnosis, prescription, notes, breed assessment, vaccination/neutered toggles), "Admit to Hospital" (for street dogs), "Transfer to Agency" (for in-treatment dogs), "Discharge" (for in-treatment dogs, with community release or adoption pathways).
-  * Agency staff: "Update Record", "Mark as Adopted" (adopter name, email, phone, address, notes — stored in private subcollection).
+  * Hospital Admin: "Add Medical Record", "Admit to Hospital" (for street dogs), "Transfer to Agency" (for in-treatment/fit_for_discharge dogs), "Discharge" (for in-treatment/fit_for_discharge dogs).
+  * Veterinarian: "Add Medical Record", "Mark Fit for Discharge" (for in-treatment dogs).
+  * Agency Admin: "Update Record", "Mark as Adopted".
+  * Agency Employee: "Update Record".
 * **`DogRegistrationForm`**: Full-form dog intake used by hospitals (Admit Dog to Hospital) and agencies (Add Dog to Shelter). Includes breed, age, gender, location, description, condition notes, vaccination/neutered checkboxes, and photo upload.
 * **`StaffManager`**: Split-panel interface for Org Admins to view their staff directory (left) and add new staff members (right). Creates Firebase Auth accounts via the `addOrgStaff` Cloud Function.
 * **`Header`**: Public site header with PawPath brand (SVG paw logo), navigation (Home, About, Discover, Join PawPath), and Sign In button.
@@ -150,4 +153,4 @@ The frontend features a modern, responsive design with animated particle backgro
 ## 8. Test Data
 A complete set of test accounts representing every role in the system was created and documented in `TEST_ACCOUNTS.md`. These accounts use demo domain emails (e.g., `admin@pawpath.demo`, `sarah.vet@citycare.demo`) for easy local testing. A default password of `password123` is used for all accounts (except the Platform Admin, which uses `pawpath`).
 
-Test dog profiles and end-to-end workflow scenarios are documented in `TEST_DOGS.md`, covering the community reporting flow, direct hospital/agency admission, and the full lifecycle pipeline (Report → Admit → Treat → Transfer → Adopt).
+Test dog profiles are documented in `TEST_DOGS.md`, categorized into groups for testing various workflow states (Street Dogs, Hospital Patients, Fit for Discharge / Transfer, Agency Residents, and Adopted Dogs).
