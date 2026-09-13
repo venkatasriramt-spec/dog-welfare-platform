@@ -292,7 +292,7 @@ export default function MedicalRecordForm({ dog, organizations = [], session, on
             Clinical Notes
             <textarea value={notes} onChange={e => setNotes(e.target.value)} placeholder="Additional observations, progress notes..." />
           </label>
-          <button className="primary" type="submit" disabled={loading}>{loading ? 'Saving...' : 'Save Medical Record →'}</button>
+          <button className="primary" type="submit" disabled={loading || !!success}>{loading ? 'Saving...' : 'Save Medical Record →'}</button>
         </form>
       )}
 
@@ -302,7 +302,7 @@ export default function MedicalRecordForm({ dog, organizations = [], session, on
           <p style={{ color: 'var(--muted)', fontSize: '14px', marginBottom: '16px' }}>
             Admitting <strong>{dog.name}</strong> (currently on street) to your hospital for treatment.
           </p>
-          <button className="primary" onClick={submitAdmit} disabled={loading}>
+          <button className="primary" onClick={submitAdmit} disabled={loading || !!success}>
             {loading ? 'Admitting...' : '🏥 Confirm Admission →'}
           </button>
         </div>
@@ -314,7 +314,7 @@ export default function MedicalRecordForm({ dog, organizations = [], session, on
           <p style={{ color: 'var(--muted)', fontSize: '14px', marginBottom: '16px' }}>
             Mark <strong>{dog.name}</strong> as <strong>Fit for Discharge</strong>. This will notify the hospital administrator to formally discharge or transfer the dog.
           </p>
-          <button className="primary" onClick={submitRelease} disabled={loading}>
+          <button className="primary" onClick={submitRelease} disabled={loading || !!success}>
             {loading ? 'Processing...' : '🩺 Mark Fit for Discharge →'}
           </button>
         </div>
@@ -336,7 +336,7 @@ export default function MedicalRecordForm({ dog, organizations = [], session, on
           {agencies.length === 0 && (
             <p style={{ color: '#c0392b', fontSize: '13px' }}>No adoption agencies are registered yet.</p>
           )}
-          <button className="primary" type="submit" disabled={loading || !selectedAgency}>
+          <button className="primary" type="submit" disabled={loading || !selectedAgency || !!success}>
             {loading ? 'Transferring...' : '🏡 Transfer to Agency →'}
           </button>
         </form>
@@ -346,17 +346,10 @@ export default function MedicalRecordForm({ dog, organizations = [], session, on
       {tab === 'discharge' && isHospitalAdmin && (
         <form onSubmit={submitDischarge}>
           <p style={{ color: 'var(--muted)', fontSize: '14px', marginBottom: '16px' }}>
-            Discharge <strong>{dog.name}</strong> from the hospital after treatment.
+            Discharge <strong>{dog.name}</strong> from the hospital and release them back to their community territory (ABC/ARV Protocol).
           </p>
-          <label>
-            Discharge Pathway *
-            <select value={dischargeStatus} onChange={e => setDischargeStatus(e.target.value)}>
-              <option value="community_dog">🌳 Release to Community (ABC/ARV Protocol)</option>
-              <option value="adoptable">🏡 Available for Adoption</option>
-            </select>
-          </label>
-          <button className="primary" type="submit" disabled={loading}>
-            {loading ? 'Discharging...' : 'Confirm Discharge →'}
+          <button className="primary" type="submit" disabled={loading || !!success}>
+            {loading ? 'Discharging...' : '🌳 Confirm Release to Community →'}
           </button>
         </form>
       )}
@@ -389,7 +382,7 @@ export default function MedicalRecordForm({ dog, organizations = [], session, on
             Adoption Notes
             <textarea value={adopterNotes} onChange={e => setAdopterNotes(e.target.value)} placeholder="e.g. Family has a large fenced yard, previous dog owner..." />
           </label>
-          <button className="primary" type="submit" disabled={loading || !adopterName}>
+          <button className="primary" type="submit" disabled={loading || !adopterName || !!success}>
             {loading ? 'Processing...' : '❤️ Finalize Adoption →'}
           </button>
         </form>

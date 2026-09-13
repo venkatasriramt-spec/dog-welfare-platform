@@ -302,10 +302,10 @@ Use this data to populate the system and test the various role-based workflows.
 * **Image Name:** `Vigo.jpg`
 
 ### Winston
-* **Scenario:** Medical Clearance & Discharge
+* **Scenario:** Medical Clearance & Transfer
 * **Who uploads this:** Dr. Vikram Malhotra (CityCare Admin) to admit -> Dr. Rajesh Sharma (`rajesh.vet@citycare.demo`) to clear
 * **Where to upload / perform:** Dr. Rajesh Sharma logs into Staff Dashboard -> 'Active Patients' -> clicks 'Fit for Discharge'
-* **Action to Perform:** Dr. Vikram Malhotra logs in -> 'Ready to Leave' -> clicks 'Discharge'.
+* **Action to Perform:** Dr. Vikram Malhotra logs in -> 'Ready to Leave' -> clicks 'Transfer to Agency' (selects Happy Tails Rescue & Adoption).
 * **Details:**
   - Location: JP Nagar, Bangalore
   - Breed: Beagle
@@ -318,7 +318,7 @@ Use this data to populate the system and test the various role-based workflows.
 * **Scenario:** Medical Clearance & Transfer
 * **Who uploads this:** Dr. Kavita Reddy (Paws & Claws Admin) to admit -> Dr. Amit Verma (`amit.vet@pawsclaws.demo`) to clear
 * **Where to upload / perform:** Dr. Amit Verma logs into Staff Dashboard -> 'Active Patients' -> clicks 'Fit for Discharge'
-* **Action to Perform:** Dr. Kavita Reddy logs in -> 'Ready to Leave' -> clicks 'Transfer to Agency' (selects Hope Street Sanctuary).
+* **Action to Perform:** Dr. Kavita Reddy logs in -> 'Ready to Leave' -> clicks 'Transfer to Agency' (selects Happy Tails Rescue & Adoption).
 * **Details:**
   - Location: Hebbal, Bangalore
   - Breed: Mixed Breed
