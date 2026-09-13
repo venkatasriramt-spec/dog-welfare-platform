@@ -14,7 +14,7 @@ Use this data to populate the system and test the various role-based workflows.
 * **Action to Perform:** Dr. Vikram Malhotra (`citycare.admin@pawpath.demo` - CityCare Admin) logs in -> 'Incoming Queue' -> clicks 'Admit to Hospital'.
 * **Details:**
   - Location: Marathahalli, Bangalore
-  - Breed: Pomeranian Mix
+  - Breed: Pomeranian
   - Gender: Male
   - Estimated Age: Puppy (6 months)
   - Condition/Description: Puppy found crying alone near the garbage dump.
@@ -118,7 +118,7 @@ Use this data to populate the system and test the various role-based workflows.
 * **Action to Perform:** Dr. Kavita Reddy (`pawsclaws.admin@pawpath.demo` - Paws & Claws Admin) logs in -> 'Incoming Queue' -> clicks 'Admit to Hospital'.
 * **Details:**
   - Location: Hebbal, Bangalore
-  - Breed: Rottweiler Mix
+  - Breed: Rottweiler
   - Gender: Male
   - Estimated Age: Young Adult (1 year)
   - Condition/Description: Hit by a two-wheeler, lying on the side of the road.
@@ -131,7 +131,7 @@ Use this data to populate the system and test the various role-based workflows.
 * **Action to Perform:** Dr. Kavita Reddy (`pawsclaws.admin@pawpath.demo` - Paws & Claws Admin) logs in -> 'Incoming Queue' -> clicks 'Admit to Hospital'.
 * **Details:**
   - Location: HSR Layout, Bangalore
-  - Breed: Doberman Mix
+  - Breed: Doberman
   - Gender: Male
   - Estimated Age: Puppy (2 months)
   - Condition/Description: Collar on but no owner in sight for 2 days.
@@ -161,7 +161,7 @@ Use this data to populate the system and test the various role-based workflows.
 * **Action to Perform:** Dr. Sarah Connor (`sarah.vet@citycare.demo` - Veterinarian) logs in -> 'Active Patients' -> Adds a Medical Record.
 * **Details:**
   - Location: Malleswaram, Bangalore
-  - Breed: German Shepherd Mix
+  - Breed: German Shepherd
   - Gender: Male
   - Estimated Age: Senior (8+ years)
   - Condition/Description: Fractured hind leg, surgery scheduled.
@@ -200,7 +200,7 @@ Use this data to populate the system and test the various role-based workflows.
 * **Action to Perform:** Dr. Rajesh Sharma (`rajesh.vet@citycare.demo` - Veterinarian) logs in -> 'Active Patients' -> Adds a Medical Record.
 * **Details:**
   - Location: Electronic City, Bangalore
-  - Breed: Husky Mix
+  - Breed: Husky
   - Gender: Male
   - Estimated Age: Adult (~3 years)
   - Condition/Description: Severe malnutrition and dehydration.
@@ -265,7 +265,7 @@ Use this data to populate the system and test the various role-based workflows.
 * **Action to Perform:** Dr. Amit Verma (`amit.vet@pawsclaws.demo` - Veterinarian) logs in -> 'Active Patients' -> Adds a Medical Record.
 * **Details:**
   - Location: Jayanagar, Bangalore
-  - Breed: Husky Mix
+  - Breed: Husky
   - Gender: Female
   - Estimated Age: Senior (10+ years)
   - Condition/Description: Severe tick fever, undergoing treatment.
@@ -295,7 +295,7 @@ Use this data to populate the system and test the various role-based workflows.
 * **Action to Perform:** Dr. Vikram Malhotra logs in -> 'Ready to Leave' -> clicks 'Transfer to Agency' (selects Happy Tails Rescue).
 * **Details:**
   - Location: Indiranagar, Bangalore
-  - Breed: Doberman Mix
+  - Breed: Doberman
   - Gender: Male
   - Estimated Age: Adult (~5 years)
   - Condition/Description: Routine spay/neuter surgery recovery.
@@ -321,7 +321,7 @@ Use this data to populate the system and test the various role-based workflows.
 * **Action to Perform:** Dr. Kavita Reddy logs in -> 'Ready to Leave' -> clicks 'Transfer to Agency' (selects Hope Street Sanctuary).
 * **Details:**
   - Location: Hebbal, Bangalore
-  - Breed: Bulldog Mix
+  - Breed: Mixed Breed
   - Gender: Female
   - Estimated Age: Adult (~2 years)
   - Condition/Description: Parvovirus treatment in isolation ward.
@@ -334,7 +334,7 @@ Use this data to populate the system and test the various role-based workflows.
 * **Action to Perform:** Dr. Kavita Reddy logs in -> 'Ready to Leave' -> clicks 'Transfer to Agency' (selects Hope Street Sanctuary).
 * **Details:**
   - Location: Marathahalli, Bangalore
-  - Breed: Doberman Mix
+  - Breed: Doberman
   - Gender: Female
   - Estimated Age: Senior (10+ years)
   - Condition/Description: Parvovirus treatment in isolation ward.
@@ -377,7 +377,7 @@ Use this data to populate the system and test the various role-based workflows.
 * **Action to Perform:** Priya Patel (`priya.staff@happytails.demo` - Employee) logs in -> 'Current Residents' -> Adds an update note. (Verify NO 'Mark Adopted' button).
 * **Details:**
   - Location: Electronic City, Bangalore
-  - Breed: Bulldog Mix
+  - Breed: Mixed Breed
   - Gender: Male
   - Estimated Age: Adult (~3 years)
   - Condition/Description: Surrendered by previous owner, good with kids.
@@ -416,7 +416,7 @@ Use this data to populate the system and test the various role-based workflows.
 * **Action to Perform:** Alex Miller (`alex.staff@happytails.demo` - Employee) logs in -> 'Current Residents' -> Adds an update note. (Verify NO 'Mark Adopted' button).
 * **Details:**
   - Location: JP Nagar, Bangalore
-  - Breed: German Shepherd Mix
+  - Breed: German Shepherd
   - Gender: Male
   - Estimated Age: Adult (~2 years)
   - Condition/Description: Rescued as a puppy, now fully vaccinated and ready.
@@ -455,7 +455,7 @@ Use this data to populate the system and test the various role-based workflows.
 * **Action to Perform:** Maya Sen (`maya.staff@hopestreet.demo` - Employee) logs in -> 'Current Residents' -> Adds an update note. (Verify NO 'Mark Adopted' button).
 * **Details:**
   - Location: Koramangala, Bangalore
-  - Breed: German Shepherd Mix
+  - Breed: German Shepherd
   - Gender: Female
   - Estimated Age: Senior (8+ years)
   - Condition/Description: Bonded pair with another dog, very affectionate.
