@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { BREED_OPTIONS, GENDER_OPTIONS, emptyDogForm } from '../constants';
 import { registerDog, uploadImage } from '../services';
 
@@ -20,8 +20,12 @@ export default function DogRegistrationForm({ onDogRegistered, contextLabel }) {
     }
   };
 
+  const isSubmitting = useRef(false);
+
   const submit = async e => {
     e.preventDefault();
+    if (isSubmitting.current) return;
+    isSubmitting.current = true;
     setError('');
     setSuccess('');
     setLoading(true);
@@ -55,6 +59,7 @@ export default function DogRegistrationForm({ onDogRegistered, contextLabel }) {
       setError(err.message || 'Failed to register dog.');
     } finally {
       setLoading(false);
+      isSubmitting.current = false;
     }
   };
 

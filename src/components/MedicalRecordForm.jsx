@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { BREED_OPTIONS, DOG_STATUSES } from '../constants';
 import { processAdoption, transferDog, updateDogRecord } from '../services';
 import Confetti from './Confetti';
@@ -25,6 +25,11 @@ export default function MedicalRecordForm({ dog, organizations = [], session, on
   else if (isAgencyAdmin && dog.status === 'adoptable') initialTab = 'adopt';
 
   const [tab, setTab] = useState(initialTab);
+  
+  useEffect(() => {
+    setTab(initialTab);
+  }, [initialTab]);
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
@@ -54,8 +59,16 @@ export default function MedicalRecordForm({ dog, organizations = [], session, on
 
   const agencies = organizations.filter(o => o.type === 'agency');
 
+  const isSubmitting = useRef(false);
+
   const submitRecord = async e => {
     e.preventDefault();
+    if (isSubmitting.current) return;
+    if (!diagnosis.trim() && !prescription.trim() && !notes.trim()) {
+      setError('Please provide at least a diagnosis, prescription, or clinical note.');
+      return;
+    }
+    isSubmitting.current = true;
     setError(''); setSuccess(''); setLoading(true); setShowConfetti(false);
     try {
       await updateDogRecord({
@@ -77,12 +90,15 @@ export default function MedicalRecordForm({ dog, organizations = [], session, on
       setError(err.message || 'Failed to update record.');
     } finally {
       setLoading(false);
+      isSubmitting.current = false;
     }
   };
 
   const submitTransfer = async e => {
     e.preventDefault();
+    if (isSubmitting.current) return;
     if (!selectedAgency) { setError('Please select an agency.'); return; }
+    isSubmitting.current = true;
     setError(''); setSuccess(''); setLoading(true); setShowConfetti(false);
     try {
       await transferDog(dog.id, selectedAgency);
@@ -92,11 +108,14 @@ export default function MedicalRecordForm({ dog, organizations = [], session, on
       setError(err.message || 'Failed to transfer dog.');
     } finally {
       setLoading(false);
+      isSubmitting.current = false;
     }
   };
 
   const submitDischarge = async e => {
     e.preventDefault();
+    if (isSubmitting.current) return;
+    isSubmitting.current = true;
     setError(''); setSuccess(''); setLoading(true); setShowConfetti(false);
     try {
       await updateDogRecord({
@@ -113,11 +132,14 @@ export default function MedicalRecordForm({ dog, organizations = [], session, on
       setError(err.message || 'Failed to discharge dog.');
     } finally {
       setLoading(false);
+      isSubmitting.current = false;
     }
   };
 
   const submitAdoption = async e => {
     e.preventDefault();
+    if (isSubmitting.current) return;
+    isSubmitting.current = true;
     setError(''); setSuccess(''); setLoading(true);
     try {
       await processAdoption({
@@ -135,11 +157,14 @@ export default function MedicalRecordForm({ dog, organizations = [], session, on
       setError(err.message || 'Failed to mark adoption.');
     } finally {
       setLoading(false);
+      isSubmitting.current = false;
     }
   };
 
   const submitAdmit = async e => {
     e.preventDefault();
+    if (isSubmitting.current) return;
+    isSubmitting.current = true;
     setError(''); setSuccess(''); setLoading(true); setShowConfetti(false);
     try {
       await updateDogRecord({
@@ -156,11 +181,14 @@ export default function MedicalRecordForm({ dog, organizations = [], session, on
       setError(err.message || 'Failed to admit dog.');
     } finally {
       setLoading(false);
+      isSubmitting.current = false;
     }
   };
 
   const submitRelease = async e => {
     e.preventDefault();
+    if (isSubmitting.current) return;
+    isSubmitting.current = true;
     setError(''); setSuccess(''); setLoading(true); setShowConfetti(false);
     try {
       await updateDogRecord({
@@ -177,6 +205,7 @@ export default function MedicalRecordForm({ dog, organizations = [], session, on
       setError(err.message || 'Failed to update status.');
     } finally {
       setLoading(false);
+      isSubmitting.current = false;
     }
   };
 

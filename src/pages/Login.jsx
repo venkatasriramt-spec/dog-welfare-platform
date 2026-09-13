@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { firebaseEnabled } from '../firebase';
 import { login, registerCommunity } from '../services';
 import ParticleBackground from '../components/ParticleBackground';
@@ -7,15 +7,23 @@ export default function Login({ setPage }) {
   const [mode, setMode] = useState('login');
   const [form, setForm] = useState({ name: '', email: '', password: '' });
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+  const isSubmitting = useRef(false);
 
   const submit = async e => {
     e.preventDefault();
+    if (isSubmitting.current) return;
+    isSubmitting.current = true;
     setError('');
+    setLoading(true);
     try {
       mode === 'login' ? await login(form) : await registerCommunity(form);
       setPage('dashboard');
     } catch (err) {
       setError(err.message.replace('Firebase: ', ''));
+    } finally {
+      isSubmitting.current = false;
+      setLoading(false);
     }
   };
 
@@ -67,8 +75,8 @@ export default function Login({ setPage }) {
 
           {error && <p className="form-error">{error}</p>}
 
-          <button className="primary btn-magnetic">
-            {mode === 'login' ? 'Sign in →' : 'Create community account →'}
+          <button className="primary btn-magnetic" disabled={loading}>
+            {loading ? 'Processing...' : (mode === 'login' ? 'Sign in →' : 'Create community account →')}
           </button>
 
           <button

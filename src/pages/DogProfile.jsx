@@ -39,12 +39,28 @@ export default function DogProfile({ dog, setPage, session, organizations = [], 
     } catch { return dateStr; }
   };
 
+  const timelineEvents = useMemo(() => {
+    const events = [];
+    if (dog?.description) {
+      events.push({
+        type: 'report',
+        notes: dog.description,
+        date: dog?.created_at || null,
+        recorded_by_name: dog?.registered_by_name || 'Community Member'
+      });
+    }
+    if (dog?.treatment_timeline?.length > 0) {
+      events.push(...dog.treatment_timeline);
+    }
+    return events;
+  }, [dog]);
+
   return (
     <>
       {!isWorkspace && <ParticleBackground mode="subtle" colorScheme="warm" particleCount={40} />}
       <section className={isWorkspace ? "workspace-page profile-page" : "profile-page"}>
-        <button className="back" onClick={() => setPage('discover')}>
-          ← Back to discover
+        <button className="back" onClick={() => setPage(isWorkspace ? 'dashboard' : 'discover')}>
+          {isWorkspace ? '← Back to dashboard' : '← Back to discover'}
         </button>
         {dog ? (
           <div className="dog-profile-full">
@@ -69,13 +85,6 @@ export default function DogProfile({ dog, setPage, session, organizations = [], 
                 {/* Name bottom-right */}
                 <h1 className="dog-hero-name">{dog.name}</h1>
               </div>
-              
-              {/* Description below */}
-              {dog.description && (
-                <div className="dog-hero-desc">
-                  <p className="lead">{dog.description}</p>
-                </div>
-              )}
             </div>
 
             {/* Identity & Details Grid */}
@@ -126,17 +135,18 @@ export default function DogProfile({ dog, setPage, session, organizations = [], 
             </div>
 
             {/* Treatment Timeline */}
-            {dog.treatment_timeline?.length > 0 && (
+            {timelineEvents.length > 0 && (
               <div className="timeline-section">
                 <h3>📋 Treatment Timeline</h3>
                 <div className="timeline">
-                  {dog.treatment_timeline.map((entry, idx) => (
+                  {timelineEvents.map((entry, idx) => (
                     <div className="timeline-entry" key={idx}>
                       <div className="timeline-dot" />
                       <div className="timeline-content">
                         <div className="timeline-header">
                           <span className={`timeline-type ${entry.type}`}>
-                            {entry.type === 'admission' ? '🏥 Admission' :
+                            {entry.type === 'report' ? '🚨 Reported' :
+                             entry.type === 'admission' ? '🏥 Admission' :
                              entry.type === 'treatment' ? '💊 Treatment' :
                              entry.type === 'transfer' ? '🏡 Transfer' :
                              entry.type === 'discharge' ? '🌳 Discharge' :
