@@ -74,10 +74,11 @@ export default function Report({ session, setPage, isWorkspace }) {
     <>
       {!isWorkspace && <ParticleBackground mode="subtle" colorScheme="warm" particleCount={30} />}
       <section className={isWorkspace ? "workspace-page form-page" : "page form-page"}>
-        <div>
-          <p className="eyebrow">— COMMUNITY REPORT</p>
-          <h2>Help a dog get <em>noticed.</em></h2>
-          <form onSubmit={submit}>
+        <div className="form-page-layout">
+          <div className="form-page-content">
+            <p className="eyebrow">— COMMUNITY REPORT</p>
+            <h2>Help a dog get <em>noticed.</em></h2>
+            <form onSubmit={submit}>
             <label>
               Dog name or identifying detail *
               <input required value={form.name} onChange={e => set('name', e.target.value)}
@@ -145,6 +146,18 @@ export default function Report({ session, setPage, isWorkspace }) {
             </button>
           </form>
         </div>
+        
+        <div className="form-page-sidebar">
+          <h3>Why report a dog?</h3>
+          <p>
+            Your reports directly notify nearby veterinary hospitals and rescue agencies. Our network relies on community observations to find street dogs that need urgent medical attention or a safe home.
+          </p>
+          <h3>What happens next?</h3>
+          <p>
+            Once you submit, partner organisations receive an immediate notification. If a hospital or agency admits the dog, they enter the PawPath tracking system, allowing you to track their journey to recovery and adoption.
+          </p>
+        </div>
+      </div>
       </section>
     </>
   );

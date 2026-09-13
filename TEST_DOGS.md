@@ -40,7 +40,7 @@ Use this data to populate the system and test the various role-based workflows.
 * **Action to Perform:** Dr. Vikram Malhotra (`citycare.admin@pawpath.demo` - CityCare Admin) logs in -> 'Incoming Queue' -> clicks 'Admit to Hospital'.
 * **Details:**
   - Location: Jayanagar, Bangalore
-  - Breed: Boxer Mix
+  - Breed: Boxer
   - Gender: Female
   - Estimated Age: Senior (8+ years)
   - Condition/Description: Weak and lethargic, refusing to eat.
@@ -79,7 +79,7 @@ Use this data to populate the system and test the various role-based workflows.
 * **Action to Perform:** Dr. Kavita Reddy (`pawsclaws.admin@pawpath.demo` - Paws & Claws Admin) logs in -> 'Incoming Queue' -> clicks 'Admit to Hospital'.
 * **Details:**
   - Location: BTM Layout, Bangalore
-  - Breed: Boxer Mix
+  - Breed: Boxer
   - Gender: Female
   - Estimated Age: Adult (~2 years)
   - Condition/Description: Skin infection visible, constantly scratching.
@@ -92,7 +92,7 @@ Use this data to populate the system and test the various role-based workflows.
 * **Action to Perform:** Dr. Kavita Reddy (`pawsclaws.admin@pawpath.demo` - Paws & Claws Admin) logs in -> 'Incoming Queue' -> clicks 'Admit to Hospital'.
 * **Details:**
   - Location: Koramangala, Bangalore
-  - Breed: Boxer Mix
+  - Breed: Boxer
   - Gender: Female
   - Estimated Age: Adult (~5 years)
   - Condition/Description: Hit by a two-wheeler, lying on the side of the road.
@@ -105,7 +105,7 @@ Use this data to populate the system and test the various role-based workflows.
 * **Action to Perform:** Dr. Kavita Reddy (`pawsclaws.admin@pawpath.demo` - Paws & Claws Admin) logs in -> 'Incoming Queue' -> clicks 'Admit to Hospital'.
 * **Details:**
   - Location: Electronic City, Bangalore
-  - Breed: Boxer Mix
+  - Breed: Boxer
   - Gender: Female
   - Estimated Age: Adult (~3 years)
   - Condition/Description: Collar on but no owner in sight for 2 days.
@@ -282,7 +282,7 @@ Use this data to populate the system and test the various role-based workflows.
 * **Action to Perform:** Dr. Vikram Malhotra logs in -> 'Ready to Leave' -> clicks 'Transfer to Agency' (selects Happy Tails Rescue).
 * **Details:**
   - Location: Indiranagar, Bangalore
-  - Breed: Boxer Mix
+  - Breed: Boxer
   - Gender: Male
   - Estimated Age: Adult (~2 years)
   - Condition/Description: Fractured hind leg, surgery scheduled.
@@ -485,7 +485,7 @@ Use this data to populate the system and test the various role-based workflows.
 * **Action to Perform:** Ananya Roy fills out adopter details -> Verify dog moves to 'Adoption History' tab.
 * **Details:**
   - Location: Bellandur, Bangalore
-  - Breed: Boxer Mix
+  - Breed: Boxer
   - Gender: Female
   - Estimated Age: Adult (~5 years)
   - Condition/Description: Healthy, recently groomed, very playful.
@@ -498,7 +498,7 @@ Use this data to populate the system and test the various role-based workflows.
 * **Action to Perform:** Ananya Roy fills out adopter details -> Verify dog moves to 'Adoption History' tab.
 * **Details:**
   - Location: Bellandur, Bangalore
-  - Breed: Boxer Mix
+  - Breed: Boxer
   - Gender: Female
   - Estimated Age: Young Adult (1 year)
   - Condition/Description: Surrendered by previous owner, good with kids.

@@ -65,9 +65,11 @@ export default function ApplicationForm({ session, setPage, isWorkspace }) {
 
   return (
     <section className={isWorkspace ? "workspace-page form-page" : "page form-page"}>
-      <p className="eyebrow">— ORGANISATION APPLICATION</p>
-      <h2>Join the <em>network.</em></h2>
-      <form onSubmit={submit}>
+      <div className="form-page-layout">
+        <div className="form-page-content">
+          <p className="eyebrow">— ORGANISATION APPLICATION</p>
+          <h2>Join the <em>network.</em></h2>
+          <form onSubmit={submit}>
         <label>
           Organisation name
           <input required value={form.organization_name} onChange={e => setForm({ ...form, organization_name: e.target.value })} />
@@ -122,7 +124,20 @@ export default function ApplicationForm({ session, setPage, isWorkspace }) {
             Already have an account? Sign in
           </button>
         )}
-      </form>
+        </form>
+        </div>
+        
+        <div className="form-page-sidebar">
+          <h3>Why join PawPath?</h3>
+          <p>
+            By joining PawPath, your organisation becomes part of a unified network dedicated to street dog welfare. Share medical records securely, coordinate hospital transfers, and track adoptions seamlessly across the city.
+          </p>
+          <h3>Application Process</h3>
+          <p>
+            Our platform administrators manually review all new applications within 24-48 hours to ensure the integrity of the network. You will receive an email notification once your account has been verified and activated.
+          </p>
+        </div>
+      </div>
     </section>
   );
 }
