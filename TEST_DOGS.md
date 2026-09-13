@@ -2,14 +2,16 @@
 
 Use this data to populate the system and test the various role-based workflows.
 
+> **Note:** To verify Platform Admin statistics, log in as Platform Admin (`admin@pawpath.demo`) after completing all these steps to ensure all 40 dogs and active organizations are correctly reflected in the global dashboard.
+
 ## Group A: The Street Dogs (Incoming Queue)
-**Goal:** Test community reporting and the Hospital Admin's 'Incoming Queue'.
+**Goal:** Test community reporting and Hospital Admin's 'Incoming Queue'.
 
 ### Apollo
 * **Scenario:** Community Report
-* **Who uploads this:** Community Member
+* **Who uploads this:** Rahul Verma (`rahul.community@pawpath.demo` - Community Member)
 * **Where to upload / perform:** Log in, click '+ Report a dog' from Discover
-* **Action to Perform:** Hospital Admin logs in -> 'Incoming Queue' -> clicks 'Admit to Hospital'.
+* **Action to Perform:** Dr. Vikram Malhotra (`citycare.admin@pawpath.demo` - CityCare Admin) logs in -> 'Incoming Queue' -> clicks 'Admit to Hospital'.
 * **Details:**
   - Location: Marathahalli, Bangalore
   - Breed: Pomeranian Mix
@@ -20,9 +22,9 @@ Use this data to populate the system and test the various role-based workflows.
 
 ### Bella
 * **Scenario:** Community Report
-* **Who uploads this:** Community Member
+* **Who uploads this:** Rahul Verma (`rahul.community@pawpath.demo` - Community Member)
 * **Where to upload / perform:** Log in, click '+ Report a dog' from Discover
-* **Action to Perform:** Hospital Admin logs in -> 'Incoming Queue' -> clicks 'Admit to Hospital'.
+* **Action to Perform:** Dr. Vikram Malhotra (`citycare.admin@pawpath.demo` - CityCare Admin) logs in -> 'Incoming Queue' -> clicks 'Admit to Hospital'.
 * **Details:**
   - Location: Koramangala, Bangalore
   - Breed: Labrador Retriever
@@ -33,9 +35,9 @@ Use this data to populate the system and test the various role-based workflows.
 
 ### Charlie
 * **Scenario:** Community Report
-* **Who uploads this:** Community Member
+* **Who uploads this:** Rahul Verma (`rahul.community@pawpath.demo` - Community Member)
 * **Where to upload / perform:** Log in, click '+ Report a dog' from Discover
-* **Action to Perform:** Hospital Admin logs in -> 'Incoming Queue' -> clicks 'Admit to Hospital'.
+* **Action to Perform:** Dr. Vikram Malhotra (`citycare.admin@pawpath.demo` - CityCare Admin) logs in -> 'Incoming Queue' -> clicks 'Admit to Hospital'.
 * **Details:**
   - Location: Jayanagar, Bangalore
   - Breed: Boxer Mix
@@ -46,9 +48,9 @@ Use this data to populate the system and test the various role-based workflows.
 
 ### Daisy
 * **Scenario:** Community Report
-* **Who uploads this:** Community Member
+* **Who uploads this:** Rahul Verma (`rahul.community@pawpath.demo` - Community Member)
 * **Where to upload / perform:** Log in, click '+ Report a dog' from Discover
-* **Action to Perform:** Hospital Admin logs in -> 'Incoming Queue' -> clicks 'Admit to Hospital'.
+* **Action to Perform:** Dr. Vikram Malhotra (`citycare.admin@pawpath.demo` - CityCare Admin) logs in -> 'Incoming Queue' -> clicks 'Admit to Hospital'.
 * **Details:**
   - Location: Hebbal, Bangalore
   - Breed: Pug
@@ -59,9 +61,9 @@ Use this data to populate the system and test the various role-based workflows.
 
 ### Einstein
 * **Scenario:** Community Report
-* **Who uploads this:** Community Member
+* **Who uploads this:** Rahul Verma (`rahul.community@pawpath.demo` - Community Member)
 * **Where to upload / perform:** Log in, click '+ Report a dog' from Discover
-* **Action to Perform:** Hospital Admin logs in -> 'Incoming Queue' -> clicks 'Admit to Hospital'.
+* **Action to Perform:** Dr. Vikram Malhotra (`citycare.admin@pawpath.demo` - CityCare Admin) logs in -> 'Incoming Queue' -> clicks 'Admit to Hospital'.
 * **Details:**
   - Location: Marathahalli, Bangalore
   - Breed: Pug
@@ -72,9 +74,9 @@ Use this data to populate the system and test the various role-based workflows.
 
 ### Fiona
 * **Scenario:** Community Report
-* **Who uploads this:** Community Member
+* **Who uploads this:** Rahul Verma (`rahul.community@pawpath.demo` - Community Member)
 * **Where to upload / perform:** Log in, click '+ Report a dog' from Discover
-* **Action to Perform:** Hospital Admin logs in -> 'Incoming Queue' -> clicks 'Admit to Hospital'.
+* **Action to Perform:** Dr. Kavita Reddy (`pawsclaws.admin@pawpath.demo` - Paws & Claws Admin) logs in -> 'Incoming Queue' -> clicks 'Admit to Hospital'.
 * **Details:**
   - Location: BTM Layout, Bangalore
   - Breed: Boxer Mix
@@ -85,9 +87,9 @@ Use this data to populate the system and test the various role-based workflows.
 
 ### Gatsby
 * **Scenario:** Community Report
-* **Who uploads this:** Community Member
+* **Who uploads this:** Rahul Verma (`rahul.community@pawpath.demo` - Community Member)
 * **Where to upload / perform:** Log in, click '+ Report a dog' from Discover
-* **Action to Perform:** Hospital Admin logs in -> 'Incoming Queue' -> clicks 'Admit to Hospital'.
+* **Action to Perform:** Dr. Kavita Reddy (`pawsclaws.admin@pawpath.demo` - Paws & Claws Admin) logs in -> 'Incoming Queue' -> clicks 'Admit to Hospital'.
 * **Details:**
   - Location: Koramangala, Bangalore
   - Breed: Boxer Mix
@@ -98,9 +100,9 @@ Use this data to populate the system and test the various role-based workflows.
 
 ### Hazel
 * **Scenario:** Community Report
-* **Who uploads this:** Community Member
+* **Who uploads this:** Rahul Verma (`rahul.community@pawpath.demo` - Community Member)
 * **Where to upload / perform:** Log in, click '+ Report a dog' from Discover
-* **Action to Perform:** Hospital Admin logs in -> 'Incoming Queue' -> clicks 'Admit to Hospital'.
+* **Action to Perform:** Dr. Kavita Reddy (`pawsclaws.admin@pawpath.demo` - Paws & Claws Admin) logs in -> 'Incoming Queue' -> clicks 'Admit to Hospital'.
 * **Details:**
   - Location: Electronic City, Bangalore
   - Breed: Boxer Mix
@@ -111,9 +113,9 @@ Use this data to populate the system and test the various role-based workflows.
 
 ### Iggy
 * **Scenario:** Community Report
-* **Who uploads this:** Community Member
+* **Who uploads this:** Rahul Verma (`rahul.community@pawpath.demo` - Community Member)
 * **Where to upload / perform:** Log in, click '+ Report a dog' from Discover
-* **Action to Perform:** Hospital Admin logs in -> 'Incoming Queue' -> clicks 'Admit to Hospital'.
+* **Action to Perform:** Dr. Kavita Reddy (`pawsclaws.admin@pawpath.demo` - Paws & Claws Admin) logs in -> 'Incoming Queue' -> clicks 'Admit to Hospital'.
 * **Details:**
   - Location: Hebbal, Bangalore
   - Breed: Rottweiler Mix
@@ -124,9 +126,9 @@ Use this data to populate the system and test the various role-based workflows.
 
 ### Jasper
 * **Scenario:** Community Report
-* **Who uploads this:** Community Member
+* **Who uploads this:** Rahul Verma (`rahul.community@pawpath.demo` - Community Member)
 * **Where to upload / perform:** Log in, click '+ Report a dog' from Discover
-* **Action to Perform:** Hospital Admin logs in -> 'Incoming Queue' -> clicks 'Admit to Hospital'.
+* **Action to Perform:** Dr. Kavita Reddy (`pawsclaws.admin@pawpath.demo` - Paws & Claws Admin) logs in -> 'Incoming Queue' -> clicks 'Admit to Hospital'.
 * **Details:**
   - Location: HSR Layout, Bangalore
   - Breed: Doberman Mix
@@ -137,13 +139,13 @@ Use this data to populate the system and test the various role-based workflows.
 
 ---
 ## Group B: Active Patients (In Treatment)
-**Goal:** Test direct admission by Hospital Admin and medical record updates by Veterinarian.
+**Goal:** Test direct admission by Hospital Admins and medical record updates by various Veterinarians.
 
 ### Kiki
 * **Scenario:** Direct Admission & Treatment
-* **Who uploads this:** Hospital Admin
+* **Who uploads this:** Dr. Vikram Malhotra (`citycare.admin@pawpath.demo` - CityCare Admin)
 * **Where to upload / perform:** Hospital Dashboard -> 'Incoming Queue' -> '+ Register Walk-in Patient'
-* **Action to Perform:** Veterinarian logs in -> 'Active Patients' -> Adds a Medical Record.
+* **Action to Perform:** Dr. Sarah Connor (`sarah.vet@citycare.demo` - Veterinarian) logs in -> 'Active Patients' -> Adds a Medical Record.
 * **Details:**
   - Location: Bellandur, Bangalore
   - Breed: Cocker Spaniel
@@ -154,9 +156,9 @@ Use this data to populate the system and test the various role-based workflows.
 
 ### Leo
 * **Scenario:** Direct Admission & Treatment
-* **Who uploads this:** Hospital Admin
+* **Who uploads this:** Dr. Vikram Malhotra (`citycare.admin@pawpath.demo` - CityCare Admin)
 * **Where to upload / perform:** Hospital Dashboard -> 'Incoming Queue' -> '+ Register Walk-in Patient'
-* **Action to Perform:** Veterinarian logs in -> 'Active Patients' -> Adds a Medical Record.
+* **Action to Perform:** Dr. Sarah Connor (`sarah.vet@citycare.demo` - Veterinarian) logs in -> 'Active Patients' -> Adds a Medical Record.
 * **Details:**
   - Location: Malleswaram, Bangalore
   - Breed: German Shepherd Mix
@@ -167,9 +169,9 @@ Use this data to populate the system and test the various role-based workflows.
 
 ### Milo
 * **Scenario:** Direct Admission & Treatment
-* **Who uploads this:** Hospital Admin
+* **Who uploads this:** Dr. Vikram Malhotra (`citycare.admin@pawpath.demo` - CityCare Admin)
 * **Where to upload / perform:** Hospital Dashboard -> 'Incoming Queue' -> '+ Register Walk-in Patient'
-* **Action to Perform:** Veterinarian logs in -> 'Active Patients' -> Adds a Medical Record.
+* **Action to Perform:** Dr. Sarah Connor (`sarah.vet@citycare.demo` - Veterinarian) logs in -> 'Active Patients' -> Adds a Medical Record.
 * **Details:**
   - Location: Hebbal, Bangalore
   - Breed: Dachshund
@@ -180,9 +182,9 @@ Use this data to populate the system and test the various role-based workflows.
 
 ### Nala
 * **Scenario:** Direct Admission & Treatment
-* **Who uploads this:** Hospital Admin
+* **Who uploads this:** Dr. Vikram Malhotra (`citycare.admin@pawpath.demo` - CityCare Admin)
 * **Where to upload / perform:** Hospital Dashboard -> 'Incoming Queue' -> '+ Register Walk-in Patient'
-* **Action to Perform:** Veterinarian logs in -> 'Active Patients' -> Adds a Medical Record.
+* **Action to Perform:** Dr. Rajesh Sharma (`rajesh.vet@citycare.demo` - Veterinarian) logs in -> 'Active Patients' -> Adds a Medical Record.
 * **Details:**
   - Location: Jayanagar, Bangalore
   - Breed: Pug
@@ -193,9 +195,9 @@ Use this data to populate the system and test the various role-based workflows.
 
 ### Oscar
 * **Scenario:** Direct Admission & Treatment
-* **Who uploads this:** Hospital Admin
+* **Who uploads this:** Dr. Vikram Malhotra (`citycare.admin@pawpath.demo` - CityCare Admin)
 * **Where to upload / perform:** Hospital Dashboard -> 'Incoming Queue' -> '+ Register Walk-in Patient'
-* **Action to Perform:** Veterinarian logs in -> 'Active Patients' -> Adds a Medical Record.
+* **Action to Perform:** Dr. Rajesh Sharma (`rajesh.vet@citycare.demo` - Veterinarian) logs in -> 'Active Patients' -> Adds a Medical Record.
 * **Details:**
   - Location: Electronic City, Bangalore
   - Breed: Husky Mix
@@ -206,9 +208,9 @@ Use this data to populate the system and test the various role-based workflows.
 
 ### Penny
 * **Scenario:** Direct Admission & Treatment
-* **Who uploads this:** Hospital Admin
+* **Who uploads this:** Dr. Vikram Malhotra (`citycare.admin@pawpath.demo` - CityCare Admin)
 * **Where to upload / perform:** Hospital Dashboard -> 'Incoming Queue' -> '+ Register Walk-in Patient'
-* **Action to Perform:** Veterinarian logs in -> 'Active Patients' -> Adds a Medical Record.
+* **Action to Perform:** Dr. Rajesh Sharma (`rajesh.vet@citycare.demo` - Veterinarian) logs in -> 'Active Patients' -> Adds a Medical Record.
 * **Details:**
   - Location: Malleswaram, Bangalore
   - Breed: Pug
@@ -219,9 +221,9 @@ Use this data to populate the system and test the various role-based workflows.
 
 ### Quinn
 * **Scenario:** Direct Admission & Treatment
-* **Who uploads this:** Hospital Admin
+* **Who uploads this:** Dr. Kavita Reddy (`pawsclaws.admin@pawpath.demo` - Paws & Claws Admin)
 * **Where to upload / perform:** Hospital Dashboard -> 'Incoming Queue' -> '+ Register Walk-in Patient'
-* **Action to Perform:** Veterinarian logs in -> 'Active Patients' -> Adds a Medical Record.
+* **Action to Perform:** Dr. Amit Verma (`amit.vet@pawsclaws.demo` - Veterinarian) logs in -> 'Active Patients' -> Adds a Medical Record.
 * **Details:**
   - Location: Koramangala, Bangalore
   - Breed: Labrador Retriever
@@ -232,9 +234,9 @@ Use this data to populate the system and test the various role-based workflows.
 
 ### Rocky
 * **Scenario:** Direct Admission & Treatment
-* **Who uploads this:** Hospital Admin
+* **Who uploads this:** Dr. Kavita Reddy (`pawsclaws.admin@pawpath.demo` - Paws & Claws Admin)
 * **Where to upload / perform:** Hospital Dashboard -> 'Incoming Queue' -> '+ Register Walk-in Patient'
-* **Action to Perform:** Veterinarian logs in -> 'Active Patients' -> Adds a Medical Record.
+* **Action to Perform:** Dr. Amit Verma (`amit.vet@pawsclaws.demo` - Veterinarian) logs in -> 'Active Patients' -> Adds a Medical Record.
 * **Details:**
   - Location: JP Nagar, Bangalore
   - Breed: Golden Retriever
@@ -245,9 +247,9 @@ Use this data to populate the system and test the various role-based workflows.
 
 ### Stella
 * **Scenario:** Direct Admission & Treatment
-* **Who uploads this:** Hospital Admin
+* **Who uploads this:** Dr. Kavita Reddy (`pawsclaws.admin@pawpath.demo` - Paws & Claws Admin)
 * **Where to upload / perform:** Hospital Dashboard -> 'Incoming Queue' -> '+ Register Walk-in Patient'
-* **Action to Perform:** Veterinarian logs in -> 'Active Patients' -> Adds a Medical Record.
+* **Action to Perform:** Dr. Amit Verma (`amit.vet@pawsclaws.demo` - Veterinarian) logs in -> 'Active Patients' -> Adds a Medical Record.
 * **Details:**
   - Location: BTM Layout, Bangalore
   - Breed: Shih Tzu
@@ -258,9 +260,9 @@ Use this data to populate the system and test the various role-based workflows.
 
 ### Toby
 * **Scenario:** Direct Admission & Treatment
-* **Who uploads this:** Hospital Admin
+* **Who uploads this:** Dr. Kavita Reddy (`pawsclaws.admin@pawpath.demo` - Paws & Claws Admin)
 * **Where to upload / perform:** Hospital Dashboard -> 'Incoming Queue' -> '+ Register Walk-in Patient'
-* **Action to Perform:** Veterinarian logs in -> 'Active Patients' -> Adds a Medical Record.
+* **Action to Perform:** Dr. Amit Verma (`amit.vet@pawsclaws.demo` - Veterinarian) logs in -> 'Active Patients' -> Adds a Medical Record.
 * **Details:**
   - Location: Jayanagar, Bangalore
   - Breed: Husky Mix
@@ -271,13 +273,13 @@ Use this data to populate the system and test the various role-based workflows.
 
 ---
 ## Group C: Ready to Leave (Fit for Discharge)
-**Goal:** Test Veterinarian signing off on treatment and Hospital Admin processing the transfer/discharge.
+**Goal:** Test multiple Veterinarians signing off on treatment and Hospital Admins processing transfers/discharges.
 
 ### Uma
-* **Scenario:** Medical Clearance
-* **Who uploads this:** Hospital Admin (to admit) -> Veterinarian (to clear)
-* **Where to upload / perform:** Vet logs into Staff Dashboard -> 'Active Patients'
-* **Action to Perform:** Hospital Admin logs in -> 'Ready to Leave' -> clicks 'Transfer to Agency' OR 'Discharge'.
+* **Scenario:** Medical Clearance & Transfer
+* **Who uploads this:** Dr. Vikram Malhotra (CityCare Admin) to admit -> Dr. Sarah Connor (`sarah.vet@citycare.demo`) to clear
+* **Where to upload / perform:** Dr. Sarah Connor logs into Staff Dashboard -> 'Active Patients' -> clicks 'Fit for Discharge'
+* **Action to Perform:** Dr. Vikram Malhotra logs in -> 'Ready to Leave' -> clicks 'Transfer to Agency' (selects Happy Tails Rescue).
 * **Details:**
   - Location: Indiranagar, Bangalore
   - Breed: Boxer Mix
@@ -287,10 +289,10 @@ Use this data to populate the system and test the various role-based workflows.
 * **Image Name:** `Uma.jpg`
 
 ### Vigo
-* **Scenario:** Medical Clearance
-* **Who uploads this:** Hospital Admin (to admit) -> Veterinarian (to clear)
-* **Where to upload / perform:** Vet logs into Staff Dashboard -> 'Active Patients'
-* **Action to Perform:** Hospital Admin logs in -> 'Ready to Leave' -> clicks 'Transfer to Agency' OR 'Discharge'.
+* **Scenario:** Medical Clearance & Transfer
+* **Who uploads this:** Dr. Vikram Malhotra (CityCare Admin) to admit -> Dr. Sarah Connor (`sarah.vet@citycare.demo`) to clear
+* **Where to upload / perform:** Dr. Sarah Connor logs into Staff Dashboard -> 'Active Patients' -> clicks 'Fit for Discharge'
+* **Action to Perform:** Dr. Vikram Malhotra logs in -> 'Ready to Leave' -> clicks 'Transfer to Agency' (selects Happy Tails Rescue).
 * **Details:**
   - Location: Indiranagar, Bangalore
   - Breed: Doberman Mix
@@ -300,10 +302,10 @@ Use this data to populate the system and test the various role-based workflows.
 * **Image Name:** `Vigo.jpg`
 
 ### Winston
-* **Scenario:** Medical Clearance
-* **Who uploads this:** Hospital Admin (to admit) -> Veterinarian (to clear)
-* **Where to upload / perform:** Vet logs into Staff Dashboard -> 'Active Patients'
-* **Action to Perform:** Hospital Admin logs in -> 'Ready to Leave' -> clicks 'Transfer to Agency' OR 'Discharge'.
+* **Scenario:** Medical Clearance & Discharge
+* **Who uploads this:** Dr. Vikram Malhotra (CityCare Admin) to admit -> Dr. Rajesh Sharma (`rajesh.vet@citycare.demo`) to clear
+* **Where to upload / perform:** Dr. Rajesh Sharma logs into Staff Dashboard -> 'Active Patients' -> clicks 'Fit for Discharge'
+* **Action to Perform:** Dr. Vikram Malhotra logs in -> 'Ready to Leave' -> clicks 'Discharge'.
 * **Details:**
   - Location: JP Nagar, Bangalore
   - Breed: Beagle
@@ -313,10 +315,10 @@ Use this data to populate the system and test the various role-based workflows.
 * **Image Name:** `Winston.jpg`
 
 ### Xena
-* **Scenario:** Medical Clearance
-* **Who uploads this:** Hospital Admin (to admit) -> Veterinarian (to clear)
-* **Where to upload / perform:** Vet logs into Staff Dashboard -> 'Active Patients'
-* **Action to Perform:** Hospital Admin logs in -> 'Ready to Leave' -> clicks 'Transfer to Agency' OR 'Discharge'.
+* **Scenario:** Medical Clearance & Transfer
+* **Who uploads this:** Dr. Kavita Reddy (Paws & Claws Admin) to admit -> Dr. Amit Verma (`amit.vet@pawsclaws.demo`) to clear
+* **Where to upload / perform:** Dr. Amit Verma logs into Staff Dashboard -> 'Active Patients' -> clicks 'Fit for Discharge'
+* **Action to Perform:** Dr. Kavita Reddy logs in -> 'Ready to Leave' -> clicks 'Transfer to Agency' (selects Hope Street Sanctuary).
 * **Details:**
   - Location: Hebbal, Bangalore
   - Breed: Bulldog Mix
@@ -326,10 +328,10 @@ Use this data to populate the system and test the various role-based workflows.
 * **Image Name:** `Xena.jpg`
 
 ### Yoshi
-* **Scenario:** Medical Clearance
-* **Who uploads this:** Hospital Admin (to admit) -> Veterinarian (to clear)
-* **Where to upload / perform:** Vet logs into Staff Dashboard -> 'Active Patients'
-* **Action to Perform:** Hospital Admin logs in -> 'Ready to Leave' -> clicks 'Transfer to Agency' OR 'Discharge'.
+* **Scenario:** Medical Clearance & Transfer
+* **Who uploads this:** Dr. Kavita Reddy (Paws & Claws Admin) to admit -> Dr. Amit Verma (`amit.vet@pawsclaws.demo`) to clear
+* **Where to upload / perform:** Dr. Amit Verma logs into Staff Dashboard -> 'Active Patients' -> clicks 'Fit for Discharge'
+* **Action to Perform:** Dr. Kavita Reddy logs in -> 'Ready to Leave' -> clicks 'Transfer to Agency' (selects Hope Street Sanctuary).
 * **Details:**
   - Location: Marathahalli, Bangalore
   - Breed: Doberman Mix
@@ -340,13 +342,13 @@ Use this data to populate the system and test the various role-based workflows.
 
 ---
 ## Group D: Shelter Residents (Available for Adoption)
-**Goal:** Test direct shelter intake and Agency Employee's ability to update records.
+**Goal:** Test shelter intake across both agencies and verify all Agency Employees can update records but NOT mark adoptions.
 
 ### Zoe
 * **Scenario:** Shelter Intake
-* **Who uploads this:** Agency Admin
+* **Who uploads this:** Ananya Roy (`happytails.admin@pawpath.demo` - Happy Tails Admin)
 * **Where to upload / perform:** Agency Dashboard -> 'Current Residents' -> '+ Register Walk-in Dog'
-* **Action to Perform:** Agency Employee logs in -> 'Current Residents' -> Adds an update note to the record. (Verify they CANNOT see the 'Mark Adopted' button).
+* **Action to Perform:** Priya Patel (`priya.staff@happytails.demo` - Employee) logs in -> 'Current Residents' -> Adds an update note. (Verify NO 'Mark Adopted' button).
 * **Details:**
   - Location: HSR Layout, Bangalore
   - Breed: INDie
@@ -357,9 +359,9 @@ Use this data to populate the system and test the various role-based workflows.
 
 ### Archie
 * **Scenario:** Shelter Intake
-* **Who uploads this:** Agency Admin
+* **Who uploads this:** Ananya Roy (`happytails.admin@pawpath.demo` - Happy Tails Admin)
 * **Where to upload / perform:** Agency Dashboard -> 'Current Residents' -> '+ Register Walk-in Dog'
-* **Action to Perform:** Agency Employee logs in -> 'Current Residents' -> Adds an update note to the record. (Verify they CANNOT see the 'Mark Adopted' button).
+* **Action to Perform:** Priya Patel (`priya.staff@happytails.demo` - Employee) logs in -> 'Current Residents' -> Adds an update note. (Verify NO 'Mark Adopted' button).
 * **Details:**
   - Location: Malleswaram, Bangalore
   - Breed: Pug
@@ -370,9 +372,9 @@ Use this data to populate the system and test the various role-based workflows.
 
 ### Bailey
 * **Scenario:** Shelter Intake
-* **Who uploads this:** Agency Admin
+* **Who uploads this:** Ananya Roy (`happytails.admin@pawpath.demo` - Happy Tails Admin)
 * **Where to upload / perform:** Agency Dashboard -> 'Current Residents' -> '+ Register Walk-in Dog'
-* **Action to Perform:** Agency Employee logs in -> 'Current Residents' -> Adds an update note to the record. (Verify they CANNOT see the 'Mark Adopted' button).
+* **Action to Perform:** Priya Patel (`priya.staff@happytails.demo` - Employee) logs in -> 'Current Residents' -> Adds an update note. (Verify NO 'Mark Adopted' button).
 * **Details:**
   - Location: Electronic City, Bangalore
   - Breed: Bulldog Mix
@@ -383,9 +385,9 @@ Use this data to populate the system and test the various role-based workflows.
 
 ### Coco
 * **Scenario:** Shelter Intake
-* **Who uploads this:** Agency Admin
+* **Who uploads this:** Ananya Roy (`happytails.admin@pawpath.demo` - Happy Tails Admin)
 * **Where to upload / perform:** Agency Dashboard -> 'Current Residents' -> '+ Register Walk-in Dog'
-* **Action to Perform:** Agency Employee logs in -> 'Current Residents' -> Adds an update note to the record. (Verify they CANNOT see the 'Mark Adopted' button).
+* **Action to Perform:** Alex Miller (`alex.staff@happytails.demo` - Employee) logs in -> 'Current Residents' -> Adds an update note. (Verify NO 'Mark Adopted' button).
 * **Details:**
   - Location: Whitefield, Bangalore
   - Breed: Golden Retriever
@@ -396,9 +398,9 @@ Use this data to populate the system and test the various role-based workflows.
 
 ### Duke
 * **Scenario:** Shelter Intake
-* **Who uploads this:** Agency Admin
+* **Who uploads this:** Ananya Roy (`happytails.admin@pawpath.demo` - Happy Tails Admin)
 * **Where to upload / perform:** Agency Dashboard -> 'Current Residents' -> '+ Register Walk-in Dog'
-* **Action to Perform:** Agency Employee logs in -> 'Current Residents' -> Adds an update note to the record. (Verify they CANNOT see the 'Mark Adopted' button).
+* **Action to Perform:** Alex Miller (`alex.staff@happytails.demo` - Employee) logs in -> 'Current Residents' -> Adds an update note. (Verify NO 'Mark Adopted' button).
 * **Details:**
   - Location: Whitefield, Bangalore
   - Breed: Beagle
@@ -409,9 +411,9 @@ Use this data to populate the system and test the various role-based workflows.
 
 ### Echo
 * **Scenario:** Shelter Intake
-* **Who uploads this:** Agency Admin
+* **Who uploads this:** Ananya Roy (`happytails.admin@pawpath.demo` - Happy Tails Admin)
 * **Where to upload / perform:** Agency Dashboard -> 'Current Residents' -> '+ Register Walk-in Dog'
-* **Action to Perform:** Agency Employee logs in -> 'Current Residents' -> Adds an update note to the record. (Verify they CANNOT see the 'Mark Adopted' button).
+* **Action to Perform:** Alex Miller (`alex.staff@happytails.demo` - Employee) logs in -> 'Current Residents' -> Adds an update note. (Verify NO 'Mark Adopted' button).
 * **Details:**
   - Location: JP Nagar, Bangalore
   - Breed: German Shepherd Mix
@@ -422,9 +424,9 @@ Use this data to populate the system and test the various role-based workflows.
 
 ### Frankie
 * **Scenario:** Shelter Intake
-* **Who uploads this:** Agency Admin
+* **Who uploads this:** Marcus Chen (`hopestreet.admin@pawpath.demo` - Hope Street Admin)
 * **Where to upload / perform:** Agency Dashboard -> 'Current Residents' -> '+ Register Walk-in Dog'
-* **Action to Perform:** Agency Employee logs in -> 'Current Residents' -> Adds an update note to the record. (Verify they CANNOT see the 'Mark Adopted' button).
+* **Action to Perform:** Maya Sen (`maya.staff@hopestreet.demo` - Employee) logs in -> 'Current Residents' -> Adds an update note. (Verify NO 'Mark Adopted' button).
 * **Details:**
   - Location: JP Nagar, Bangalore
   - Breed: Labrador Retriever
@@ -435,9 +437,9 @@ Use this data to populate the system and test the various role-based workflows.
 
 ### Ginger
 * **Scenario:** Shelter Intake
-* **Who uploads this:** Agency Admin
+* **Who uploads this:** Marcus Chen (`hopestreet.admin@pawpath.demo` - Hope Street Admin)
 * **Where to upload / perform:** Agency Dashboard -> 'Current Residents' -> '+ Register Walk-in Dog'
-* **Action to Perform:** Agency Employee logs in -> 'Current Residents' -> Adds an update note to the record. (Verify they CANNOT see the 'Mark Adopted' button).
+* **Action to Perform:** Maya Sen (`maya.staff@hopestreet.demo` - Employee) logs in -> 'Current Residents' -> Adds an update note. (Verify NO 'Mark Adopted' button).
 * **Details:**
   - Location: BTM Layout, Bangalore
   - Breed: Golden Retriever
@@ -448,9 +450,9 @@ Use this data to populate the system and test the various role-based workflows.
 
 ### Hank
 * **Scenario:** Shelter Intake
-* **Who uploads this:** Agency Admin
+* **Who uploads this:** Marcus Chen (`hopestreet.admin@pawpath.demo` - Hope Street Admin)
 * **Where to upload / perform:** Agency Dashboard -> 'Current Residents' -> '+ Register Walk-in Dog'
-* **Action to Perform:** Agency Employee logs in -> 'Current Residents' -> Adds an update note to the record. (Verify they CANNOT see the 'Mark Adopted' button).
+* **Action to Perform:** Maya Sen (`maya.staff@hopestreet.demo` - Employee) logs in -> 'Current Residents' -> Adds an update note. (Verify NO 'Mark Adopted' button).
 * **Details:**
   - Location: Koramangala, Bangalore
   - Breed: German Shepherd Mix
@@ -461,9 +463,9 @@ Use this data to populate the system and test the various role-based workflows.
 
 ### Ivy
 * **Scenario:** Shelter Intake
-* **Who uploads this:** Agency Admin
+* **Who uploads this:** Marcus Chen (`hopestreet.admin@pawpath.demo` - Hope Street Admin)
 * **Where to upload / perform:** Agency Dashboard -> 'Current Residents' -> '+ Register Walk-in Dog'
-* **Action to Perform:** Agency Employee logs in -> 'Current Residents' -> Adds an update note to the record. (Verify they CANNOT see the 'Mark Adopted' button).
+* **Action to Perform:** Maya Sen (`maya.staff@hopestreet.demo` - Employee) logs in -> 'Current Residents' -> Adds an update note. (Verify NO 'Mark Adopted' button).
 * **Details:**
   - Location: Whitefield, Bangalore
   - Breed: Labrador Retriever
@@ -474,13 +476,13 @@ Use this data to populate the system and test the various role-based workflows.
 
 ---
 ## Group E: Adopted Dogs (Adoption History)
-**Goal:** Test Agency Admin processing adoptions.
+**Goal:** Test multiple Agency Admins processing adoptions.
 
 ### Jack
 * **Scenario:** Adoption Processing
-* **Who uploads this:** Agency Admin
+* **Who uploads this:** Ananya Roy (`happytails.admin@pawpath.demo` - Happy Tails Admin)
 * **Where to upload / perform:** Agency Dashboard -> 'Current Residents'
-* **Action to Perform:** Agency Admin fills out adopter details -> Verify dog moves to 'Adoption History' tab.
+* **Action to Perform:** Ananya Roy fills out adopter details -> Verify dog moves to 'Adoption History' tab.
 * **Details:**
   - Location: Bellandur, Bangalore
   - Breed: Boxer Mix
@@ -491,9 +493,9 @@ Use this data to populate the system and test the various role-based workflows.
 
 ### Kona
 * **Scenario:** Adoption Processing
-* **Who uploads this:** Agency Admin
+* **Who uploads this:** Ananya Roy (`happytails.admin@pawpath.demo` - Happy Tails Admin)
 * **Where to upload / perform:** Agency Dashboard -> 'Current Residents'
-* **Action to Perform:** Agency Admin fills out adopter details -> Verify dog moves to 'Adoption History' tab.
+* **Action to Perform:** Ananya Roy fills out adopter details -> Verify dog moves to 'Adoption History' tab.
 * **Details:**
   - Location: Bellandur, Bangalore
   - Breed: Boxer Mix
@@ -504,9 +506,9 @@ Use this data to populate the system and test the various role-based workflows.
 
 ### Loki
 * **Scenario:** Adoption Processing
-* **Who uploads this:** Agency Admin
+* **Who uploads this:** Ananya Roy (`happytails.admin@pawpath.demo` - Happy Tails Admin)
 * **Where to upload / perform:** Agency Dashboard -> 'Current Residents'
-* **Action to Perform:** Agency Admin fills out adopter details -> Verify dog moves to 'Adoption History' tab.
+* **Action to Perform:** Ananya Roy fills out adopter details -> Verify dog moves to 'Adoption History' tab.
 * **Details:**
   - Location: Bellandur, Bangalore
   - Breed: Cocker Spaniel
@@ -517,9 +519,9 @@ Use this data to populate the system and test the various role-based workflows.
 
 ### Maya
 * **Scenario:** Adoption Processing
-* **Who uploads this:** Agency Admin
+* **Who uploads this:** Marcus Chen (`hopestreet.admin@pawpath.demo` - Hope Street Admin)
 * **Where to upload / perform:** Agency Dashboard -> 'Current Residents'
-* **Action to Perform:** Agency Admin fills out adopter details -> Verify dog moves to 'Adoption History' tab.
+* **Action to Perform:** Marcus Chen fills out adopter details -> Verify dog moves to 'Adoption History' tab.
 * **Details:**
   - Location: JP Nagar, Bangalore
   - Breed: INDie
@@ -530,9 +532,9 @@ Use this data to populate the system and test the various role-based workflows.
 
 ### Nova
 * **Scenario:** Adoption Processing
-* **Who uploads this:** Agency Admin
+* **Who uploads this:** Marcus Chen (`hopestreet.admin@pawpath.demo` - Hope Street Admin)
 * **Where to upload / perform:** Agency Dashboard -> 'Current Residents'
-* **Action to Perform:** Agency Admin fills out adopter details -> Verify dog moves to 'Adoption History' tab.
+* **Action to Perform:** Marcus Chen fills out adopter details -> Verify dog moves to 'Adoption History' tab.
 * **Details:**
   - Location: HSR Layout, Bangalore
   - Breed: Cocker Spaniel
