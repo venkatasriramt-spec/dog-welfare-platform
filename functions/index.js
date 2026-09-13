@@ -454,7 +454,7 @@ exports.updateDogRecord = functions.region("us-central1").https.onCall(async (da
   }
 
   const dogData = dogSnap.data();
-  const isAdmitting = data.status === "in_treatment" && callerRole === "hospital_admin";
+  const isAdmitting = data.status === "in_treatment" && callerRole === "hospital_admin" && dogData.status === "street";
 
   if (callerRole !== "platform_admin" && !isAdmitting) {
     if (callerRole === "hospital_admin" || callerRole === "veterinarian") {

@@ -174,7 +174,7 @@ Use this data to populate the system and test the various role-based workflows.
 * **Action to Perform:** Dr. Sarah Connor (`sarah.vet@citycare.demo` - Veterinarian) logs in -> 'Active Patients' -> Adds a Medical Record.
 * **Details:**
   - Location: Hebbal, Bangalore
-  - Breed: Dalamatian
+  - Breed: Dalmatian
   - Gender: Male
   - Estimated Age: Adult (~2 years)
   - Condition/Description: Wound management from dog bite.
