@@ -22,9 +22,9 @@ The system uses Firebase Authentication (email/password) combined with a `Users`
 ### Supported Roles:
 1. **Platform Admin (`platform_admin`)**: Oversees the entire system, approves/rejects new organisation applications, and has global read/write access. Auto-assigned when signing in with the email `admin@pawpath.demo`.
 2. **Hospital Admin (`hospital_admin`)**: Manages a specific veterinary hospital, adds veterinarians via the `StaffManager` component, and oversees admitted dogs.
-3. **Veterinarian (`veterinarian`)**: Admits dogs from the street, adds medical records, marks dogs as fit for discharge, and discharges patients. Role label: "Veterinarian / Doctor".
+3. **Veterinarian (`veterinarian`)**: Adds medical records and marks dogs as fit for discharge. Role label: "Veterinarian / Doctor".
 4. **Agency Admin (`agency_admin`)**: Manages a specific adoption agency, adds employees via the `StaffManager` component, and oversees shelter dogs.
-5. **Agency Employee (`agency_employee`)**: Updates shelter dog records and processes adoptions (including private adopter details). Role label: "Agency Employee".
+5. **Agency Employee (`agency_employee`)**: Updates shelter dog records. Role label: "Agency Employee".
 6. **Community Member (`community_member`)**: Explores the dog directory, reports new street dogs (with photos and location data), and applies to join as an organisation partner.
 7. **Pending Partner (`pending_partner`)**: Assigned after submitting an organisation application (hospital or agency). The user sees a "pending review" message on their dashboard until the Platform Admin acts on the application.
 8. **Rejected Partner (`rejected_partner`)**: Assigned if the Platform Admin declines the organisation application. The user sees a "declined" message with the rejection reason.

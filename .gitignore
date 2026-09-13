@@ -11,8 +11,8 @@ firebase-debug.*.log*
 .firebase/
 
 # Firebase config
-# .firebaserc (uncomment if you want each developer to use their own Firebase project)
-
+# (uncomment if you want each developer to use their own Firebase project)
+# .firebaserc
 # TypeScript cache
 *.tsbuildinfo
 
