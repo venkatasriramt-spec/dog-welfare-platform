@@ -10,8 +10,8 @@ export default function StaffDashboard({ session, dogs = [], organizations = [],
   const org = useMemo(() => organizations.find(o => o.id === profile?.works_at), [organizations, profile?.works_at]);
   const orgType = org?.type || (isVet ? 'hospital' : 'agency');
 
-  // Dogs belonging to staff member's organization
   const [orgDogs, setOrgDogs] = useState([]);
+  const [viewAllActive, setViewAllActive] = useState(false);
   useEffect(() => {
     if (!profile?.works_at) return;
     return watchOrgDogs(profile.works_at, orgType, setOrgDogs);
@@ -26,6 +26,48 @@ export default function StaffDashboard({ session, dogs = [], organizations = [],
     if (isVet) return orgDogs.filter(d => d.status === 'fit_for_discharge');
     return [];
   }, [orgDogs, isVet]);
+
+  const displayedActiveDogs = activeDogs.slice(0, 3);
+
+  if (viewAllActive) {
+    return (
+      <div className="staff-dashboard">
+        <div style={{ marginBottom: '24px' }}>
+          <button className="link" onClick={() => setViewAllActive(false)} style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
+            ← Back to Dashboard
+          </button>
+        </div>
+        <div style={{ background: '#fff', padding: '24px', borderRadius: '6px', border: '1px solid var(--line)' }}>
+          <h3 style={{ margin: '0 0 16px 0' }}>
+            {isVet ? '🩺 All Active Patients' : '🏡 All Shelter Dogs'}
+            <span style={{ fontWeight: 'normal', fontSize: '14px', color: 'var(--muted)', marginLeft: '10px' }}>
+              ({activeDogs.length} active)
+            </span>
+          </h3>
+          <div className="dog-grid" style={{ gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px' }}>
+            {activeDogs.map(d => (
+              <article className="dog-card" key={d.id} style={{ background: '#f7f5f0' }}>
+                {d.social_photos && d.social_photos.length > 0 ? (
+                  <img src={d.social_photos[0]} alt={d.name} />
+                ) : (
+                  <div className="dog-placeholder">🐾</div>
+                )}
+                <span className={`status ${d.status}`}>{DOG_STATUSES[d.status] || d.status}</span>
+                <div style={{ padding: '16px' }}>
+                  {d.tag && <small style={{ color: 'var(--orange)', fontWeight: 'bold' }}>{d.tag}</small>}
+                  <h3>{d.name}</h3>
+                  <p>{d.breed || 'Breed pending'} · {d.gender || ''}</p>
+                  <button className="link" onClick={() => setPage(`dog:${d.id}`)}>
+                    {isVet ? 'Add medical record →' : 'View record →'}
+                  </button>
+                </div>
+              </article>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="staff-dashboard">
@@ -58,16 +100,23 @@ export default function StaffDashboard({ session, dogs = [], organizations = [],
 
       {/* Active Patients / Dogs */}
       <div style={{ background: '#fff', padding: '24px', borderRadius: '6px', border: '1px solid var(--line)', marginBottom: '24px' }}>
-        <h3 style={{ margin: '0 0 16px 0' }}>
-          {isVet ? '🩺 Your Active Patients' : '🏡 Shelter Dogs'}
-          <span style={{ fontWeight: 'normal', fontSize: '14px', color: 'var(--muted)', marginLeft: '10px' }}>
-            ({activeDogs.length} active)
-          </span>
-        </h3>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+          <h3 style={{ margin: 0 }}>
+            {isVet ? '🩺 Your Active Patients' : '🏡 Shelter Dogs'}
+            <span style={{ fontWeight: 'normal', fontSize: '14px', color: 'var(--muted)', marginLeft: '10px' }}>
+              ({activeDogs.length} active)
+            </span>
+          </h3>
+          {activeDogs.length > 3 && (
+            <button className="outline" onClick={() => setViewAllActive(true)} style={{ padding: '6px 12px', fontSize: '13px' }}>
+              View all
+            </button>
+          )}
+        </div>
 
         {activeDogs.length > 0 ? (
           <div className="dog-grid" style={{ gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px' }}>
-            {activeDogs.map(d => (
+            {displayedActiveDogs.map(d => (
               <article className="dog-card" key={d.id} style={{ background: '#f7f5f0' }}>
                 {d.social_photos && d.social_photos.length > 0 ? (
                   <img src={d.social_photos[0]} alt={d.name} />
@@ -143,9 +192,6 @@ export default function StaffDashboard({ session, dogs = [], organizations = [],
         <div className="actions" style={{ gap: '12px' }}>
           <button className="primary" onClick={() => setPage('discover')}>
             Explore All Dogs ({dogs.length}) →
-          </button>
-          <button className="outline" onClick={() => setPage('report')}>
-            + Report New Sighting
           </button>
         </div>
       </div>
