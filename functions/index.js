@@ -453,6 +453,21 @@ exports.updateDogRecord = functions.region("us-central1").https.onCall(async (da
     throw new functions.https.HttpsError("not-found", "Dog record not found.");
   }
 
+  const dogData = dogSnap.data();
+  const isAdmitting = data.status === "in_treatment" && callerRole === "hospital_admin";
+
+  if (callerRole !== "platform_admin" && !isAdmitting) {
+    if (callerRole === "hospital_admin" || callerRole === "veterinarian") {
+      if (dogData.hospital_id !== callerOrgId || !["in_treatment", "fit_for_discharge"].includes(dogData.status)) {
+        throw new functions.https.HttpsError("permission-denied", "You can only edit records for dogs actively admitted to your hospital.");
+      }
+    } else if (callerRole === "agency_admin" || callerRole === "agency_employee") {
+      if (dogData.agency_id !== callerOrgId || dogData.status !== "adoptable") {
+        throw new functions.https.HttpsError("permission-denied", "You can only edit records for dogs currently in your agency's care.");
+      }
+    }
+  }
+
   try {
     const updates = {
       updated_at: FieldValue.serverTimestamp(),

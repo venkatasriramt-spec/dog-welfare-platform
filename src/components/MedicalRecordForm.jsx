@@ -4,7 +4,27 @@ import { processAdoption, transferDog, updateDogRecord } from '../services';
 import Confetti from './Confetti';
 
 export default function MedicalRecordForm({ dog, organizations = [], session, onUpdated }) {
-  const [tab, setTab] = useState('record'); // 'record', 'transfer', 'discharge'
+  const role = session?.profile?.role;
+  const orgId = session?.profile?.works_at;
+  const isPlatformAdmin = role === 'platform_admin';
+  const isHospitalAdmin = role === 'hospital_admin' || isPlatformAdmin;
+  const isVet = role === 'veterinarian';
+  const isAgencyAdmin = role === 'agency_admin' || isPlatformAdmin;
+  const isAgencyEmployee = role === 'agency_employee';
+
+  const isDogInMyHospital = isPlatformAdmin || (dog.hospital_id === orgId && (dog.status === 'in_treatment' || dog.status === 'fit_for_discharge'));
+  const isDogInMyAgency = isPlatformAdmin || (dog.agency_id === orgId && dog.status === 'adoptable');
+
+  const canEditMedicalRecord = (isHospitalAdmin || isVet) && isDogInMyHospital;
+  const canUpdateAgencyRecord = (isAgencyAdmin || isAgencyEmployee) && isDogInMyAgency;
+
+  let initialTab = '';
+  if (isHospitalAdmin && dog.status === 'street') initialTab = 'admit';
+  else if (canEditMedicalRecord || canUpdateAgencyRecord) initialTab = 'record';
+  else if (isHospitalAdmin && (dog.status === 'in_treatment' || dog.status === 'fit_for_discharge')) initialTab = 'transfer';
+  else if (isAgencyAdmin && dog.status === 'adoptable') initialTab = 'adopt';
+
+  const [tab, setTab] = useState(initialTab);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
@@ -31,11 +51,7 @@ export default function MedicalRecordForm({ dog, organizations = [], session, on
   const [adopterAddress, setAdopterAddress] = useState('');
   const [adopterNotes, setAdopterNotes] = useState('');
 
-  const role = session?.profile?.role;
-  const isHospitalAdmin = role === 'hospital_admin' || role === 'platform_admin';
-  const isVet = role === 'veterinarian';
-  const isAgencyAdmin = role === 'agency_admin' || role === 'platform_admin';
-  const isAgencyEmployee = role === 'agency_employee';
+
   const agencies = organizations.filter(o => o.type === 'agency');
 
   const submitRecord = async e => {
@@ -171,9 +187,11 @@ export default function MedicalRecordForm({ dog, organizations = [], session, on
       <div className="tabs" style={{ marginTop: '10px', marginBottom: '20px' }}>
         {(isHospitalAdmin || isVet) && (
           <>
-            <button className={tab === 'record' ? 'selected' : ''} onClick={() => { setTab('record'); setError(''); setSuccess(''); }}>
-              🩺 Add Medical Record
-            </button>
+            {canEditMedicalRecord && (
+              <button className={tab === 'record' ? 'selected' : ''} onClick={() => { setTab('record'); setError(''); setSuccess(''); }}>
+                🩺 Add Medical Record
+              </button>
+            )}
             {isHospitalAdmin && dog.status === 'street' && (
               <button className={tab === 'admit' ? 'selected' : ''} onClick={() => { setTab('admit'); setError(''); setSuccess(''); }}>
                 🏥 Admit to Hospital
@@ -189,7 +207,7 @@ export default function MedicalRecordForm({ dog, organizations = [], session, on
                 </button>
               </>
             )}
-            {isVet && dog.status === 'in_treatment' && (
+            {isVet && dog.status === 'in_treatment' && canEditMedicalRecord && (
               <button className={tab === 'release' ? 'selected' : ''} onClick={() => { setTab('release'); setError(''); setSuccess(''); }}>
                 🩺 Mark Fit for Discharge
               </button>
@@ -198,10 +216,12 @@ export default function MedicalRecordForm({ dog, organizations = [], session, on
         )}
         {(isAgencyAdmin || isAgencyEmployee) && (
           <>
-            <button className={tab === 'record' ? 'selected' : ''} onClick={() => { setTab('record'); setError(''); setSuccess(''); }}>
-              📝 Update Record
-            </button>
-            {isAgencyAdmin && dog.status === 'adoptable' && (
+            {canUpdateAgencyRecord && (
+              <button className={tab === 'record' ? 'selected' : ''} onClick={() => { setTab('record'); setError(''); setSuccess(''); }}>
+                📝 Update Record
+              </button>
+            )}
+            {isAgencyAdmin && dog.status === 'adoptable' && canUpdateAgencyRecord && (
               <button className={tab === 'adopt' ? 'selected' : ''} onClick={() => { setTab('adopt'); setError(''); setSuccess(''); }}>
                 ❤️ Mark as Adopted
               </button>
