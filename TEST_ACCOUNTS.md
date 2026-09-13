@@ -12,15 +12,15 @@ This document contains the complete list of test accounts, roles, and credential
 | :--- | :--- | :--- | :--- | :--- |
 | 👑 **Platform Admin** | Platform Admin | `admin@pawpath.demo` | `pawpath` | Global Platform Administrator |
 | 🏥 **Hospital Admin** | Dr. Vikram Malhotra | `citycare.admin@pawpath.demo` | `password123` | CityCare Veterinary Hospital |
-| 👨‍⚕️ **Doctor / Vet** | Dr. Sarah Connor | `sarah.vet@citycare.demo` | `password123` | Chief Surgeon @ CityCare |
-| 👨‍⚕️ **Doctor / Vet** | Dr. Rajesh Sharma | `rajesh.vet@citycare.demo` | `password123` | Emergency Specialist @ CityCare |
+| 👨‍⚕️ **Veterinarian** | Dr. Sarah Connor | `sarah.vet@citycare.demo` | `password123` | Chief Veterinary Surgeon @ CityCare |
+| 👨‍⚕️ **Veterinarian** | Dr. Rajesh Sharma | `rajesh.vet@citycare.demo` | `password123` | Vaccination & Emergency Specialist @ CityCare |
 | 🏡 **Agency Admin** | Ananya Roy | `happytails.admin@pawpath.demo` | `password123` | Happy Tails Rescue & Adoption |
-| 👥 **Agency Staff** | Priya Patel | `priya.staff@happytails.demo` | `password123` | Adoption Coordinator @ Happy Tails |
-| 👥 **Agency Staff** | Alex Miller | `alex.staff@happytails.demo` | `password123` | Shelter Care Manager @ Happy Tails |
+| 👥 **Agency Employee** | Priya Patel | `priya.staff@happytails.demo` | `password123` | Senior Adoption Coordinator @ Happy Tails |
+| 👥 **Agency Employee** | Alex Miller | `alex.staff@happytails.demo` | `password123` | Shelter Care Manager @ Happy Tails |
 | 🏥 **Hospital Admin** | Dr. Kavita Reddy | `pawsclaws.admin@pawpath.demo` | `password123` | Paws & Claws Specialty Clinic |
-| 👨‍⚕️ **Doctor / Vet** | Dr. Amit Verma | `amit.vet@pawsclaws.demo` | `password123` | Rehabilitation & Orthopedics @ Paws & Claws |
+| 👨‍⚕️ **Veterinarian** | Dr. Amit Verma | `amit.vet@pawsclaws.demo` | `password123` | Canine Rehabilitation & Orthopedics @ Paws & Claws |
 | 🏡 **Agency Admin** | Marcus Chen | `hopestreet.admin@pawpath.demo` | `password123` | Hope Street Dog Sanctuary |
-| 👥 **Agency Staff** | Maya Sen | `maya.staff@hopestreet.demo` | `password123` | Rescue Outreach Officer @ Hope Street |
+| 👥 **Agency Employee** | Maya Sen | `maya.staff@hopestreet.demo` | `password123` | Rescue Outreach Officer @ Hope Street |
 | 🐾 **Community Member** | Rahul Verma | `rahul.community@pawpath.demo` | `password123` | Community dog reporting & discovery |
 
 ---
@@ -47,9 +47,9 @@ This document contains the complete list of test accounts, roles, and credential
 * **Email:** `citycare.admin@pawpath.demo`
 * **Password:** `password123`
 * **Role:** `hospital_admin`
-* **Capabilities:** Manage hospital details, admit dogs, add and manage veterinary doctors.
+* **Capabilities:** Manage hospital details, admit dogs, add and manage veterinarians.
 
-#### Doctors & Veterinary Staff:
+#### Veterinarians:
 1. **Dr. Sarah Connor**
    * **Email:** `sarah.vet@citycare.demo`
    * **Password:** `password123`
@@ -75,7 +75,7 @@ This document contains the complete list of test accounts, roles, and credential
 * **Role:** `agency_admin`
 * **Capabilities:** Manage shelter listings, process adoptions, add and manage agency staff.
 
-#### Agency Staff & Employees:
+#### Agency Employees:
 1. **Priya Patel**
    * **Email:** `priya.staff@happytails.demo`
    * **Password:** `password123`
@@ -100,7 +100,7 @@ This document contains the complete list of test accounts, roles, and credential
 * **Password:** `password123`
 * **Role:** `hospital_admin`
 
-#### Doctors:
+#### Veterinarians:
 1. **Dr. Amit Verma**
    * **Email:** `amit.vet@pawsclaws.demo`
    * **Password:** `password123`
@@ -119,7 +119,7 @@ This document contains the complete list of test accounts, roles, and credential
 * **Password:** `password123`
 * **Role:** `agency_admin`
 
-#### Staff:
+#### Agency Employees:
 1. **Maya Sen**
    * **Email:** `maya.staff@hopestreet.demo`
    * **Password:** `password123`

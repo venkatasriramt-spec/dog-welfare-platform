@@ -351,7 +351,7 @@ Use this data to populate the system and test the various role-based workflows.
 * **Action to Perform:** Priya Patel (`priya.staff@happytails.demo` - Employee) logs in -> 'Current Residents' -> Adds an update note. (Verify NO 'Mark Adopted' button).
 * **Details:**
   - Location: HSR Layout, Bangalore
-  - Breed: INDie
+  - Breed: Indian Pariah / Indie
   - Gender: Male
   - Estimated Age: Senior (10+ years)
   - Condition/Description: High energy, would do well in a house with a yard.
@@ -524,7 +524,7 @@ Use this data to populate the system and test the various role-based workflows.
 * **Action to Perform:** Marcus Chen fills out adopter details -> Verify dog moves to 'Adoption History' tab.
 * **Details:**
   - Location: JP Nagar, Bangalore
-  - Breed: INDie
+  - Breed: Indian Pariah / Indie
   - Gender: Female
   - Estimated Age: Puppy (2 months)
   - Condition/Description: Recovered from leg injury, ready for a loving home.

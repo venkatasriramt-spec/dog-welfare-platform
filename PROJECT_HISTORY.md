@@ -22,9 +22,9 @@ The system uses Firebase Authentication (email/password) combined with a `Users`
 ### Supported Roles:
 1. **Platform Admin (`platform_admin`)**: Oversees the entire system, approves/rejects new organisation applications, and has global read/write access. Auto-assigned when signing in with the email `admin@pawpath.demo`.
 2. **Hospital Admin (`hospital_admin`)**: Manages a specific veterinary hospital, adds veterinarians via the `StaffManager` component, and oversees admitted dogs.
-3. **Veterinarian (`veterinarian`)**: Admits dogs from the street, adds medical records, transfers dogs to agencies, and discharges patients.
+3. **Veterinarian (`veterinarian`)**: Admits dogs from the street, adds medical records, marks dogs as fit for discharge, and discharges patients. Role label: "Veterinarian / Doctor".
 4. **Agency Admin (`agency_admin`)**: Manages a specific adoption agency, adds employees via the `StaffManager` component, and oversees shelter dogs.
-5. **Agency Employee (`agency_employee`)**: Updates shelter dog records and processes adoptions (including private adopter details).
+5. **Agency Employee (`agency_employee`)**: Updates shelter dog records and processes adoptions (including private adopter details). Role label: "Agency Employee".
 6. **Community Member (`community_member`)**: Explores the dog directory, reports new street dogs (with photos and location data), and applies to join as an organisation partner.
 7. **Pending Partner (`pending_partner`)**: Assigned after submitting an organisation application (hospital or agency). The user sees a "pending review" message on their dashboard until the Platform Admin acts on the application.
 8. **Rejected Partner (`rejected_partner`)**: Assigned if the Platform Admin declines the organisation application. The user sees a "declined" message with the rejection reason.
@@ -82,7 +82,7 @@ The core of the application revolves around the `Dogs` collection. Every dog is 
 To ensure data integrity and bypass client-side manipulation, sensitive operations are handled via Firebase Cloud Functions (v1, region `us-central1`):
 
 * **`registerDog`**: Generates a secure `PAW-XXXX` tag via the `Counters` collection, initialises the dog's record, and sets the initial status based on the caller's role (`street` for community members, `in_treatment` for hospital staff, `adoptable` for agency staff).
-* **`updateDogRecord`**: Appends treatment timeline entries, updates medical status flags (vaccinated, neutered), breed, and dog status. When admitting a street dog (`status → in_treatment`), it also sets `hospital_id` and appends to `hospital_history`.
+* **`updateDogRecord`**: Appends treatment timeline entries, updates medical status flags (vaccinated, neutered), breed, and dog status. When admitting a street dog (`status → in_treatment`), it also sets `hospital_id` and appends to `hospital_history`. Veterinarians can only change status to `fit_for_discharge`. Agency employees cannot change dog status.
 * **`transferDog`**: Safely transfers a dog from a hospital's custody to an agency's custody. Sets `status` to `adoptable`, updates `agency_id`, and appends a transfer entry to the treatment timeline. Validates that the target agency exists. Restricted to platform and hospital administrators.
 * **`processAdoption`**: Marks a dog as `adopted`, appends an adoption timeline entry, and stores the private adopter details (name, email, phone, address, notes) in the `Dogs/{dogId}/AdoptionDetails/record` subcollection. Restricted to platform and agency administrators. Verifies the caller's agency matches the dog's `agency_id`.
 * **`createPartnerApplication`**: Creates a partner organisation application and sets the caller's role to `pending_partner`. Prevents duplicate applications from users who already hold an active role.
@@ -120,10 +120,10 @@ The frontend features a modern, responsive design with animated particle backgro
 
 ### Reusable Components:
 * **`MedicalRecordForm`**: Context-aware action panel on the DogProfile page with tabs that appear based on the user's role and the dog's current status:
-  * Hospital Admin: "Add Medical Record", "Admit to Hospital" (for street dogs), "Transfer to Agency" (for in-treatment/fit_for_discharge dogs), "Discharge" (for in-treatment/fit_for_discharge dogs).
-  * Veterinarian: "Add Medical Record", "Mark Fit for Discharge" (for in-treatment dogs).
-  * Agency Admin: "Update Record", "Mark as Adopted".
-  * Agency Employee: "Update Record".
+  * Hospital Admin: "Add Medical Record", "Admit to Hospital" (for street dogs), "Transfer to Agency" (for in-treatment/fit_for_discharge dogs), "Discharge" (for in-treatment/fit_for_discharge dogs - releases dog as `community_dog`).
+  * Veterinarian: "Add Medical Record", "Mark Fit for Discharge" (for in-treatment dogs - changes status to `fit_for_discharge`).
+  * Agency Admin: "Update Record", "Mark as Adopted" (for adoptable dogs - captures private adopter details in `Dogs/{dogId}/AdoptionDetails/record` subcollection).
+  * Agency Employee: "Update Record" (cannot change status or process adoptions).
 * **`DogRegistrationForm`**: Full-form dog intake used by hospitals (Admit Dog to Hospital) and agencies (Add Dog to Shelter). Includes breed, age, gender, location, description, condition notes, vaccination/neutered checkboxes, and photo upload.
 * **`StaffManager`**: Split-panel interface for Org Admins to view their staff directory (left) and add new staff members (right). Creates Firebase Auth accounts via the `addOrgStaff` Cloud Function.
 * **`Header`**: Public site header with PawPath brand (SVG paw logo), navigation (Home, About, Discover, Join PawPath), and Sign In button.
