@@ -49,20 +49,33 @@ export default function DogProfile({ dog, setPage, session, organizations = [], 
         {dog ? (
           <div className="dog-profile-full">
             {/* Header Section */}
-            <div className="dog-profile-header">
-              {dog.social_photos && dog.social_photos.length > 0 ? (
-                <img src={dog.social_photos[0]} alt={dog.name} className="dog-profile-art" style={{ objectFit: 'cover' }} />
-              ) : (
-                <div className="dog-profile-art">🐾</div>
-              )}
-              <div className="dog-profile-info">
-                <div style={{ display: 'flex', gap: '10px', alignItems: 'center', flexWrap: 'wrap' }}>
+            <div className="dog-profile-hero-card">
+              <div className="dog-profile-hero-image-area">
+                {dog.social_photos && dog.social_photos.length > 0 ? (
+                  <>
+                    <div className="dog-hero-blur-bg" style={{ backgroundImage: `url(${dog.social_photos[0]})` }} />
+                    <img src={dog.social_photos[0]} alt={dog.name} className="dog-hero-img" />
+                  </>
+                ) : (
+                  <div className="dog-hero-placeholder">🐾</div>
+                )}
+                
+                {/* Badges top-left */}
+                <div className="dog-hero-badges">
                   <span className={`status ${dog.status}`}>{statusLabel}</span>
                   {dog.tag && <span className="dog-tag">{dog.tag}</span>}
                 </div>
-                <h1>{dog.name}</h1>
-                {dog.description && <p className="lead">{dog.description}</p>}
+
+                {/* Name bottom-right */}
+                <h1 className="dog-hero-name">{dog.name}</h1>
               </div>
+              
+              {/* Description below */}
+              {dog.description && (
+                <div className="dog-hero-desc">
+                  <p className="lead">{dog.description}</p>
+                </div>
+              )}
             </div>
 
             {/* Identity & Details Grid */}
