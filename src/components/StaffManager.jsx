@@ -71,13 +71,18 @@ export default function StaffManager({ organizationId, roleType, orgName }) {
           Manage members registered under <strong>{orgName || 'your organisation'}</strong>. You can add new {isHospital ? 'doctors' : 'employees'} directly below.
         </p>
         <div style={{ marginTop: '16px' }}>
-          <input 
-            type="text" 
-            placeholder={`Search ${isHospital ? 'doctors' : 'staff'} by name, email, or title...`}
-            value={searchQuery}
-            onChange={e => setSearchQuery(e.target.value)}
-            style={{ width: '300px' }}
-          />
+          <div className="search search-toolbar" style={{ width: '350px', margin: 0 }}>
+            <label className="search-field">
+              <span className="sr-only">Search staff</span>
+              <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.4" /><path d="m16 16 4.2 4.2" /></svg>
+              <input 
+                type="text" 
+                placeholder={`Search ${isHospital ? 'doctors' : 'staff'} by name, email, or title...`}
+                value={searchQuery}
+                onChange={e => setSearchQuery(e.target.value)}
+              />
+            </label>
+          </div>
         </div>
       </div>
 

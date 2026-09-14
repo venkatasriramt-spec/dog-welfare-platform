@@ -63,9 +63,6 @@ export default function StaffDogs({ session, organizations = [], setPage }) {
           <p className="eyebrow">— {isVet ? '🩺 MEDICAL WORKSTATION' : '🏡 CARE WORKSTATION'}</p>
           <h2>{isVet ? 'All Active Patients' : 'All Shelter Dogs'}</h2>
         </div>
-        {!isVet && (
-          <p className="discover-summary"><b>{list.length}</b> {list.length === 1 ? 'dog matches' : 'dogs match'} your filter.</p>
-        )}
       </div>
 
       {/* Search & Filter Bar */}

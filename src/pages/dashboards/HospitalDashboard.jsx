@@ -150,13 +150,18 @@ export default function HospitalDashboard({ session, dogs = [], organizations = 
                 Dogs currently admitted at your hospital for treatment.
               </p>
             </div>
-            <input 
-              type="text" 
-              placeholder="Search active patients..." 
-              value={searchQuery}
-              onChange={e => setSearchQuery(e.target.value)}
-              style={{ width: '250px' }}
-            />
+            <div className="search search-toolbar" style={{ width: '300px', margin: 0 }}>
+              <label className="search-field">
+                <span className="sr-only">Search active patients</span>
+                <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.4" /><path d="m16 16 4.2 4.2" /></svg>
+                <input 
+                  type="text" 
+                  placeholder="Search active patients..." 
+                  value={searchQuery}
+                  onChange={e => setSearchQuery(e.target.value)}
+                />
+              </label>
+            </div>
           </div>
 
           {filteredActive.length > 0 ? (
@@ -220,13 +225,18 @@ export default function HospitalDashboard({ session, dogs = [], organizations = 
                 Dogs marked as "Fit for Discharge" by a veterinarian. Awaiting administrative transfer or release.
               </p>
             </div>
-            <input 
-              type="text" 
-              placeholder="Search ready dogs..." 
-              value={searchQuery}
-              onChange={e => setSearchQuery(e.target.value)}
-              style={{ width: '250px' }}
-            />
+            <div className="search search-toolbar" style={{ width: '300px', margin: 0 }}>
+              <label className="search-field">
+                <span className="sr-only">Search ready dogs</span>
+                <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.4" /><path d="m16 16 4.2 4.2" /></svg>
+                <input 
+                  type="text" 
+                  placeholder="Search ready dogs..." 
+                  value={searchQuery}
+                  onChange={e => setSearchQuery(e.target.value)}
+                />
+              </label>
+            </div>
           </div>
 
           {filteredReady.length > 0 ? (
@@ -291,13 +301,18 @@ export default function HospitalDashboard({ session, dogs = [], organizations = 
               </p>
             </div>
             <div style={{ display: 'flex', gap: '12px' }}>
-              <input 
-                type="text" 
-                placeholder="Search queue..." 
-                value={searchQuery}
-                onChange={e => setSearchQuery(e.target.value)}
-                style={{ width: '200px' }}
-              />
+              <div className="search search-toolbar" style={{ width: '250px', margin: 0 }}>
+                <label className="search-field">
+                  <span className="sr-only">Search queue</span>
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.4" /><path d="m16 16 4.2 4.2" /></svg>
+                  <input 
+                    type="text" 
+                    placeholder="Search queue..." 
+                    value={searchQuery}
+                    onChange={e => setSearchQuery(e.target.value)}
+                  />
+                </label>
+              </div>
               <button className="primary" onClick={() => setShowAdmitForm(!showAdmitForm)}>
                 {showAdmitForm ? '✕ Close' : '+ Register Walk-in Patient'}
               </button>

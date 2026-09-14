@@ -109,13 +109,18 @@ export default function PlatformAdminView({ dogs = [], organizations = [], appli
         <>
           <p className="lead">Review pending partner requests. Approved organisations are instantly activated.</p>
           <div className="admin-search" style={{ marginBottom: '20px' }}>
-            <input
-              type="text"
-              placeholder="Search pending applications..."
-              value={searchQuery}
-              onChange={e => setSearchQuery(e.target.value)}
-              style={{ width: '100%', maxWidth: '400px' }}
-            />
+            <div className="search search-toolbar" style={{ width: '100%', maxWidth: '400px', margin: 0 }}>
+              <label className="search-field">
+                <span className="sr-only">Search pending applications</span>
+                <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.4" /><path d="m16 16 4.2 4.2" /></svg>
+                <input
+                  type="text"
+                  placeholder="Search pending applications..."
+                  value={searchQuery}
+                  onChange={e => setSearchQuery(e.target.value)}
+                />
+              </label>
+            </div>
           </div>
           <h3>Pending Organisation Applications ({filteredApplications.length})</h3>
           {filteredApplications.length ? (
@@ -144,13 +149,18 @@ export default function PlatformAdminView({ dogs = [], organizations = [], appli
         <>
           <p className="lead">Active veterinary clinics and hospitals verified on PawPath.</p>
           <div className="admin-search" style={{ marginBottom: '20px' }}>
-            <input
-              type="text"
-              placeholder="Search hospitals by name, email, or location..."
-              value={searchQuery}
-              onChange={e => setSearchQuery(e.target.value)}
-              style={{ width: '100%', maxWidth: '400px' }}
-            />
+            <div className="search search-toolbar" style={{ width: '100%', maxWidth: '400px', margin: 0 }}>
+              <label className="search-field">
+                <span className="sr-only">Search hospitals</span>
+                <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.4" /><path d="m16 16 4.2 4.2" /></svg>
+                <input
+                  type="text"
+                  placeholder="Search hospitals by name, email, or location..."
+                  value={searchQuery}
+                  onChange={e => setSearchQuery(e.target.value)}
+                />
+              </label>
+            </div>
           </div>
           <h3>Active Hospitals ({filteredHospitals.length})</h3>
           {filteredHospitals.length ? (
@@ -179,13 +189,18 @@ export default function PlatformAdminView({ dogs = [], organizations = [], appli
         <>
           <p className="lead">Active adoption agencies and shelters verified on PawPath.</p>
           <div className="admin-search" style={{ marginBottom: '20px' }}>
-            <input
-              type="text"
-              placeholder="Search agencies by name, email, or location..."
-              value={searchQuery}
-              onChange={e => setSearchQuery(e.target.value)}
-              style={{ width: '100%', maxWidth: '400px' }}
-            />
+            <div className="search search-toolbar" style={{ width: '100%', maxWidth: '400px', margin: 0 }}>
+              <label className="search-field">
+                <span className="sr-only">Search agencies</span>
+                <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.4" /><path d="m16 16 4.2 4.2" /></svg>
+                <input
+                  type="text"
+                  placeholder="Search agencies by name, email, or location..."
+                  value={searchQuery}
+                  onChange={e => setSearchQuery(e.target.value)}
+                />
+              </label>
+            </div>
           </div>
           <h3>Active Adoption Agencies ({filteredAgencies.length})</h3>
           {filteredAgencies.length ? (

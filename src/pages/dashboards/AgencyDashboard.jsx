@@ -129,13 +129,18 @@ export default function AgencyDashboard({ session, dogs = [], organizations = []
               </p>
             </div>
             <div style={{ display: 'flex', gap: '12px' }}>
-              <input 
-                type="text" 
-                placeholder="Search dogs..." 
-                value={searchQuery}
-                onChange={e => setSearchQuery(e.target.value)}
-                style={{ width: '200px' }}
-              />
+              <div className="search search-toolbar" style={{ width: '250px', margin: 0 }}>
+                <label className="search-field">
+                  <span className="sr-only">Search dogs</span>
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.4" /><path d="m16 16 4.2 4.2" /></svg>
+                  <input 
+                    type="text" 
+                    placeholder="Search dogs..." 
+                    value={searchQuery}
+                    onChange={e => setSearchQuery(e.target.value)}
+                  />
+                </label>
+              </div>
               <button className="primary" onClick={() => setShowAddForm(!showAddForm)}>
                 {showAddForm ? '✕ Close' : '+ Register Walk-in Dog'}
               </button>
@@ -213,13 +218,18 @@ export default function AgencyDashboard({ session, dogs = [], organizations = []
                 Dogs that have been successfully adopted from your agency.
               </p>
             </div>
-            <input 
-              type="text" 
-              placeholder="Search adopted dogs..." 
-              value={searchQuery}
-              onChange={e => setSearchQuery(e.target.value)}
-              style={{ width: '250px' }}
-            />
+            <div className="search search-toolbar" style={{ width: '300px', margin: 0 }}>
+              <label className="search-field">
+                <span className="sr-only">Search adopted dogs</span>
+                <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.4" /><path d="m16 16 4.2 4.2" /></svg>
+                <input 
+                  type="text" 
+                  placeholder="Search adopted dogs..." 
+                  value={searchQuery}
+                  onChange={e => setSearchQuery(e.target.value)}
+                />
+              </label>
+            </div>
           </div>
 
           {filteredAdopted.length > 0 ? (
