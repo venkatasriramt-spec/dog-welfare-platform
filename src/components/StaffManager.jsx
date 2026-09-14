@@ -17,8 +17,8 @@ export default function StaffManager({ organizationId, roleType, orgName }) {
   const PAGE_SIZE = 4;
 
   const filteredStaff = useMemo(() => {
-    if (!searchQuery.trim()) return staffList;
-    const q = searchQuery.toLowerCase();
+    const q = searchQuery.trim().toLowerCase();
+    if (!q) return staffList;
     return staffList.filter(member => 
       `${member.full_name} ${member.email} ${member.title || ''}`.toLowerCase().includes(q)
     );

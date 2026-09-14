@@ -31,10 +31,8 @@ export default function Discover({ dogs, setPage, session, isWorkspace }) {
 
   // Clamp page when active list changes
   useEffect(() => {
-    if (currentPage > totalPages) {
-      setCurrentPage(totalPages);
-    }
-  }, [totalPages, currentPage]);
+    setCurrentPage(prev => prev > totalPages ? totalPages : prev);
+  }, [totalPages]);
 
   const paginatedList = list.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
 

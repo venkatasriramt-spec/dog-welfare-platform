@@ -29,8 +29,8 @@ export default function AgencyDashboard({ session, dogs = [], organizations = []
   }, [currentTab]);
 
   const filteredAdoptable = useMemo(() => {
-    if (!searchQuery.trim()) return adoptableDogs;
-    const q = searchQuery.toLowerCase();
+    const q = searchQuery.trim().toLowerCase();
+    if (!q) return adoptableDogs;
     return adoptableDogs.filter(d => 
       `${d.name} ${d.breed || ''} ${d.tag || ''}`.toLowerCase().includes(q)
     );
@@ -41,8 +41,8 @@ export default function AgencyDashboard({ session, dogs = [], organizations = []
   }, [filteredAdoptable, currentPage]);
 
   const filteredAdopted = useMemo(() => {
-    if (!searchQuery.trim()) return adoptedDogs;
-    const q = searchQuery.toLowerCase();
+    const q = searchQuery.trim().toLowerCase();
+    if (!q) return adoptedDogs;
     return adoptedDogs.filter(d => 
       `${d.name} ${d.breed || ''} ${d.tag || ''}`.toLowerCase().includes(q)
     );

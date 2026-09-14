@@ -33,8 +33,8 @@ export default function HospitalDashboard({ session, dogs = [], organizations = 
   }, [currentTab]);
 
   const filteredActive = useMemo(() => {
-    if (!searchQuery.trim()) return activePatients;
-    const q = searchQuery.toLowerCase();
+    const q = searchQuery.trim().toLowerCase();
+    if (!q) return activePatients;
     return activePatients.filter(d => 
       `${d.name} ${d.breed || ''} ${d.tag || ''}`.toLowerCase().includes(q)
     );
@@ -45,8 +45,8 @@ export default function HospitalDashboard({ session, dogs = [], organizations = 
   }, [filteredActive, currentPage]);
 
   const filteredReady = useMemo(() => {
-    if (!searchQuery.trim()) return readyToLeave;
-    const q = searchQuery.toLowerCase();
+    const q = searchQuery.trim().toLowerCase();
+    if (!q) return readyToLeave;
     return readyToLeave.filter(d => 
       `${d.name} ${d.breed || ''} ${d.tag || ''}`.toLowerCase().includes(q)
     );
@@ -57,8 +57,8 @@ export default function HospitalDashboard({ session, dogs = [], organizations = 
   }, [filteredReady, currentPage]);
 
   const filteredQueue = useMemo(() => {
-    if (!searchQuery.trim()) return streetDogs;
-    const q = searchQuery.toLowerCase();
+    const q = searchQuery.trim().toLowerCase();
+    if (!q) return streetDogs;
     return streetDogs.filter(d => 
       `${d.name} ${d.location || ''} ${d.registered_by_name || ''} ${d.tag || ''}`.toLowerCase().includes(q)
     );
