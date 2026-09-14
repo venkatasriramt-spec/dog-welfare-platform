@@ -24,7 +24,7 @@ export default function StaffDogs({ session, organizations = [], setPage }) {
       filtered = filtered.filter(d => d.status === statusFilter);
     }
     if (search.trim()) {
-      const q = search.toLowerCase();
+      const q = search.trim().toLowerCase();
       filtered = filtered.filter(d =>
         `${d.name} ${d.location} ${d.status} ${d.breed || ''} ${d.tag || ''} ${d.gender || ''}`.toLowerCase().includes(q)
       );
