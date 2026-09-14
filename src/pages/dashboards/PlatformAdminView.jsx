@@ -1,10 +1,14 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import { approveApplication, declineApplication } from '../../services';
 
 export default function PlatformAdminView({ dogs = [], organizations = [], applications = [], setPage, currentTab = 'overview' }) {
   const [searchQuery, setSearchQuery] = useState('');
   const [setupLink, setSetupLink] = useState('');
   const [error, setError] = useState('');
+
+  useEffect(() => {
+    setSearchQuery('');
+  }, [currentTab]);
 
   const hospitals = useMemo(() => organizations.filter(o => o.type === 'hospital'), [organizations]);
   const agencies = useMemo(() => organizations.filter(o => o.type === 'agency'), [organizations]);
