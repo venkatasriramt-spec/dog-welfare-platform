@@ -7,6 +7,7 @@ import DogProfile from './pages/DogProfile';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Report from './pages/Report';
+import StaffDogs from './pages/StaffDogs';
 import { watchApplications, watchDogs, watchOrganizations, watchSession } from './services';
 import WorkspaceShell from './layouts/WorkspaceShell';
 import PublicShell from './layouts/PublicShell';
@@ -60,6 +61,8 @@ export default function App() {
       body = <Discover dogs={dogs} setPage={setPage} session={session} isWorkspace={true} />;
     } else if (page === 'report') {
       body = <Report session={session} setPage={setPage} isWorkspace={true} />;
+    } else if (page === 'staff_dogs') {
+      body = <StaffDogs session={session} organizations={organizations} setPage={setPage} />;
     } else if (page === 'apply') {
       body = <ApplicationForm session={session} setPage={setPage} isWorkspace={true} />;
     } else if (page.startsWith('dog:')) {

@@ -31,9 +31,16 @@ export default function WorkspaceShell({ session, page, setPage, children }) {
             <button className={page === 'dashboard' ? 'active' : ''} onClick={() => setPage('dashboard')}>
               🏠 Workspace Dashboard
             </button>
+            {isStaff && (
+              <button className={page === 'staff_dogs' ? 'active' : ''} onClick={() => setPage('staff_dogs')}>
+                {role === 'veterinarian' ? '🩺 Active Patients' : '🏡 Shelter Dogs'}
+              </button>
+            )}
             {!isPending && !isRejected && (
               <>
-                <button className={page === 'discover' || page.startsWith('dog:') ? 'active' : ''} onClick={() => setPage('discover')}>🐾 Discover dogs</button>
+                {!isStaff && (
+                  <button className={page === 'discover' || page.startsWith('dog:') ? 'active' : ''} onClick={() => setPage('discover')}>🐾 Discover dogs</button>
+                )}
                 {!isPlatformAdmin && !isHospitalAdmin && !isAgencyAdmin && !isStaff && (
                   <>
                     <button className={page === 'report' ? 'active' : ''} onClick={() => setPage('report')}>📍 Report a dog</button>
