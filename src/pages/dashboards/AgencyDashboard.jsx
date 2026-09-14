@@ -202,7 +202,7 @@ export default function AgencyDashboard({ session, dogs = [], organizations = []
             </>
           ) : (
             <div className="empty">
-              {searchQuery ? 'No dogs match your search.' : 'No dogs currently available for adoption.'}
+              {searchQuery.trim() ? 'No dogs match your search.' : 'No dogs currently available for adoption.'}
             </div>
           )}
         </div>
@@ -278,7 +278,7 @@ export default function AgencyDashboard({ session, dogs = [], organizations = []
             </>
           ) : (
             <div className="empty">
-              {searchQuery ? 'No adopted dogs match your search.' : 'No adoption records found.'}
+              {searchQuery.trim() ? 'No adopted dogs match your search.' : 'No adoption records found.'}
             </div>
           )}
         </div>

@@ -149,7 +149,7 @@ export default function StaffManager({ organizationId, roleType, orgName }) {
             </>
           ) : (
             <div className="empty" style={{ background: '#fff', border: '1px solid var(--line)', borderRadius: '6px' }}>
-              {searchQuery 
+              {searchQuery.trim() 
                 ? `No ${isHospital ? 'doctors' : 'employees'} match your search.` 
                 : `No ${isHospital ? 'doctors' : 'employees'} registered under this organisation yet. Use the form to add your first team member!`}
             </div>

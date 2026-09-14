@@ -210,7 +210,7 @@ export default function HospitalDashboard({ session, dogs = [], organizations = 
             </>
           ) : (
             <div className="empty">
-              {searchQuery ? 'No active patients match your search.' : 'No active patients currently.'}
+              {searchQuery.trim() ? 'No active patients match your search.' : 'No active patients currently.'}
             </div>
           )}
         </div>
@@ -285,7 +285,7 @@ export default function HospitalDashboard({ session, dogs = [], organizations = 
             </>
           ) : (
             <div className="empty">
-              {searchQuery ? 'No dogs match your search.' : 'No dogs are currently waiting to leave.'}
+              {searchQuery.trim() ? 'No dogs match your search.' : 'No dogs are currently waiting to leave.'}
             </div>
           )}
         </div>
@@ -377,7 +377,7 @@ export default function HospitalDashboard({ session, dogs = [], organizations = 
             </>
           ) : (
             <div className="empty">
-              {searchQuery ? 'No street dogs match your search.' : 'No street dogs awaiting rescue in the network.'}
+              {searchQuery.trim() ? 'No street dogs match your search.' : 'No street dogs awaiting rescue in the network.'}
             </div>
           )}
         </div>
