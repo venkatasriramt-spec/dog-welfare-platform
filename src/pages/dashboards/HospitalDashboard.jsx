@@ -68,9 +68,23 @@ export default function HospitalDashboard({ session, dogs = [], organizations = 
     return filteredQueue.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
   }, [filteredQueue, currentPage]);
 
+  // Reset page to 1 when search changes
   useEffect(() => {
     setCurrentPage(1);
   }, [searchQuery]);
+
+  // Clamp page when active list changes
+  useEffect(() => {
+    let activeListLength = 0;
+    if (currentTab === 'active') activeListLength = filteredActive.length;
+    else if (currentTab === 'ready') activeListLength = filteredReady.length;
+    else if (currentTab === 'queue') activeListLength = filteredQueue.length;
+    
+    const totalPages = Math.ceil(activeListLength / PAGE_SIZE) || 1;
+    if (currentPage > totalPages) {
+      setCurrentPage(totalPages);
+    }
+  }, [filteredActive.length, filteredReady.length, filteredQueue.length, currentTab, currentPage]);
 
   return (
     <div className="hospital-dashboard">

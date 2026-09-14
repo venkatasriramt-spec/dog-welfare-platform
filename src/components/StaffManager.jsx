@@ -29,6 +29,13 @@ export default function StaffManager({ organizationId, roleType, orgName }) {
   }, [filteredStaff, currentPage]);
 
   useEffect(() => {
+    const totalPages = Math.ceil(filteredStaff.length / PAGE_SIZE) || 1;
+    if (currentPage > totalPages) {
+      setCurrentPage(totalPages);
+    }
+  }, [filteredStaff.length, currentPage]);
+
+  useEffect(() => {
     setCurrentPage(1);
   }, [searchQuery]);
 

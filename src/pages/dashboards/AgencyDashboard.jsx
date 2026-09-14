@@ -57,6 +57,15 @@ export default function AgencyDashboard({ session, dogs = [], organizations = []
     setCurrentPage(1);
   }, [searchQuery]);
 
+  // Clamp page when active list changes
+  useEffect(() => {
+    const activeListLength = currentTab === 'history' ? filteredAdopted.length : filteredAdoptable.length;
+    const totalPages = Math.ceil(activeListLength / PAGE_SIZE) || 1;
+    if (currentPage > totalPages) {
+      setCurrentPage(totalPages);
+    }
+  }, [filteredAdoptable.length, filteredAdopted.length, currentTab, currentPage]);
+
   return (
     <div className="agency-dashboard">
       <div className="agency-header" style={{ marginBottom: '24px' }}>

@@ -27,7 +27,15 @@ export default function Discover({ dogs, setPage, session, isWorkspace }) {
     setCurrentPage(1);
   }, [search, statusFilter]);
 
-  const totalPages = Math.ceil(list.length / PAGE_SIZE);
+  const totalPages = Math.ceil(list.length / PAGE_SIZE) || 1;
+
+  // Clamp page when active list changes
+  useEffect(() => {
+    if (currentPage > totalPages) {
+      setCurrentPage(totalPages);
+    }
+  }, [totalPages, currentPage]);
+
   const paginatedList = list.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
 
   return (
