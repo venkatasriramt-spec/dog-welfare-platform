@@ -1,8 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import { approveApplication, declineApplication } from '../../services';
 
-export default function PlatformAdminView({ dogs = [], organizations = [], applications = [], setPage }) {
-  const [adminTab, setAdminTab] = useState('overview');
+export default function PlatformAdminView({ dogs = [], organizations = [], applications = [], setPage, currentTab = 'overview' }) {
   const [searchQuery, setSearchQuery] = useState('');
   const [setupLink, setSetupLink] = useState('');
   const [error, setError] = useState('');
@@ -68,24 +67,7 @@ export default function PlatformAdminView({ dogs = [], organizations = [], appli
 
   return (
     <>
-      <div style={{ marginBottom: '20px' }}>
-        <nav className="tabs" style={{ margin: '0 0 24px 0' }}>
-          <button className={adminTab === 'overview' ? 'selected' : ''} onClick={() => { setAdminTab('overview'); setSearchQuery(''); }}>
-            📊 Overview
-          </button>
-          <button className={adminTab === 'pending' ? 'selected' : ''} onClick={() => { setAdminTab('pending'); setSearchQuery(''); }}>
-            📌 Pending Requests ({applications.length})
-          </button>
-          <button className={adminTab === 'hospitals' ? 'selected' : ''} onClick={() => { setAdminTab('hospitals'); setSearchQuery(''); }}>
-            🏥 Hospitals ({hospitals.length})
-          </button>
-          <button className={adminTab === 'agencies' ? 'selected' : ''} onClick={() => { setAdminTab('agencies'); setSearchQuery(''); }}>
-            🏡 Adoption Agencies ({agencies.length})
-          </button>
-        </nav>
-      </div>
-
-      {adminTab === 'overview' && (
+      {currentTab === 'overview' && (
         <>
           <p className="lead">Platform overview & live network analytics.</p>
           <div className="metrics" style={{ gridTemplateColumns: 'repeat(4, 1fr)' }}>
@@ -123,7 +105,7 @@ export default function PlatformAdminView({ dogs = [], organizations = [], appli
         </>
       )}
 
-      {adminTab === 'pending' && (
+      {currentTab === 'pending' && (
         <>
           <p className="lead">Review pending partner requests. Approved organisations are instantly activated.</p>
           <div className="admin-search" style={{ marginBottom: '20px' }}>
@@ -158,7 +140,7 @@ export default function PlatformAdminView({ dogs = [], organizations = [], appli
         </>
       )}
 
-      {adminTab === 'hospitals' && (
+      {currentTab === 'hospitals' && (
         <>
           <p className="lead">Active veterinary clinics and hospitals verified on PawPath.</p>
           <div className="admin-search" style={{ marginBottom: '20px' }}>
@@ -193,7 +175,7 @@ export default function PlatformAdminView({ dogs = [], organizations = [], appli
         </>
       )}
 
-      {adminTab === 'agencies' && (
+      {currentTab === 'agencies' && (
         <>
           <p className="lead">Active adoption agencies and shelters verified on PawPath.</p>
           <div className="admin-search" style={{ marginBottom: '20px' }}>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { addOrgStaff, watchOrgStaff } from '../services';
 
 export default function StaffManager({ organizationId, roleType, orgName }) {
@@ -11,6 +11,26 @@ export default function StaffManager({ organizationId, roleType, orgName }) {
   const isHospital = roleType === 'hospital_admin';
   const staffTitleSingular = isHospital ? 'Doctor / Veterinarian' : 'Staff Member / Employee';
   const staffTitlePlural = isHospital ? 'Doctors & Veterinary Staff' : 'Agency Employees & Staff';
+
+  const [searchQuery, setSearchQuery] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+  const PAGE_SIZE = 4;
+
+  const filteredStaff = useMemo(() => {
+    if (!searchQuery.trim()) return staffList;
+    const q = searchQuery.toLowerCase();
+    return staffList.filter(member => 
+      `${member.full_name} ${member.email} ${member.title || ''}`.toLowerCase().includes(q)
+    );
+  }, [staffList, searchQuery]);
+
+  const paginatedStaff = useMemo(() => {
+    return filteredStaff.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
+  }, [filteredStaff, currentPage]);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchQuery]);
 
   useEffect(() => {
     if (!organizationId) return;
@@ -43,15 +63,25 @@ export default function StaffManager({ organizationId, roleType, orgName }) {
         <p className="lead" style={{ fontSize: '14px' }}>
           Manage members registered under <strong>{orgName || 'your organisation'}</strong>. You can add new {isHospital ? 'doctors' : 'employees'} directly below.
         </p>
+        <div style={{ marginTop: '16px' }}>
+          <input 
+            type="text" 
+            placeholder={`Search ${isHospital ? 'doctors' : 'staff'} by name, email, or title...`}
+            value={searchQuery}
+            onChange={e => setSearchQuery(e.target.value)}
+            style={{ width: '300px' }}
+          />
+        </div>
       </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 340px', gap: '28px', alignItems: 'start' }}>
         {/* Left column: Staff Directory List */}
         <div>
-          {staffList.length > 0 ? (
-            <div className="staff-grid" style={{ display: 'grid', gap: '12px' }}>
-              {staffList.map(member => (
-                <article
+          {filteredStaff.length > 0 ? (
+            <>
+              <div className="staff-grid" style={{ display: 'grid', gap: '12px' }}>
+                {paginatedStaff.map(member => (
+                  <article
                   key={member.id}
                   className="application"
                   style={{ background: '#fff', border: '1px solid var(--line)', borderRadius: '6px', padding: '16px 20px' }}
@@ -81,10 +111,35 @@ export default function StaffManager({ organizationId, roleType, orgName }) {
                   </div>
                 </article>
               ))}
-            </div>
+              </div>
+              
+              {Math.ceil(filteredStaff.length / PAGE_SIZE) > 1 && (
+                <div className="pagination" style={{ display: 'flex', justifyContent: 'center', gap: '8px', marginTop: '16px' }}>
+                  <button 
+                    className="outline" 
+                    disabled={currentPage === 1} 
+                    onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                  >
+                    ← Previous
+                  </button>
+                  <span style={{ padding: '8px 12px', fontSize: '14px', color: 'var(--muted)' }}>
+                    Page {currentPage} of {Math.ceil(filteredStaff.length / PAGE_SIZE)}
+                  </span>
+                  <button 
+                    className="outline" 
+                    disabled={currentPage === Math.ceil(filteredStaff.length / PAGE_SIZE)} 
+                    onClick={() => setCurrentPage(p => Math.min(Math.ceil(filteredStaff.length / PAGE_SIZE), p + 1))}
+                  >
+                    Next →
+                  </button>
+                </div>
+              )}
+            </>
           ) : (
             <div className="empty" style={{ background: '#fff', border: '1px solid var(--line)', borderRadius: '6px' }}>
-              No {isHospital ? 'doctors' : 'employees'} registered under this organisation yet. Use the form to add your first team member!
+              {searchQuery 
+                ? `No ${isHospital ? 'doctors' : 'employees'} match your search.` 
+                : `No ${isHospital ? 'doctors' : 'employees'} registered under this organisation yet. Use the form to add your first team member!`}
             </div>
           )}
         </div>

@@ -4,8 +4,7 @@ import StaffManager from '../../components/StaffManager';
 import { DOG_STATUSES } from '../../constants';
 import { watchOrgDogs } from '../../services';
 
-export default function HospitalDashboard({ session, dogs = [], organizations = [], setPage }) {
-  const [tab, setTab] = useState('overview');
+export default function HospitalDashboard({ session, dogs = [], organizations = [], setPage, currentTab = 'overview' }) {
   const [showAdmitForm, setShowAdmitForm] = useState(false);
   const userOrgId = session.profile?.works_at;
   const currentOrg = useMemo(() => organizations.find(o => o.id === userOrgId), [organizations, userOrgId]);
@@ -24,6 +23,55 @@ export default function HospitalDashboard({ session, dogs = [], organizations = 
   // Also show street dogs from the network that can be admitted
   const streetDogs = useMemo(() => dogs.filter(d => d.status === 'street'), [dogs]);
 
+  const [searchQuery, setSearchQuery] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+  const PAGE_SIZE = 6;
+  
+  useEffect(() => {
+    setSearchQuery('');
+    setCurrentPage(1);
+  }, [currentTab]);
+
+  const filteredActive = useMemo(() => {
+    if (!searchQuery.trim()) return activePatients;
+    const q = searchQuery.toLowerCase();
+    return activePatients.filter(d => 
+      `${d.name} ${d.breed || ''} ${d.tag || ''}`.toLowerCase().includes(q)
+    );
+  }, [activePatients, searchQuery]);
+
+  const paginatedActive = useMemo(() => {
+    return filteredActive.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
+  }, [filteredActive, currentPage]);
+
+  const filteredReady = useMemo(() => {
+    if (!searchQuery.trim()) return readyToLeave;
+    const q = searchQuery.toLowerCase();
+    return readyToLeave.filter(d => 
+      `${d.name} ${d.breed || ''} ${d.tag || ''}`.toLowerCase().includes(q)
+    );
+  }, [readyToLeave, searchQuery]);
+
+  const paginatedReady = useMemo(() => {
+    return filteredReady.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
+  }, [filteredReady, currentPage]);
+
+  const filteredQueue = useMemo(() => {
+    if (!searchQuery.trim()) return streetDogs;
+    const q = searchQuery.toLowerCase();
+    return streetDogs.filter(d => 
+      `${d.name} ${d.location || ''} ${d.registered_by_name || ''} ${d.tag || ''}`.toLowerCase().includes(q)
+    );
+  }, [streetDogs, searchQuery]);
+
+  const paginatedQueue = useMemo(() => {
+    return filteredQueue.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
+  }, [filteredQueue, currentPage]);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchQuery]);
+
   return (
     <div className="hospital-dashboard">
       <div className="hospital-header" style={{ marginBottom: '24px' }}>
@@ -34,27 +82,8 @@ export default function HospitalDashboard({ session, dogs = [], organizations = 
         </p>
       </div>
 
-      {/* Sub-navigation tabs */}
-      <div className="tabs" style={{ marginTop: '20px', marginBottom: '30px' }}>
-        <button className={tab === 'overview' ? 'selected' : ''} onClick={() => setTab('overview')}>
-          📊 Overview
-        </button>
-        <button className={tab === 'doctors' ? 'selected' : ''} onClick={() => setTab('doctors')}>
-          👨‍⚕️ Doctors & Staff
-        </button>
-        <button className={tab === 'queue' ? 'selected' : ''} onClick={() => setTab('queue')}>
-          🚨 Incoming Queue ({streetDogs.length})
-        </button>
-        <button className={tab === 'active' ? 'selected' : ''} onClick={() => setTab('active')}>
-          🩺 Active Patients ({activePatients.length})
-        </button>
-        <button className={tab === 'ready' ? 'selected' : ''} onClick={() => setTab('ready')}>
-          🏡 Ready to Leave ({readyToLeave.length})
-        </button>
-      </div>
-
       {/* Overview Tab */}
-      {tab === 'overview' && (
+      {currentTab === 'overview' && (
         <div className="hospital-overview">
           <div className="metrics" style={{ gridTemplateColumns: 'repeat(4, 1fr)' }}>
             <article>
@@ -90,8 +119,7 @@ export default function HospitalDashboard({ session, dogs = [], organizations = 
         </div>
       )}
 
-      {/* Doctors Tab */}
-      {tab === 'doctors' && (
+      {currentTab === 'doctors' && (
         <StaffManager
           organizationId={userOrgId}
           roleType="hospital_admin"
@@ -99,8 +127,7 @@ export default function HospitalDashboard({ session, dogs = [], organizations = 
         />
       )}
 
-      {/* Active Patients Tab */}
-      {tab === 'active' && (
+      {currentTab === 'active' && (
         <div className="hospital-patients">
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
             <div>
@@ -109,37 +136,68 @@ export default function HospitalDashboard({ session, dogs = [], organizations = 
                 Dogs currently admitted at your hospital for treatment.
               </p>
             </div>
+            <input 
+              type="text" 
+              placeholder="Search active patients..." 
+              value={searchQuery}
+              onChange={e => setSearchQuery(e.target.value)}
+              style={{ width: '250px' }}
+            />
           </div>
 
-          {activePatients.length > 0 ? (
-            <div className="dog-grid" style={{ gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px' }}>
-              {activePatients.map(d => (
-                <article className="dog-card" key={d.id} style={{ background: '#fff' }}>
-                  {d.social_photos && d.social_photos.length > 0 ? (
-                    <img src={d.social_photos[0]} alt={d.name} />
-                  ) : (
-                    <div className="dog-placeholder">🐾</div>
-                  )}
-                  <span className={`status ${d.status}`}>{DOG_STATUSES[d.status] || d.status}</span>
-                  <div style={{ padding: '16px' }}>
-                    {d.tag && <small style={{ color: 'var(--orange)', fontWeight: 'bold' }}>{d.tag}</small>}
-                    <h3>{d.name}</h3>
-                    <p>{d.breed || 'Breed pending'} · {d.gender || ''}</p>
-                    <button className="link" onClick={() => setPage(`dog:${d.id}`)}>
-                      View full record →
-                    </button>
-                  </div>
-                </article>
-              ))}
-            </div>
+          {filteredActive.length > 0 ? (
+            <>
+              <div className="dog-grid" style={{ gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px' }}>
+                {paginatedActive.map(d => (
+                  <article className="dog-card" key={d.id} style={{ background: '#fff' }}>
+                    {d.social_photos && d.social_photos.length > 0 ? (
+                      <img src={d.social_photos[0]} alt={d.name} loading="lazy" />
+                    ) : (
+                      <div className="dog-placeholder">🐾</div>
+                    )}
+                    <span className={`status ${d.status}`}>{DOG_STATUSES[d.status] || d.status}</span>
+                    <div style={{ padding: '16px' }}>
+                      {d.tag && <small style={{ color: 'var(--orange)', fontWeight: 'bold' }}>{d.tag}</small>}
+                      <h3>{d.name}</h3>
+                      <p>{d.breed || 'Breed pending'} · {d.gender || ''}</p>
+                      <button className="link" onClick={() => setPage(`dog:${d.id}`)}>
+                        View full record →
+                      </button>
+                    </div>
+                  </article>
+                ))}
+              </div>
+              {Math.ceil(filteredActive.length / PAGE_SIZE) > 1 && (
+                <div className="pagination" style={{ display: 'flex', justifyContent: 'center', gap: '8px', marginTop: '24px' }}>
+                  <button 
+                    className="outline" 
+                    disabled={currentPage === 1} 
+                    onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                  >
+                    ← Previous
+                  </button>
+                  <span style={{ padding: '8px 12px', fontSize: '14px', color: 'var(--muted)' }}>
+                    Page {currentPage} of {Math.ceil(filteredActive.length / PAGE_SIZE)}
+                  </span>
+                  <button 
+                    className="outline" 
+                    disabled={currentPage === Math.ceil(filteredActive.length / PAGE_SIZE)} 
+                    onClick={() => setCurrentPage(p => Math.min(Math.ceil(filteredActive.length / PAGE_SIZE), p + 1))}
+                  >
+                    Next →
+                  </button>
+                </div>
+              )}
+            </>
           ) : (
-            <div className="empty">No active patients currently.</div>
+            <div className="empty">
+              {searchQuery ? 'No active patients match your search.' : 'No active patients currently.'}
+            </div>
           )}
         </div>
       )}
 
-      {/* Ready to Leave Tab */}
-      {tab === 'ready' && (
+      {currentTab === 'ready' && (
         <div className="hospital-patients">
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
             <div>
@@ -148,37 +206,68 @@ export default function HospitalDashboard({ session, dogs = [], organizations = 
                 Dogs marked as "Fit for Discharge" by a veterinarian. Awaiting administrative transfer or release.
               </p>
             </div>
+            <input 
+              type="text" 
+              placeholder="Search ready dogs..." 
+              value={searchQuery}
+              onChange={e => setSearchQuery(e.target.value)}
+              style={{ width: '250px' }}
+            />
           </div>
 
-          {readyToLeave.length > 0 ? (
-            <div className="dog-grid" style={{ gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px' }}>
-              {readyToLeave.map(d => (
-                <article className="dog-card" key={d.id} style={{ background: '#fff' }}>
-                  {d.social_photos && d.social_photos.length > 0 ? (
-                    <img src={d.social_photos[0]} alt={d.name} />
-                  ) : (
-                    <div className="dog-placeholder">🐾</div>
-                  )}
-                  <span className={`status ${d.status}`}>{DOG_STATUSES[d.status] || d.status}</span>
-                  <div style={{ padding: '16px' }}>
-                    {d.tag && <small style={{ color: 'var(--orange)', fontWeight: 'bold' }}>{d.tag}</small>}
-                    <h3>{d.name}</h3>
-                    <p>{d.breed || 'Breed pending'} · {d.gender || ''}</p>
-                    <button className="link" onClick={() => setPage(`dog:${d.id}`)}>
-                      Process Discharge / Transfer →
-                    </button>
-                  </div>
-                </article>
-              ))}
-            </div>
+          {filteredReady.length > 0 ? (
+            <>
+              <div className="dog-grid" style={{ gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px' }}>
+                {paginatedReady.map(d => (
+                  <article className="dog-card" key={d.id} style={{ background: '#fff' }}>
+                    {d.social_photos && d.social_photos.length > 0 ? (
+                      <img src={d.social_photos[0]} alt={d.name} loading="lazy" />
+                    ) : (
+                      <div className="dog-placeholder">🐾</div>
+                    )}
+                    <span className={`status ${d.status}`}>{DOG_STATUSES[d.status] || d.status}</span>
+                    <div style={{ padding: '16px' }}>
+                      {d.tag && <small style={{ color: 'var(--orange)', fontWeight: 'bold' }}>{d.tag}</small>}
+                      <h3>{d.name}</h3>
+                      <p>{d.breed || 'Breed pending'} · {d.gender || ''}</p>
+                      <button className="link" onClick={() => setPage(`dog:${d.id}`)}>
+                        Process Discharge / Transfer →
+                      </button>
+                    </div>
+                  </article>
+                ))}
+              </div>
+              {Math.ceil(filteredReady.length / PAGE_SIZE) > 1 && (
+                <div className="pagination" style={{ display: 'flex', justifyContent: 'center', gap: '8px', marginTop: '24px' }}>
+                  <button 
+                    className="outline" 
+                    disabled={currentPage === 1} 
+                    onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                  >
+                    ← Previous
+                  </button>
+                  <span style={{ padding: '8px 12px', fontSize: '14px', color: 'var(--muted)' }}>
+                    Page {currentPage} of {Math.ceil(filteredReady.length / PAGE_SIZE)}
+                  </span>
+                  <button 
+                    className="outline" 
+                    disabled={currentPage === Math.ceil(filteredReady.length / PAGE_SIZE)} 
+                    onClick={() => setCurrentPage(p => Math.min(Math.ceil(filteredReady.length / PAGE_SIZE), p + 1))}
+                  >
+                    Next →
+                  </button>
+                </div>
+              )}
+            </>
           ) : (
-            <div className="empty">No dogs are currently waiting to leave.</div>
+            <div className="empty">
+              {searchQuery ? 'No dogs match your search.' : 'No dogs are currently waiting to leave.'}
+            </div>
           )}
         </div>
       )}
 
-      {/* Incoming Queue Tab */}
-      {tab === 'queue' && (
+      {currentTab === 'queue' && (
         <div className="hospital-network">
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
             <div>
@@ -187,9 +276,18 @@ export default function HospitalDashboard({ session, dogs = [], organizations = 
                 Dogs reported by community members awaiting rescue or hospital admission.
               </p>
             </div>
-            <button className="primary" onClick={() => setShowAdmitForm(!showAdmitForm)}>
-              {showAdmitForm ? '✕ Close' : '+ Register Walk-in Patient'}
-            </button>
+            <div style={{ display: 'flex', gap: '12px' }}>
+              <input 
+                type="text" 
+                placeholder="Search queue..." 
+                value={searchQuery}
+                onChange={e => setSearchQuery(e.target.value)}
+                style={{ width: '200px' }}
+              />
+              <button className="primary" onClick={() => setShowAdmitForm(!showAdmitForm)}>
+                {showAdmitForm ? '✕ Close' : '+ Register Walk-in Patient'}
+              </button>
+            </div>
           </div>
 
           {showAdmitForm && (
@@ -201,32 +299,57 @@ export default function HospitalDashboard({ session, dogs = [], organizations = 
             </div>
           )}
 
-          {streetDogs.length > 0 ? (
-            <div className="dog-grid" style={{ gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px' }}>
-              {streetDogs.map(d => (
-                <article className="dog-card" key={d.id} style={{ background: '#fff' }}>
-                  {d.social_photos && d.social_photos.length > 0 ? (
-                    <img src={d.social_photos[0]} alt={d.name} />
-                  ) : (
-                    <div className="dog-placeholder">🐾</div>
-                  )}
-                  <span className={`status ${d.status}`}>{DOG_STATUSES[d.status] || d.status}</span>
-                  <div style={{ padding: '16px' }}>
-                    {d.tag && <small style={{ color: 'var(--orange)', fontWeight: 'bold' }}>{d.tag}</small>}
-                    <h3>{d.name}</h3>
-                    <p>{d.location || 'Location unknown'}</p>
-                    <p style={{ fontSize: '12px', color: 'var(--muted)' }}>
-                      Reported by: {d.registered_by_name || 'Community Member'}
-                    </p>
-                    <button className="link" onClick={() => setPage(`dog:${d.id}`)}>
-                      View & Admit →
-                    </button>
-                  </div>
-                </article>
-              ))}
-            </div>
+          {filteredQueue.length > 0 ? (
+            <>
+              <div className="dog-grid" style={{ gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px' }}>
+                {paginatedQueue.map(d => (
+                  <article className="dog-card" key={d.id} style={{ background: '#fff' }}>
+                    {d.social_photos && d.social_photos.length > 0 ? (
+                      <img src={d.social_photos[0]} alt={d.name} loading="lazy" />
+                    ) : (
+                      <div className="dog-placeholder">🐾</div>
+                    )}
+                    <span className={`status ${d.status}`}>{DOG_STATUSES[d.status] || d.status}</span>
+                    <div style={{ padding: '16px' }}>
+                      {d.tag && <small style={{ color: 'var(--orange)', fontWeight: 'bold' }}>{d.tag}</small>}
+                      <h3>{d.name}</h3>
+                      <p>{d.location || 'Location unknown'}</p>
+                      <p style={{ fontSize: '12px', color: 'var(--muted)' }}>
+                        Reported by: {d.registered_by_name || 'Community Member'}
+                      </p>
+                      <button className="link" onClick={() => setPage(`dog:${d.id}`)}>
+                        View & Admit →
+                      </button>
+                    </div>
+                  </article>
+                ))}
+              </div>
+              {Math.ceil(filteredQueue.length / PAGE_SIZE) > 1 && (
+                <div className="pagination" style={{ display: 'flex', justifyContent: 'center', gap: '8px', marginTop: '24px' }}>
+                  <button 
+                    className="outline" 
+                    disabled={currentPage === 1} 
+                    onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                  >
+                    ← Previous
+                  </button>
+                  <span style={{ padding: '8px 12px', fontSize: '14px', color: 'var(--muted)' }}>
+                    Page {currentPage} of {Math.ceil(filteredQueue.length / PAGE_SIZE)}
+                  </span>
+                  <button 
+                    className="outline" 
+                    disabled={currentPage === Math.ceil(filteredQueue.length / PAGE_SIZE)} 
+                    onClick={() => setCurrentPage(p => Math.min(Math.ceil(filteredQueue.length / PAGE_SIZE), p + 1))}
+                  >
+                    Next →
+                  </button>
+                </div>
+              )}
+            </>
           ) : (
-            <div className="empty">No street dogs awaiting rescue in the network.</div>
+            <div className="empty">
+              {searchQuery ? 'No street dogs match your search.' : 'No street dogs awaiting rescue in the network.'}
+            </div>
           )}
         </div>
       )}

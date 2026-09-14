@@ -1,10 +1,12 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { DOG_STATUSES } from '../constants';
 import ParticleBackground from '../components/ParticleBackground';
 
 export default function Discover({ dogs, setPage, session, isWorkspace }) {
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
+  const [currentPage, setCurrentPage] = useState(1);
+  const PAGE_SIZE = 6;
 
   const list = useMemo(() => {
     let filtered = dogs;
@@ -19,6 +21,14 @@ export default function Discover({ dogs, setPage, session, isWorkspace }) {
     }
     return filtered;
   }, [dogs, search, statusFilter]);
+
+  // Reset to first page when search or filter changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [search, statusFilter]);
+
+  const totalPages = Math.ceil(list.length / PAGE_SIZE);
+  const paginatedList = list.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
 
   return (
     <>
@@ -70,48 +80,72 @@ export default function Discover({ dogs, setPage, session, isWorkspace }) {
         </div>
 
         {list.length ? (
-          <div className="dog-grid">
-            {list.map((d, index) => (
-              <article
-                key={d.id}
-                className="dog-card discover-card dog-card--enhanced"
-                style={{ '--card-index': index }}
-              >
-                <div className="dog-image-wrap">
-                  {d.social_photos && d.social_photos.length > 0 ? (
-                    <img src={d.social_photos[0]} alt={d.name} loading="lazy" />
-                  ) : (
-                    <div className="dog-placeholder">🐾</div>
-                  )}
-                  <span className={`status ${d.status}`}>{DOG_STATUSES[d.status] || d.status}</span>
-                  <span className="photo-sheen" aria-hidden="true" />
-                </div>
-                <div className="dog-card-content">
-                  {d.tag && (
-                    <small className="dog-tagline">
-                      {d.tag}
-                    </small>
-                  )}
-                  <h3>{d.name}</h3>
-                  <p>
-                    {d.breed && d.breed !== 'Unknown / Unidentified' ? d.breed : 'Breed pending'}
-                    {d.gender && d.gender !== 'Unknown' ? ` · ${d.gender}` : ''}
-                    {d.estimated_age ? ` · ${d.estimated_age}` : ''}
-                  </p>
-                  <p className="dog-location">
-                    <span aria-hidden="true">⌖</span> {d.location || d.location_found || 'Location unknown'}
-                  </p>
-                  <div className="dog-care-facts">
-                    {d.medical_status?.is_vaccinated && <span>Vaccinated</span>}
-                    {d.medical_status?.is_neutered && <span>Neutered</span>}
+          <>
+            <div className="dog-grid">
+              {paginatedList.map((d, index) => (
+                <article
+                  key={d.id}
+                  className="dog-card discover-card dog-card--enhanced"
+                  style={{ '--card-index': index }}
+                >
+                  <div className="dog-image-wrap">
+                    {d.social_photos && d.social_photos.length > 0 ? (
+                      <img src={d.social_photos[0]} alt={d.name} loading="lazy" />
+                    ) : (
+                      <div className="dog-placeholder">🐾</div>
+                    )}
+                    <span className={`status ${d.status}`}>{DOG_STATUSES[d.status] || d.status}</span>
+                    <span className="photo-sheen" aria-hidden="true" />
                   </div>
-                  <button className="card-link" onClick={() => setPage(`dog:${d.id}`)}>
-                    <span>View full profile</span><b aria-hidden="true">→</b>
-                  </button>
-                </div>
-              </article>
-            ))}
-          </div>
+                  <div className="dog-card-content">
+                    {d.tag && (
+                      <small className="dog-tagline">
+                        {d.tag}
+                      </small>
+                    )}
+                    <h3>{d.name}</h3>
+                    <p>
+                      {d.breed && d.breed !== 'Unknown / Unidentified' ? d.breed : 'Breed pending'}
+                      {d.gender && d.gender !== 'Unknown' ? ` · ${d.gender}` : ''}
+                      {d.estimated_age ? ` · ${d.estimated_age}` : ''}
+                    </p>
+                    <p className="dog-location">
+                      <span aria-hidden="true">⌖</span> {d.location || d.location_found || 'Location unknown'}
+                    </p>
+                    <div className="dog-care-facts">
+                      {d.medical_status?.is_vaccinated && <span>Vaccinated</span>}
+                      {d.medical_status?.is_neutered && <span>Neutered</span>}
+                    </div>
+                    <button className="card-link" onClick={() => setPage(`dog:${d.id}`)}>
+                      <span>View full profile</span><b aria-hidden="true">→</b>
+                    </button>
+                  </div>
+                </article>
+              ))}
+            </div>
+
+            {totalPages > 1 && (
+              <div className="pagination" style={{ display: 'flex', justifyContent: 'center', gap: '8px', marginTop: '32px' }}>
+                <button 
+                  className="outline" 
+                  disabled={currentPage === 1} 
+                  onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                >
+                  ← Previous
+                </button>
+                <span style={{ padding: '8px 12px', fontSize: '14px', color: 'var(--muted)' }}>
+                  Page {currentPage} of {totalPages}
+                </span>
+                <button 
+                  className="outline" 
+                  disabled={currentPage === totalPages} 
+                  onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                >
+                  Next →
+                </button>
+              </div>
+            )}
+          </>
         ) : (
           <div className="empty">
             <b>{search || statusFilter !== 'all' ? 'No dogs match your search.' : 'No dogs have been registered yet.'}</b>

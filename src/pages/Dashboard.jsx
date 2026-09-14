@@ -5,7 +5,7 @@ import HospitalDashboard from './dashboards/HospitalDashboard';
 import PlatformAdminView from './dashboards/PlatformAdminView';
 import StaffDashboard from './dashboards/StaffDashboard';
 
-export default function Dashboard({ session, dogs = [], organizations = [], applications = [], setPage }) {
+export default function Dashboard({ session, dogs = [], organizations = [], applications = [], setPage, currentTab = 'overview' }) {
   const role = session.profile?.role;
   const isPlatformAdmin = role === 'platform_admin';
   const isHospitalAdmin = role === 'hospital_admin';
@@ -27,6 +27,7 @@ export default function Dashboard({ session, dogs = [], organizations = [], appl
           organizations={organizations}
           applications={applications}
           setPage={setPage}
+          currentTab={currentTab}
         />
       ) : isHospitalAdmin ? (
         <HospitalDashboard
@@ -34,6 +35,7 @@ export default function Dashboard({ session, dogs = [], organizations = [], appl
           dogs={dogs}
           organizations={organizations}
           setPage={setPage}
+          currentTab={currentTab}
         />
       ) : isAgencyAdmin ? (
         <AgencyDashboard
@@ -41,6 +43,7 @@ export default function Dashboard({ session, dogs = [], organizations = [], appl
           dogs={dogs}
           organizations={organizations}
           setPage={setPage}
+          currentTab={currentTab}
         />
       ) : isStaff ? (
         <StaffDashboard

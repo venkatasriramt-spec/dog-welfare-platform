@@ -4,8 +4,7 @@ import StaffManager from '../../components/StaffManager';
 import { DOG_STATUSES } from '../../constants';
 import { watchOrgDogs } from '../../services';
 
-export default function AgencyDashboard({ session, dogs = [], organizations = [], setPage }) {
-  const [tab, setTab] = useState('overview');
+export default function AgencyDashboard({ session, dogs = [], organizations = [], setPage, currentTab = 'overview' }) {
   const [showAddForm, setShowAddForm] = useState(false);
   const userOrgId = session.profile?.works_at;
   const currentOrg = useMemo(() => organizations.find(o => o.id === userOrgId), [organizations, userOrgId]);
@@ -20,6 +19,44 @@ export default function AgencyDashboard({ session, dogs = [], organizations = []
   const adoptableDogs = useMemo(() => orgDogs.filter(d => d.status === 'adoptable'), [orgDogs]);
   const adoptedDogs = useMemo(() => orgDogs.filter(d => d.status === 'adopted'), [orgDogs]);
 
+  const [searchQuery, setSearchQuery] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+  const PAGE_SIZE = 6;
+  
+  useEffect(() => {
+    setSearchQuery('');
+    setCurrentPage(1);
+  }, [currentTab]);
+
+  const filteredAdoptable = useMemo(() => {
+    if (!searchQuery.trim()) return adoptableDogs;
+    const q = searchQuery.toLowerCase();
+    return adoptableDogs.filter(d => 
+      `${d.name} ${d.breed || ''} ${d.tag || ''}`.toLowerCase().includes(q)
+    );
+  }, [adoptableDogs, searchQuery]);
+
+  const paginatedAdoptable = useMemo(() => {
+    return filteredAdoptable.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
+  }, [filteredAdoptable, currentPage]);
+
+  const filteredAdopted = useMemo(() => {
+    if (!searchQuery.trim()) return adoptedDogs;
+    const q = searchQuery.toLowerCase();
+    return adoptedDogs.filter(d => 
+      `${d.name} ${d.breed || ''} ${d.tag || ''}`.toLowerCase().includes(q)
+    );
+  }, [adoptedDogs, searchQuery]);
+
+  const paginatedAdopted = useMemo(() => {
+    return filteredAdopted.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
+  }, [filteredAdopted, currentPage]);
+
+  // Reset page to 1 when search changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchQuery]);
+
   return (
     <div className="agency-dashboard">
       <div className="agency-header" style={{ marginBottom: '24px' }}>
@@ -30,24 +67,8 @@ export default function AgencyDashboard({ session, dogs = [], organizations = []
         </p>
       </div>
 
-      {/* Sub-navigation tabs */}
-      <div className="tabs" style={{ marginTop: '20px', marginBottom: '30px' }}>
-        <button className={tab === 'overview' ? 'selected' : ''} onClick={() => setTab('overview')}>
-          📊 Overview
-        </button>
-        <button className={tab === 'employees' ? 'selected' : ''} onClick={() => setTab('employees')}>
-          👥 Staff & Employees
-        </button>
-        <button className={tab === 'residents' ? 'selected' : ''} onClick={() => setTab('residents')}>
-          🏡 Current Residents ({adoptableDogs.length})
-        </button>
-        <button className={tab === 'history' ? 'selected' : ''} onClick={() => setTab('history')}>
-          ❤️ Adoption History ({adoptedDogs.length})
-        </button>
-      </div>
-
       {/* Overview Tab */}
-      {tab === 'overview' && (
+      {currentTab === 'overview' && (
         <div className="agency-overview">
           <div className="metrics" style={{ gridTemplateColumns: 'repeat(3, 1fr)' }}>
             <article>
@@ -80,7 +101,7 @@ export default function AgencyDashboard({ session, dogs = [], organizations = []
       )}
 
       {/* Employees Tab */}
-      {tab === 'employees' && (
+      {currentTab === 'employees' && (
         <StaffManager
           organizationId={userOrgId}
           roleType="agency_admin"
@@ -89,7 +110,7 @@ export default function AgencyDashboard({ session, dogs = [], organizations = []
       )}
 
       {/* Current Residents Tab */}
-      {tab === 'residents' && (
+      {currentTab === 'residents' && (
         <div className="agency-shelter">
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
             <div>
@@ -98,9 +119,18 @@ export default function AgencyDashboard({ session, dogs = [], organizations = []
                 Dogs currently available for adoption at your agency.
               </p>
             </div>
-            <button className="primary" onClick={() => setShowAddForm(!showAddForm)}>
-              {showAddForm ? '✕ Close' : '+ Register Walk-in Dog'}
-            </button>
+            <div style={{ display: 'flex', gap: '12px' }}>
+              <input 
+                type="text" 
+                placeholder="Search dogs..." 
+                value={searchQuery}
+                onChange={e => setSearchQuery(e.target.value)}
+                style={{ width: '200px' }}
+              />
+              <button className="primary" onClick={() => setShowAddForm(!showAddForm)}>
+                {showAddForm ? '✕ Close' : '+ Register Walk-in Dog'}
+              </button>
+            </div>
           </div>
 
           {showAddForm && (
@@ -112,35 +142,60 @@ export default function AgencyDashboard({ session, dogs = [], organizations = []
             </div>
           )}
 
-          {adoptableDogs.length > 0 ? (
-            <div className="dog-grid" style={{ gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px' }}>
-              {adoptableDogs.map(d => (
-                <article className="dog-card" key={d.id} style={{ background: '#fff' }}>
-                  {d.social_photos && d.social_photos.length > 0 ? (
-                    <img src={d.social_photos[0]} alt={d.name} />
-                  ) : (
-                    <div className="dog-placeholder">🐾</div>
-                  )}
-                  <span className={`status ${d.status}`}>{DOG_STATUSES[d.status] || d.status}</span>
-                  <div style={{ padding: '16px' }}>
-                    {d.tag && <small style={{ color: 'var(--orange)', fontWeight: 'bold' }}>{d.tag}</small>}
-                    <h3>{d.name}</h3>
-                    <p>{d.breed || 'Breed pending'} · {d.gender || ''} · {d.estimated_age || ''}</p>
-                    <button className="link" onClick={() => setPage(`dog:${d.id}`)}>
-                      View & Manage Adoption →
-                    </button>
-                  </div>
-                </article>
-              ))}
-            </div>
+          {filteredAdoptable.length > 0 ? (
+            <>
+              <div className="dog-grid" style={{ gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px' }}>
+                {paginatedAdoptable.map(d => (
+                  <article className="dog-card" key={d.id} style={{ background: '#fff' }}>
+                    {d.social_photos && d.social_photos.length > 0 ? (
+                      <img src={d.social_photos[0]} alt={d.name} loading="lazy" />
+                    ) : (
+                      <div className="dog-placeholder">🐾</div>
+                    )}
+                    <span className={`status ${d.status}`}>{DOG_STATUSES[d.status] || d.status}</span>
+                    <div style={{ padding: '16px' }}>
+                      {d.tag && <small style={{ color: 'var(--orange)', fontWeight: 'bold' }}>{d.tag}</small>}
+                      <h3>{d.name}</h3>
+                      <p>{d.breed || 'Breed pending'} · {d.gender || ''} · {d.estimated_age || ''}</p>
+                      <button className="link" onClick={() => setPage(`dog:${d.id}`)}>
+                        View & Manage Adoption →
+                      </button>
+                    </div>
+                  </article>
+                ))}
+              </div>
+              {Math.ceil(filteredAdoptable.length / PAGE_SIZE) > 1 && (
+                <div className="pagination" style={{ display: 'flex', justifyContent: 'center', gap: '8px', marginTop: '24px' }}>
+                  <button 
+                    className="outline" 
+                    disabled={currentPage === 1} 
+                    onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                  >
+                    ← Previous
+                  </button>
+                  <span style={{ padding: '8px 12px', fontSize: '14px', color: 'var(--muted)' }}>
+                    Page {currentPage} of {Math.ceil(filteredAdoptable.length / PAGE_SIZE)}
+                  </span>
+                  <button 
+                    className="outline" 
+                    disabled={currentPage === Math.ceil(filteredAdoptable.length / PAGE_SIZE)} 
+                    onClick={() => setCurrentPage(p => Math.min(Math.ceil(filteredAdoptable.length / PAGE_SIZE), p + 1))}
+                  >
+                    Next →
+                  </button>
+                </div>
+              )}
+            </>
           ) : (
-            <div className="empty">No dogs currently available for adoption.</div>
+            <div className="empty">
+              {searchQuery ? 'No dogs match your search.' : 'No dogs currently available for adoption.'}
+            </div>
           )}
         </div>
       )}
 
       {/* Adoption History Tab */}
-      {tab === 'history' && (
+      {currentTab === 'history' && (
         <div className="agency-shelter">
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
             <div>
@@ -149,31 +204,63 @@ export default function AgencyDashboard({ session, dogs = [], organizations = []
                 Dogs that have been successfully adopted from your agency.
               </p>
             </div>
+            <input 
+              type="text" 
+              placeholder="Search adopted dogs..." 
+              value={searchQuery}
+              onChange={e => setSearchQuery(e.target.value)}
+              style={{ width: '250px' }}
+            />
           </div>
 
-          {adoptedDogs.length > 0 ? (
-            <div className="dog-grid" style={{ gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px' }}>
-              {adoptedDogs.map(d => (
-                <article className="dog-card" key={d.id} style={{ background: '#fff' }}>
-                  {d.social_photos && d.social_photos.length > 0 ? (
-                    <img src={d.social_photos[0]} alt={d.name} />
-                  ) : (
-                    <div className="dog-placeholder">🐾</div>
-                  )}
-                  <span className={`status ${d.status}`}>{DOG_STATUSES[d.status] || d.status}</span>
-                  <div style={{ padding: '16px' }}>
-                    {d.tag && <small style={{ color: 'var(--orange)', fontWeight: 'bold' }}>{d.tag}</small>}
-                    <h3>{d.name}</h3>
-                    <p>{d.breed || 'Breed pending'} · {d.gender || ''}</p>
-                    <button className="link" onClick={() => setPage(`dog:${d.id}`)}>
-                      View Historical Record →
-                    </button>
-                  </div>
-                </article>
-              ))}
-            </div>
+          {filteredAdopted.length > 0 ? (
+            <>
+              <div className="dog-grid" style={{ gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px' }}>
+                {paginatedAdopted.map(d => (
+                  <article className="dog-card" key={d.id} style={{ background: '#fff' }}>
+                    {d.social_photos && d.social_photos.length > 0 ? (
+                      <img src={d.social_photos[0]} alt={d.name} loading="lazy" />
+                    ) : (
+                      <div className="dog-placeholder">🐾</div>
+                    )}
+                    <span className={`status ${d.status}`}>{DOG_STATUSES[d.status] || d.status}</span>
+                    <div style={{ padding: '16px' }}>
+                      {d.tag && <small style={{ color: 'var(--orange)', fontWeight: 'bold' }}>{d.tag}</small>}
+                      <h3>{d.name}</h3>
+                      <p>{d.breed || 'Breed pending'} · {d.gender || ''}</p>
+                      <button className="link" onClick={() => setPage(`dog:${d.id}`)}>
+                        View Historical Record →
+                      </button>
+                    </div>
+                  </article>
+                ))}
+              </div>
+              {Math.ceil(filteredAdopted.length / PAGE_SIZE) > 1 && (
+                <div className="pagination" style={{ display: 'flex', justifyContent: 'center', gap: '8px', marginTop: '24px' }}>
+                  <button 
+                    className="outline" 
+                    disabled={currentPage === 1} 
+                    onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                  >
+                    ← Previous
+                  </button>
+                  <span style={{ padding: '8px 12px', fontSize: '14px', color: 'var(--muted)' }}>
+                    Page {currentPage} of {Math.ceil(filteredAdopted.length / PAGE_SIZE)}
+                  </span>
+                  <button 
+                    className="outline" 
+                    disabled={currentPage === Math.ceil(filteredAdopted.length / PAGE_SIZE)} 
+                    onClick={() => setCurrentPage(p => Math.min(Math.ceil(filteredAdopted.length / PAGE_SIZE), p + 1))}
+                  >
+                    Next →
+                  </button>
+                </div>
+              )}
+            </>
           ) : (
-            <div className="empty">No adoption records found.</div>
+            <div className="empty">
+              {searchQuery ? 'No adopted dogs match your search.' : 'No adoption records found.'}
+            </div>
           )}
         </div>
       )}

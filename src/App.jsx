@@ -47,7 +47,12 @@ export default function App() {
   if (session.user) {
     // WORKSPACE ROUTES
     let body;
-    if (page === 'dashboard') {
+    if (page === 'dashboard' || page.startsWith('admin_') || page.startsWith('agency_') || page.startsWith('hospital_')) {
+      let currentTab = 'overview';
+      if (page.startsWith('admin_')) currentTab = page.replace('admin_', '');
+      if (page.startsWith('agency_')) currentTab = page.replace('agency_', '');
+      if (page.startsWith('hospital_')) currentTab = page.replace('hospital_', '');
+
       body = (
         <Dashboard
           session={session}
@@ -55,6 +60,7 @@ export default function App() {
           organizations={organizations}
           applications={applications}
           setPage={setPage}
+          currentTab={currentTab}
         />
       );
     } else if (page === 'discover') {

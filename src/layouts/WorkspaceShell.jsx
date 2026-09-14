@@ -36,6 +36,31 @@ export default function WorkspaceShell({ session, page, setPage, children }) {
                 {role === 'veterinarian' ? '🩺 Active Patients' : '🏡 Shelter Dogs'}
               </button>
             )}
+            
+            {isPlatformAdmin && (
+              <>
+                <button className={page === 'admin_pending' ? 'active' : ''} onClick={() => setPage('admin_pending')}>📌 Pending Requests</button>
+                <button className={page === 'admin_hospitals' ? 'active' : ''} onClick={() => setPage('admin_hospitals')}>🏥 Hospitals</button>
+                <button className={page === 'admin_agencies' ? 'active' : ''} onClick={() => setPage('admin_agencies')}>🏡 Adoption Agencies</button>
+              </>
+            )}
+
+            {isHospitalAdmin && (
+              <>
+                <button className={page === 'hospital_doctors' ? 'active' : ''} onClick={() => setPage('hospital_doctors')}>👨‍⚕️ Doctors & Staff</button>
+                <button className={page === 'hospital_queue' ? 'active' : ''} onClick={() => setPage('hospital_queue')}>🚨 Incoming Queue</button>
+                <button className={page === 'hospital_active' ? 'active' : ''} onClick={() => setPage('hospital_active')}>🩺 Active Patients</button>
+                <button className={page === 'hospital_ready' ? 'active' : ''} onClick={() => setPage('hospital_ready')}>🏡 Ready to Leave</button>
+              </>
+            )}
+
+            {isAgencyAdmin && (
+              <>
+                <button className={page === 'agency_employees' ? 'active' : ''} onClick={() => setPage('agency_employees')}>👥 Staff & Employees</button>
+                <button className={page === 'agency_residents' ? 'active' : ''} onClick={() => setPage('agency_residents')}>🏡 Current Residents</button>
+                <button className={page === 'agency_history' ? 'active' : ''} onClick={() => setPage('agency_history')}>❤️ Adoption History</button>
+              </>
+            )}
             {!isPending && !isRejected && (
               <>
                 {!isStaff && (
