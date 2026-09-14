@@ -63,7 +63,7 @@ The core of the application revolves around the `Dogs` collection. Every dog is 
 * **Identity:** `tag`, `name`, `breed`, `estimated_age`, `gender`, `location_found`, `location` (duplicate of `location_found` for backwards compatibility), `description`.
 * **Visual:** `social_photos` — an array of image URLs (typically from Firebase Cloud Storage `dog_photos/` folder).
 * **Medical Status:** `medical_status.is_vaccinated`, `medical_status.is_neutered` — real-time boolean flags.
-* **Lifecycle:** `status` — one of the five statuses listed above.
+* **Lifecycle:** `status` — one of the six statuses listed above.
 * **Provenance:** `registered_by` (UID), `registered_by_name`, `registered_by_role`, `hospital_id` (current hospital), `agency_id` (current agency), `hospital_history` (array of all hospital IDs that have treated this dog).
 * **Treatment Timeline:** An immutable-style array (`treatment_timeline`) tracking every major event with the following entry structure:
   * `date` (ISO string), `type` (admission | treatment | transfer | discharge | adoption | update), `notes`, `diagnosis`, `prescription`, `recorded_by` (UID), `recorded_by_name`, `hospital_id`/`agency_id`.
@@ -98,7 +98,14 @@ The frontend features a modern, responsive design with animated particle backgro
 
 ### Dual-Shell Layout Architecture:
 * **`PublicShell`**: Wraps all unauthenticated pages with the public header (brand logo + navigation), page content, and a footer. Pages: Home, About, Discover, Login, Apply, DogProfile.
-* **`WorkspaceShell`**: Wraps all authenticated pages with a sidebar navigation (brand, role label, navigation links, sign out) and a main content area with a particle background. Pages: Dashboard, Discover, Report, Apply, DogProfile.
+* **`WorkspaceShell`**: Wraps all authenticated pages with a sidebar navigation (brand, role label, role-specific navigation links, sign out) and a main content area with a particle background. The sidebar displays contextual tabs based on the user's role:
+  * **Platform Admin**: Workspace Dashboard, Pending Requests, Hospitals, Adoption Agencies, Discover dogs.
+  * **Hospital Admin**: Workspace Dashboard, Doctors & Staff, Incoming Queue, Active Patients, Ready to Leave, Discover dogs.
+  * **Agency Admin**: Workspace Dashboard, Staff & Employees, Current Residents, Adoption History, Discover dogs.
+  * **Veterinarian**: Workspace Dashboard, Active Patients, Awaiting Admin Action.
+  * **Agency Employee**: Workspace Dashboard, Shelter Dogs.
+  * **Community Member**: Workspace Dashboard, Discover dogs, Report a dog, Join PawPath.
+  * **Pending/Rejected Partner**: Workspace Dashboard only.
 * Authenticated users are automatically redirected from public pages (`home`, `about`, `login`) to their workspace dashboard.
 
 ### Pages:
@@ -107,13 +114,14 @@ The frontend features a modern, responsive design with animated particle backgro
 * **Login (`Login.jsx`)**: Dual-mode authentication page with toggle between Sign In and Community Registration. Community registration creates a Firebase Auth account and provisions a Firestore profile.
 * **Discover (`Discover.jsx`)**: Dog directory with search (name, breed, tag, location, gender) and status filter. Displays dogs in a card grid showing photo, status badge, tag ID, breed/gender/age, location, vaccination/neutered status, and "View full profile" link. Accessible both publicly and within the workspace.
 * **Report (`Report.jsx`)**: Community dog sighting report form with fields for name, location, breed, gender, estimated age, observations, condition notes, and photo upload (to Firebase Cloud Storage). Shows a confetti animation on successful submission.
+* **StaffDogs (`StaffDogs.jsx`)**: Dedicated workstation page for staff members to browse all dogs assigned to their organisation. Veterinarians see only `in_treatment` patients (labelled "All Active Patients"); Agency Employees see all shelter dogs with a status filter dropdown (labelled "All Shelter Dogs"). Includes search (name, breed, tag, location) and pagination.
 * **DogProfile (`DogProfile.jsx`)**: Comprehensive dog record view with photo, status badge, tag, identity details, medical status, provenance (reporter, hospital, agency, hospital history), chronological treatment timeline, and a role-gated action panel (`MedicalRecordForm`).
 * **ApplicationForm (`ApplicationForm.jsx`)**: Organisation partner application form (organisation name, type, contact info, phone, address). Creates a Firebase Auth account if user is not signed in, or submits directly if already authenticated.
 * **Dashboard (`Dashboard.jsx`)**: Role-based routing hub that renders the appropriate dashboard based on the user's role:
   * **Platform Admin → `PlatformAdminView`**: Tabbed interface with Overview (metrics: total dogs, hospitals, agencies, pending requests; recent dogs list), Pending Requests (searchable list with approve/decline actions), Hospitals (searchable directory), Adoption Agencies (searchable directory).
-  * **Hospital Admin → `HospitalDashboard`**: Tabbed interface with Overview (metrics, hospital details), Doctors & Staff (`StaffManager` component), Patients (org-specific dogs with "Admit New Dog" form via `DogRegistrationForm`), Network Dogs (street dogs from the global network available for admission).
-  * **Agency Admin → `AgencyDashboard`**: Tabbed interface with Overview (metrics, agency details), Staff & Employees (`StaffManager` component), Shelter Dogs (org-specific dogs with "Add Shelter Dog" form via `DogRegistrationForm`).
-  * **Veterinarian / Agency Employee → `StaffDashboard`**: Staff profile card, assigned organisation card, active patients/shelter dogs list, and quick-action buttons (Explore All Dogs, Report New Sighting).
+  * **Hospital Admin → `HospitalDashboard`**: Tabbed interface with Overview (metrics: active patients, fit for discharge, discharged, hospital details), Doctors & Staff (`StaffManager` component), Incoming Queue (street dogs from the global network available for admission, with "Register Walk-in Patient" form via `DogRegistrationForm`), Active Patients (dogs currently in treatment), Ready to Leave (dogs marked fit for discharge, awaiting administrative transfer or release).
+  * **Agency Admin → `AgencyDashboard`**: Tabbed interface with Overview (metrics: adoptable, adopted, total; agency details), Staff & Employees (`StaffManager` component), Current Residents (adoptable shelter dogs with "Register Walk-in Dog" form via `DogRegistrationForm`), Adoption History (searchable list of successfully adopted dogs).
+  * **Veterinarian / Agency Employee → `StaffDashboard`**: Overview tab with staff profile card and assigned organisation card. Veterinarians additionally see an "Awaiting Admin Action" tab listing dogs with `fit_for_discharge` status pending administrative release.
   * **Pending Partner**: Informational message about pending review.
   * **Rejected Partner**: Decline notice with rejection reason.
   * **Community Member (fallback)**: Basic stats and account info.

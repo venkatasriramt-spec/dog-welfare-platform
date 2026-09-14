@@ -600,7 +600,7 @@ exports.transferDog = functions.region("us-central1").https.onCall(async (data, 
 
 /**
  * Processes a dog adoption, storing private adopter details in a subcollection.
- * Can be called by: agency_admin, agency_employee, platform_admin
+ * Can be called by: agency_admin, platform_admin
  */
 exports.processAdoption = functions.region("us-central1").https.onCall(async (data, context) => {
   if (!context.auth) {
