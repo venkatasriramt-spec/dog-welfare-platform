@@ -12,6 +12,8 @@ export default function StaffDogs({ session, organizations = [], setPage }) {
   const [orgDogs, setOrgDogs] = useState([]);
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
+  const [currentPage, setCurrentPage] = useState(1);
+  const PAGE_SIZE = 6;
 
   useEffect(() => {
     if (!profile?.works_at) return;
@@ -20,7 +22,9 @@ export default function StaffDogs({ session, organizations = [], setPage }) {
 
   const list = useMemo(() => {
     let filtered = orgDogs;
-    if (statusFilter !== 'all') {
+    if (isVet) {
+      filtered = filtered.filter(d => d.status === 'in_treatment');
+    } else if (statusFilter !== 'all') {
       filtered = filtered.filter(d => d.status === statusFilter);
     }
     if (search.trim()) {
@@ -30,7 +34,21 @@ export default function StaffDogs({ session, organizations = [], setPage }) {
       );
     }
     return filtered;
-  }, [orgDogs, search, statusFilter]);
+  }, [orgDogs, search, statusFilter, isVet]);
+
+  const totalPages = Math.ceil(list.length / PAGE_SIZE) || 1;
+  const paginatedList = list.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
+
+  // Clamp page when active list changes
+  useEffect(() => {
+    if (currentPage > totalPages) {
+      setCurrentPage(totalPages);
+    }
+  }, [totalPages, currentPage]);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [search, statusFilter]);
 
   // Determine available statuses in the org for the filter dropdown
   const availableStatuses = useMemo(() => {
@@ -45,7 +63,9 @@ export default function StaffDogs({ session, organizations = [], setPage }) {
           <p className="eyebrow">— {isVet ? '🩺 MEDICAL WORKSTATION' : '🏡 CARE WORKSTATION'}</p>
           <h2>{isVet ? 'All Active Patients' : 'All Shelter Dogs'}</h2>
         </div>
-        <p className="discover-summary"><b>{list.length}</b> {list.length === 1 ? 'dog matches' : 'dogs match'} your filter.</p>
+        {!isVet && (
+          <p className="discover-summary"><b>{list.length}</b> {list.length === 1 ? 'dog matches' : 'dogs match'} your filter.</p>
+        )}
       </div>
 
       {/* Search & Filter Bar */}
@@ -59,44 +79,69 @@ export default function StaffDogs({ session, organizations = [], setPage }) {
             placeholder="Search by name, breed, tag, location..."
           />
         </label>
-        <label className="select-field">
-          <span className="sr-only">Filter by status</span>
-          <select
-            value={statusFilter}
-            onChange={e => setStatusFilter(e.target.value)}
-          >
-            <option value="all">All Statuses ({orgDogs.length})</option>
-            {availableStatuses.map(key => (
-              <option key={key} value={key}>
-                {DOG_STATUSES[key] || key} ({orgDogs.filter(d => d.status === key).length})
-              </option>
-            ))}
-          </select>
-        </label>
+        {!isVet && (
+          <label className="select-field">
+            <span className="sr-only">Filter by status</span>
+            <select
+              value={statusFilter}
+              onChange={e => setStatusFilter(e.target.value)}
+            >
+              <option value="all">All Statuses ({orgDogs.length})</option>
+              {availableStatuses.map(key => (
+                <option key={key} value={key}>
+                  {DOG_STATUSES[key] || key} ({orgDogs.filter(d => d.status === key).length})
+                </option>
+              ))}
+            </select>
+          </label>
+        )}
       </div>
 
       <div style={{ background: '#fff', padding: '24px', borderRadius: '6px', border: '1px solid var(--line)' }}>
         {list.length > 0 ? (
-          <div className="dog-grid" style={{ gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px' }}>
-            {list.map(d => (
-              <article className="dog-card" key={d.id} style={{ background: '#f7f5f0' }}>
-                {d.social_photos && d.social_photos.length > 0 ? (
-                  <img src={d.social_photos[0]} alt={d.name} />
-                ) : (
-                  <div className="dog-placeholder">🐾</div>
-                )}
-                <span className={`status ${d.status}`}>{DOG_STATUSES[d.status] || d.status}</span>
-                <div style={{ padding: '16px' }}>
-                  {d.tag && <small style={{ color: 'var(--orange)', fontWeight: 'bold' }}>{d.tag}</small>}
-                  <h3>{d.name}</h3>
-                  <p>{d.breed || 'Breed pending'} · {d.gender || ''}</p>
-                  <button className="link" onClick={() => setPage(`dog:${d.id}`)}>
-                    {isVet ? 'Add medical record →' : 'View record →'}
-                  </button>
-                </div>
-              </article>
-            ))}
-          </div>
+          <>
+            <div className="dog-grid" style={{ gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px' }}>
+              {paginatedList.map(d => (
+                <article className="dog-card" key={d.id} style={{ background: '#f7f5f0' }}>
+                  {d.social_photos && d.social_photos.length > 0 ? (
+                    <img src={d.social_photos[0]} alt={d.name} loading="lazy" />
+                  ) : (
+                    <div className="dog-placeholder">🐾</div>
+                  )}
+                  <span className={`status ${d.status}`}>{DOG_STATUSES[d.status] || d.status}</span>
+                  <div style={{ padding: '16px' }}>
+                    {d.tag && <small style={{ color: 'var(--orange)', fontWeight: 'bold' }}>{d.tag}</small>}
+                    <h3>{d.name}</h3>
+                    <p>{d.breed || 'Breed pending'} · {d.gender || ''}</p>
+                    <button className="link" onClick={() => setPage(`dog:${d.id}`)}>
+                      {isVet ? 'Add medical record →' : 'View record →'}
+                    </button>
+                  </div>
+                </article>
+              ))}
+            </div>
+            {totalPages > 1 && (
+              <div className="pagination" style={{ display: 'flex', justifyContent: 'center', gap: '8px', marginTop: '24px' }}>
+                <button 
+                  className="outline" 
+                  disabled={currentPage === 1} 
+                  onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                >
+                  ← Previous
+                </button>
+                <span style={{ padding: '8px 12px', fontSize: '14px', color: 'var(--muted)' }}>
+                  Page {currentPage} of {totalPages}
+                </span>
+                <button 
+                  className="outline" 
+                  disabled={currentPage === totalPages} 
+                  onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                >
+                  Next →
+                </button>
+              </div>
+            )}
+          </>
         ) : (
           <div className="empty">
             <b>{search || statusFilter !== 'all' ? 'No dogs match your search.' : 'No dogs are currently assigned to your organization.'}</b>

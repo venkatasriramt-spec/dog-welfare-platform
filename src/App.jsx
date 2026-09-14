@@ -47,11 +47,12 @@ export default function App() {
   if (session.user) {
     // WORKSPACE ROUTES
     let body;
-    if (page === 'dashboard' || page.startsWith('admin_') || page.startsWith('agency_') || page.startsWith('hospital_')) {
+    if (page === 'dashboard' || page.startsWith('admin_') || page.startsWith('agency_') || page.startsWith('hospital_') || page.startsWith('staffdashboard_')) {
       let currentTab = 'overview';
       if (page.startsWith('admin_')) currentTab = page.replace('admin_', '');
       if (page.startsWith('agency_')) currentTab = page.replace('agency_', '');
       if (page.startsWith('hospital_')) currentTab = page.replace('hospital_', '');
+      if (page.startsWith('staffdashboard_')) currentTab = page.replace('staffdashboard_', '');
 
       body = (
         <Dashboard

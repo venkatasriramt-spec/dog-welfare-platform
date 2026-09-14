@@ -32,9 +32,16 @@ export default function WorkspaceShell({ session, page, setPage, children }) {
               🏠 Workspace Dashboard
             </button>
             {isStaff && (
-              <button className={page === 'staff_dogs' ? 'active' : ''} onClick={() => setPage('staff_dogs')}>
-                {role === 'veterinarian' ? '🩺 Active Patients' : '🏡 Shelter Dogs'}
-              </button>
+              <>
+                <button className={page === 'staff_dogs' ? 'active' : ''} onClick={() => setPage('staff_dogs')}>
+                  {role === 'veterinarian' ? '🩺 Active Patients' : '🏡 Shelter Dogs'}
+                </button>
+                {role === 'veterinarian' && (
+                  <button className={page === 'staffdashboard_ready' ? 'active' : ''} onClick={() => setPage('staffdashboard_ready')}>
+                    🏡 Awaiting Admin Action
+                  </button>
+                )}
+              </>
             )}
             
             {isPlatformAdmin && (

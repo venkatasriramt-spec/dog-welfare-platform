@@ -51,6 +51,7 @@ export default function Dashboard({ session, dogs = [], organizations = [], appl
           dogs={dogs}
           organizations={organizations}
           setPage={setPage}
+          currentTab={currentTab}
         />
       ) : isPending ? (
         <div style={{ background: '#fff', padding: '32px', borderRadius: '6px', border: '1px solid var(--line)' }}>
