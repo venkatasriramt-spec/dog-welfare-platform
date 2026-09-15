@@ -183,6 +183,7 @@ export default function AgencyDashboard({ session, dogs = [], organizations = []
                   <button 
                     className="outline" 
                     disabled={currentPage === 1} 
+                    style={{ visibility: currentPage === 1 ? 'hidden' : 'visible' }}
                     onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
                   >
                     ← Previous
@@ -193,6 +194,7 @@ export default function AgencyDashboard({ session, dogs = [], organizations = []
                   <button 
                     className="outline" 
                     disabled={currentPage === Math.ceil(filteredAdoptable.length / PAGE_SIZE)} 
+                    style={{ visibility: currentPage === Math.ceil(filteredAdoptable.length / PAGE_SIZE) ? 'hidden' : 'visible' }}
                     onClick={() => setCurrentPage(p => Math.min(Math.ceil(filteredAdoptable.length / PAGE_SIZE), p + 1))}
                   >
                     Next →
@@ -259,6 +261,7 @@ export default function AgencyDashboard({ session, dogs = [], organizations = []
                   <button 
                     className="outline" 
                     disabled={currentPage === 1} 
+                    style={{ visibility: currentPage === 1 ? 'hidden' : 'visible' }}
                     onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
                   >
                     ← Previous
@@ -269,6 +272,7 @@ export default function AgencyDashboard({ session, dogs = [], organizations = []
                   <button 
                     className="outline" 
                     disabled={currentPage === Math.ceil(filteredAdopted.length / PAGE_SIZE)} 
+                    style={{ visibility: currentPage === Math.ceil(filteredAdopted.length / PAGE_SIZE) ? 'hidden' : 'visible' }}
                     onClick={() => setCurrentPage(p => Math.min(Math.ceil(filteredAdopted.length / PAGE_SIZE), p + 1))}
                   >
                     Next →

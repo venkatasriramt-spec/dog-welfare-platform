@@ -104,6 +104,7 @@ export default function StaffDashboard({ session, dogs = [], organizations = [],
                   <button 
                     className="outline" 
                     disabled={currentPage === 1} 
+                    style={{ visibility: currentPage === 1 ? 'hidden' : 'visible' }}
                     onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
                   >
                     ← Previous
@@ -114,6 +115,7 @@ export default function StaffDashboard({ session, dogs = [], organizations = [],
                   <button 
                     className="outline" 
                     disabled={currentPage === totalPages} 
+                    style={{ visibility: currentPage === totalPages ? 'hidden' : 'visible' }}
                     onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
                   >
                     Next →

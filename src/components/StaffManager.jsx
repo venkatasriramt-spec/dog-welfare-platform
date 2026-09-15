@@ -130,6 +130,7 @@ export default function StaffManager({ organizationId, roleType, orgName }) {
                   <button 
                     className="outline" 
                     disabled={currentPage === 1} 
+                    style={{ visibility: currentPage === 1 ? 'hidden' : 'visible' }}
                     onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
                   >
                     ← Previous
@@ -140,6 +141,7 @@ export default function StaffManager({ organizationId, roleType, orgName }) {
                   <button 
                     className="outline" 
                     disabled={currentPage === Math.ceil(filteredStaff.length / PAGE_SIZE)} 
+                    style={{ visibility: currentPage === Math.ceil(filteredStaff.length / PAGE_SIZE) ? 'hidden' : 'visible' }}
                     onClick={() => setCurrentPage(p => Math.min(Math.ceil(filteredStaff.length / PAGE_SIZE), p + 1))}
                   >
                     Next →

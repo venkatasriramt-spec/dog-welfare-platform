@@ -191,6 +191,7 @@ export default function HospitalDashboard({ session, dogs = [], organizations = 
                   <button 
                     className="outline" 
                     disabled={currentPage === 1} 
+                    style={{ visibility: currentPage === 1 ? 'hidden' : 'visible' }}
                     onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
                   >
                     ← Previous
@@ -201,6 +202,7 @@ export default function HospitalDashboard({ session, dogs = [], organizations = 
                   <button 
                     className="outline" 
                     disabled={currentPage === Math.ceil(filteredActive.length / PAGE_SIZE)} 
+                    style={{ visibility: currentPage === Math.ceil(filteredActive.length / PAGE_SIZE) ? 'hidden' : 'visible' }}
                     onClick={() => setCurrentPage(p => Math.min(Math.ceil(filteredActive.length / PAGE_SIZE), p + 1))}
                   >
                     Next →
@@ -266,6 +268,7 @@ export default function HospitalDashboard({ session, dogs = [], organizations = 
                   <button 
                     className="outline" 
                     disabled={currentPage === 1} 
+                    style={{ visibility: currentPage === 1 ? 'hidden' : 'visible' }}
                     onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
                   >
                     ← Previous
@@ -276,6 +279,7 @@ export default function HospitalDashboard({ session, dogs = [], organizations = 
                   <button 
                     className="outline" 
                     disabled={currentPage === Math.ceil(filteredReady.length / PAGE_SIZE)} 
+                    style={{ visibility: currentPage === Math.ceil(filteredReady.length / PAGE_SIZE) ? 'hidden' : 'visible' }}
                     onClick={() => setCurrentPage(p => Math.min(Math.ceil(filteredReady.length / PAGE_SIZE), p + 1))}
                   >
                     Next →
@@ -358,6 +362,7 @@ export default function HospitalDashboard({ session, dogs = [], organizations = 
                   <button 
                     className="outline" 
                     disabled={currentPage === 1} 
+                    style={{ visibility: currentPage === 1 ? 'hidden' : 'visible' }}
                     onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
                   >
                     ← Previous
@@ -368,6 +373,7 @@ export default function HospitalDashboard({ session, dogs = [], organizations = 
                   <button 
                     className="outline" 
                     disabled={currentPage === Math.ceil(filteredQueue.length / PAGE_SIZE)} 
+                    style={{ visibility: currentPage === Math.ceil(filteredQueue.length / PAGE_SIZE) ? 'hidden' : 'visible' }}
                     onClick={() => setCurrentPage(p => Math.min(Math.ceil(filteredQueue.length / PAGE_SIZE), p + 1))}
                   >
                     Next →

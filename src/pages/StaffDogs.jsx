@@ -76,22 +76,6 @@ export default function StaffDogs({ session, organizations = [], setPage }) {
             placeholder="Search by name, breed, tag, location..."
           />
         </label>
-        {!isVet && (
-          <label className="select-field">
-            <span className="sr-only">Filter by status</span>
-            <select
-              value={statusFilter}
-              onChange={e => setStatusFilter(e.target.value)}
-            >
-              <option value="all">All Statuses ({orgDogs.length})</option>
-              {availableStatuses.map(key => (
-                <option key={key} value={key}>
-                  {DOG_STATUSES[key] || key} ({orgDogs.filter(d => d.status === key).length})
-                </option>
-              ))}
-            </select>
-          </label>
-        )}
       </div>
 
       <div style={{ background: '#fff', padding: '24px', borderRadius: '6px', border: '1px solid var(--line)' }}>
@@ -122,6 +106,7 @@ export default function StaffDogs({ session, organizations = [], setPage }) {
                 <button 
                   className="outline" 
                   disabled={currentPage === 1} 
+                  style={{ visibility: currentPage === 1 ? 'hidden' : 'visible' }}
                   onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
                 >
                   ← Previous
@@ -132,6 +117,7 @@ export default function StaffDogs({ session, organizations = [], setPage }) {
                 <button 
                   className="outline" 
                   disabled={currentPage === totalPages} 
+                  style={{ visibility: currentPage === totalPages ? 'hidden' : 'visible' }}
                   onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
                 >
                   Next →
