@@ -594,7 +594,7 @@ exports.updateDogRecord = functions.region("us-central1").https.onCall(async (da
 
 /**
  * Transfers a dog from hospital to an adoption agency.
- * Can be called by: hospital_admin, veterinarian, platform_admin
+ * Can be called by: hospital_admin, platform_admin
  */
 exports.transferDog = functions.region("us-central1").https.onCall(async (data, context) => {
   if (!context.auth) {
