@@ -1,7 +1,7 @@
 # Test Dog Profiles
 
 Use this data to populate the system and test the various role-based workflows.
-To make testing easier and more realistic, these dogs flow through the different stages of the platform's lifecycle. A dog you report in Group A will be the same dog you treat in Group B, transfer in Group C, shelter in Group D, and adopt in Group E. Not all dogs go through every stage.
+To make testing easier and more realistic, a specific subset of these dogs flows progressively through the different stages of the platform's lifecycle. A dog reported in Group A may be treated in Group B, transferred in Group C, sheltered in Group D, and adopted in Group E. Note that "Report -> Shelter" indicates endpoint states (the dog stops progressing after the shelter phase) and not every reported dog reaches adoption.
 
 > **Note:** To verify Platform Admin statistics, log in as Platform Admin (`admin@pawpath.demo`) after completing all these steps to ensure all dogs and active organizations are correctly reflected in the global dashboard.
 
@@ -38,7 +38,7 @@ To make testing easier and more realistic, these dogs flow through the different
   - Condition/Admission Notes: Skin infection visible, constantly scratching.
 * **Image Name:** `Fiona.jpg`
 
-### Bella (Partial Lifecycle: Report -> Shelter)
+### Bella (Partial Lifecycle: Report -> Treatment -> Transfer -> Shelter)
 * **Scenario:** Community Report
 * **Who uploads this:** Rahul Verma (`rahul.community@pawpath.demo` - Community Member)
 * **Where to upload / perform:** Log in, click '+ Report a dog' from Discover
@@ -53,7 +53,7 @@ To make testing easier and more realistic, these dogs flow through the different
   - Condition/Admission Notes: Limping on the back left leg, needs checking.
 * **Image Name:** `Bella.jpg`
 
-### Gatsby (Partial Lifecycle: Report -> Shelter)
+### Gatsby (Partial Lifecycle: Report -> Treatment -> Transfer -> Shelter)
 * **Scenario:** Community Report
 * **Who uploads this:** Rahul Verma (`rahul.community@pawpath.demo` - Community Member)
 * **Where to upload / perform:** Log in, click '+ Report a dog' from Discover

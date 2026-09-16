@@ -156,8 +156,8 @@ The frontend features a modern, responsive design with animated particle backgro
 * **Counters:** Read allowed for signed-in users. All writes denied (server-managed via Cloud Functions).
 
 ### Storage Rules:
-* **`dog_photos/{imageId}`:** Public read access. Write access restricted to authenticated users only. No file size or content-type restrictions are enforced at the rules level.
-* **`dog_media/{mediaId}`:** Public read access. Write access restricted to authenticated users only. Used for video uploads and additional media files.
+* **`dog_photos/{imageId}`:** Public read access. Write access (create/update/delete) is owner-scoped, ensuring users can only modify their own uploads. Uploads must be under 50 MB, and content types are strictly enforced to `image/*` or `video/*`.
+* **`dog_media/{mediaId}`:** Public read access. Write access (create/update/delete) is owner-scoped, ensuring users can only modify their own uploads. Uploads must be under 50 MB, and content types are strictly enforced to `image/*` or `video/*`.
 
 ---
 
