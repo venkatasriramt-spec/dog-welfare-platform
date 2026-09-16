@@ -21,8 +21,6 @@ To make testing easier and more realistic, these dogs flow through the different
   - Estimated Age: Puppy (6 months)
   - Description/Notes: Puppy found crying alone near the garbage dump.
   - Condition/Admission Notes: Weak and scared, possible minor injuries.
-  - Vaccinated: No
-  - Neutered/Spayed: No
 * **Image Name:** `Apollo.jpg`
 
 ### Fiona (Full Lifecycle)
@@ -38,8 +36,6 @@ To make testing easier and more realistic, these dogs flow through the different
   - Estimated Age: Adult (~2 years)
   - Description/Notes: Seen wandering around the layout for a few days.
   - Condition/Admission Notes: Skin infection visible, constantly scratching.
-  - Vaccinated: No
-  - Neutered/Spayed: No
 * **Image Name:** `Fiona.jpg`
 
 ### Bella (Partial Lifecycle: Report -> Shelter)
@@ -55,8 +51,6 @@ To make testing easier and more realistic, these dogs flow through the different
   - Estimated Age: Adult (~3 years)
   - Description/Notes: Friendly but injured dog.
   - Condition/Admission Notes: Limping on the back left leg, needs checking.
-  - Vaccinated: No
-  - Neutered/Spayed: No
 * **Image Name:** `Bella.jpg`
 
 ### Gatsby (Partial Lifecycle: Report -> Shelter)
@@ -72,8 +66,6 @@ To make testing easier and more realistic, these dogs flow through the different
   - Estimated Age: Adult (~5 years)
   - Description/Notes: Struck by a vehicle, laying on the pavement.
   - Condition/Admission Notes: Hit by a two-wheeler, lying on the side of the road.
-  - Vaccinated: No
-  - Neutered/Spayed: No
 * **Image Name:** `Gatsby.jpg`
 
 ### Charlie (Stuck in Treatment)
@@ -89,8 +81,6 @@ To make testing easier and more realistic, these dogs flow through the different
   - Estimated Age: Senior (8+ years)
   - Description/Notes: Needs urgent medical care.
   - Condition/Admission Notes: Weak and lethargic, refusing to eat.
-  - Vaccinated: No
-  - Neutered/Spayed: No
 * **Image Name:** `Charlie.jpg`
 
 ### Hazel (Stuck in Treatment)
@@ -101,13 +91,11 @@ To make testing easier and more realistic, these dogs flow through the different
 * **Details:**
   - Dog Name: Hazel
   - Location: Electronic City, Bangalore
-  - Breed: Indie
+  - Breed: Indian Pariah / Indie
   - Gender: Female
   - Estimated Age: Adult (~3 years)
   - Description/Notes: Found tied to a fence.
   - Condition/Admission Notes: Collar on but no owner in sight for 2 days. Looks malnourished.
-  - Vaccinated: No
-  - Neutered/Spayed: No
 * **Image Name:** `Hazel.jpg`
 
 ### Daisy (Ignored Report)
@@ -123,8 +111,6 @@ To make testing easier and more realistic, these dogs flow through the different
   - Estimated Age: Adult (~3 years)
   - Description/Notes: Lost pug wandering around.
   - Condition/Admission Notes: Seems healthy but lost.
-  - Vaccinated: No
-  - Neutered/Spayed: No
 * **Image Name:** `Daisy.jpg`
 
 ---
@@ -137,8 +123,8 @@ To make testing easier and more realistic, these dogs flow through the different
 * **Scenario:** Direct Admission & Treatment
 * **Who uploads this:** Dr. Vikram Malhotra (`citycare.admin@pawpath.demo` - CityCare Admin)
 * **Where to upload / perform:** Hospital Dashboard -> 'Incoming Queue' -> '+ Register Walk-in Patient'
-* **Action to Perform:** Dr. Sarah Connor (`sarah.vet@citycare.demo` - Veterinarian) logs in -> 'Active Patients' -> Adds a Medical Record.
-* **Details:**
+* **Action to Perform:** Dr. Sarah Connor (`sarah.vet@citycare.demo` - Veterinarian) logs in -> 'Active Patients' -> Adds a Medical Record (Diagnosis: Parvovirus, Prescription: IV Fluids, Notes: Kept in isolation).
+* **Details (Walk-in Registration):**
   - Dog Name: Kiki
   - Location: Bellandur, Bangalore
   - Breed: Cocker Spaniel
@@ -154,8 +140,8 @@ To make testing easier and more realistic, these dogs flow through the different
 * **Scenario:** Direct Admission & Treatment
 * **Who uploads this:** Dr. Kavita Reddy (`pawsclaws.admin@pawpath.demo` - Paws & Claws Admin)
 * **Where to upload / perform:** Hospital Dashboard -> 'Incoming Queue' -> '+ Register Walk-in Patient'
-* **Action to Perform:** Dr. Amit Verma (`amit.vet@pawsclaws.demo` - Veterinarian) logs in -> 'Active Patients' -> Adds a Medical Record.
-* **Details:**
+* **Action to Perform:** Dr. Amit Verma (`amit.vet@pawsclaws.demo` - Veterinarian) logs in -> 'Active Patients' -> Adds a Medical Record (Diagnosis: Routine Spay, Prescription: Painkillers, Notes: Surgery successful).
+* **Details (Walk-in Registration):**
   - Dog Name: Rocky
   - Location: JP Nagar, Bangalore
   - Breed: Golden Retriever
@@ -171,8 +157,8 @@ To make testing easier and more realistic, these dogs flow through the different
 * **Scenario:** Direct Admission & Treatment
 * **Who uploads this:** Dr. Vikram Malhotra (`citycare.admin@pawpath.demo` - CityCare Admin)
 * **Where to upload / perform:** Hospital Dashboard -> 'Incoming Queue' -> '+ Register Walk-in Patient'
-* **Action to Perform:** Dr. Sarah Connor (`sarah.vet@citycare.demo` - Veterinarian) logs in -> 'Active Patients' -> Adds a Medical Record.
-* **Details:**
+* **Action to Perform:** Dr. Sarah Connor (`sarah.vet@citycare.demo` - Veterinarian) logs in -> 'Active Patients' -> Adds a Medical Record (Diagnosis: Dog bite wound, Prescription: Antibiotics, Notes: Wound cleaned).
+* **Details (Walk-in Registration):**
   - Dog Name: Milo
   - Location: Hebbal, Bangalore
   - Breed: Dalmatian
@@ -185,12 +171,12 @@ To make testing easier and more realistic, these dogs flow through the different
 * **Image Name:** `Milo.jpg`
 
 ### Actions for Previously Admitted Dogs (From Group A)
-* **Apollo**: Dr. Sarah Connor (`sarah.vet@citycare.demo`) -> Adds medical record: "Treated for minor scrapes and given fluids."
-* **Fiona**: Dr. Amit Verma (`amit.vet@pawsclaws.demo`) -> Adds medical record: "Medicated bath and antibiotics for skin infection."
-* **Bella**: Dr. Rajesh Sharma (`rajesh.vet@citycare.demo`) -> Adds medical record: "X-ray shows no fracture, given pain meds."
-* **Gatsby**: Dr. Amit Verma (`amit.vet@pawsclaws.demo`) -> Adds medical record: "Stabilized, no internal bleeding."
-* **Charlie**: Dr. Sarah Connor (`sarah.vet@citycare.demo`) -> Adds medical record: "On IV fluids, monitoring for kidney issues."
-* **Hazel**: Dr. Amit Verma (`amit.vet@pawsclaws.demo`) -> Adds medical record: "Feeding slowly, running blood tests."
+* **Apollo**: Dr. Sarah Connor (`sarah.vet@citycare.demo`) -> Adds medical record (Diagnosis: Minor scrapes, Prescription: Fluids, Notes: Resting comfortably).
+* **Fiona**: Dr. Amit Verma (`amit.vet@pawsclaws.demo`) -> Adds medical record (Diagnosis: Skin infection, Prescription: Antibiotics and medicated bath, Notes: Scratching less).
+* **Bella**: Dr. Rajesh Sharma (`rajesh.vet@citycare.demo`) -> Adds medical record (Diagnosis: Sprained leg, Prescription: Pain meds, Notes: X-ray shows no fracture).
+* **Gatsby**: Dr. Amit Verma (`amit.vet@pawsclaws.demo`) -> Adds medical record (Diagnosis: Blunt force trauma, Prescription: Painkillers, Notes: Stabilized, no internal bleeding).
+* **Charlie**: Dr. Sarah Connor (`sarah.vet@citycare.demo`) -> Adds medical record (Diagnosis: Kidney issues, Prescription: IV fluids, Notes: Monitoring closely).
+* **Hazel**: Dr. Amit Verma (`amit.vet@pawsclaws.demo`) -> Adds medical record (Diagnosis: Malnutrition, Prescription: Vitamin supplements, Notes: Feeding slowly, running blood tests).
 
 ---
 ## Group C: Ready to Leave (Fit for Discharge)
@@ -228,11 +214,11 @@ To make testing easier and more realistic, these dogs flow through the different
 * **Scenario:** Shelter Intake
 * **Who uploads this:** Ananya Roy (`happytails.admin@pawpath.demo` - Happy Tails Admin)
 * **Where to upload / perform:** Agency Dashboard -> 'Current Residents' -> '+ Register Walk-in Dog'
-* **Action to Perform:** Priya Patel (`priya.staff@happytails.demo` - Employee) logs in -> 'Current Residents' -> Adds an update note. (Verify NO 'Mark Adopted' button).
-* **Details:**
+* **Action to Perform:** Priya Patel (`priya.staff@happytails.demo` - Employee) logs in -> 'Current Residents' -> Adds an update note (Notes: Very playful and eating well). (Verify NO 'Mark Adopted' button).
+* **Details (Walk-in Registration):**
   - Dog Name: Zoe
   - Location: HSR Layout, Bangalore
-  - Breed: Indie
+  - Breed: Indian Pariah / Indie
   - Gender: Female
   - Estimated Age: Puppy (3 months)
   - Description/Notes: High energy, playful.
@@ -245,8 +231,8 @@ To make testing easier and more realistic, these dogs flow through the different
 * **Scenario:** Shelter Intake
 * **Who uploads this:** Marcus Chen (`hopestreet.admin@pawpath.demo` - Hope Street Admin)
 * **Where to upload / perform:** Agency Dashboard -> 'Current Residents' -> '+ Register Walk-in Dog'
-* **Action to Perform:** Maya Sen (`maya.staff@hopestreet.demo` - Employee) logs in -> 'Current Residents' -> Adds an update note. (Verify NO 'Mark Adopted' button).
-* **Details:**
+* **Action to Perform:** Maya Sen (`maya.staff@hopestreet.demo` - Employee) logs in -> 'Current Residents' -> Adds an update note (Notes: Sleeps most of the day, gentle). (Verify NO 'Mark Adopted' button).
+* **Details (Walk-in Registration):**
   - Dog Name: Frankie
   - Location: JP Nagar, Bangalore
   - Breed: Labrador Retriever
@@ -274,9 +260,9 @@ To make testing easier and more realistic, these dogs flow through the different
 * **Who performs this:** The Agency Admin.
 * **Where to perform:** Agency Dashboard -> 'Current Residents' -> Fills out adopter details -> Verify dog moves to 'Adoption History' tab.
   
-1. **Apollo**: Ananya Roy (`happytails.admin@pawpath.demo`) processes adoption. 
-2. **Fiona**: Marcus Chen (`hopestreet.admin@pawpath.demo`) processes adoption.
-3. **Kiki**: Ananya Roy (`happytails.admin@pawpath.demo`) processes adoption.
-4. **Zoe**: Ananya Roy (`happytails.admin@pawpath.demo`) processes adoption.
+1. **Apollo**: Ananya Roy (`happytails.admin@pawpath.demo`) processes adoption (Adopter Name: Rohan Gupta, Phone: 9876543210). 
+2. **Fiona**: Marcus Chen (`hopestreet.admin@pawpath.demo`) processes adoption (Adopter Name: Sneha Sharma, Phone: 9876543211).
+3. **Kiki**: Ananya Roy (`happytails.admin@pawpath.demo`) processes adoption (Adopter Name: Amit Singh, Phone: 9876543212).
+4. **Zoe**: Ananya Roy (`happytails.admin@pawpath.demo`) processes adoption (Adopter Name: Priya Kumar, Phone: 9876543213).
 
 > **Bella**, **Gatsby**, **Rocky**, and **Frankie** remain in the shelter as 'Current Residents' awaiting adoption.
