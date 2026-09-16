@@ -96,7 +96,7 @@ export default function EditProfileForm({ dog, onUpdated }) {
           social_photos: newPhotos,
           videos: newVideos,
           timeline_entry: {
-            type: 'general',
+            type: 'update',
             notes: 'Profile metadata and media updated by owner.'
           }
         });
@@ -181,6 +181,7 @@ export default function EditProfileForm({ dog, onUpdated }) {
               <button 
                 type="button" 
                 onClick={() => removePhoto(i)}
+                disabled={loading}
                 style={{ position: 'absolute', top: '4px', right: '4px', background: 'rgba(0,0,0,0.6)', color: 'white', border: 'none', borderRadius: '50%', width: '20px', height: '20px', fontSize: '12px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
               >
                 ✕
@@ -193,6 +194,7 @@ export default function EditProfileForm({ dog, onUpdated }) {
               <button 
                 type="button" 
                 onClick={() => removeVideo(i)}
+                disabled={loading}
                 style={{ position: 'absolute', top: '4px', right: '4px', background: 'rgba(0,0,0,0.6)', color: 'white', border: 'none', borderRadius: '50%', width: '20px', height: '20px', fontSize: '12px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
               >
                 ✕
@@ -212,6 +214,7 @@ export default function EditProfileForm({ dog, onUpdated }) {
               <button 
                 type="button" 
                 onClick={() => removeStaged(i)}
+                disabled={loading}
                 style={{ position: 'absolute', top: '4px', right: '4px', background: 'rgba(0,0,0,0.6)', color: 'white', border: 'none', borderRadius: '50%', width: '20px', height: '20px', fontSize: '12px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
               >
                 ✕

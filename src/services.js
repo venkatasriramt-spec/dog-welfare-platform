@@ -93,7 +93,12 @@ export async function uploadImage(file, folder = 'dog_photos') {
   const fileName = `${folder}/${Date.now()}_${Math.random().toString(36).substring(2, 9)}.${ext}`;
   const storageRef = ref(storage, fileName);
   
-  const metadata = { contentType: file.type };
+  const metadata = { 
+    contentType: file.type,
+    customMetadata: {
+      ownerId: auth.currentUser?.uid || ''
+    }
+  };
   await uploadBytes(storageRef, file, metadata);
   return getDownloadURL(storageRef);
 }

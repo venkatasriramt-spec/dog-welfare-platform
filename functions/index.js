@@ -498,23 +498,24 @@ exports.updateDogRecord = functions.region("us-central1").https.onCall(async (da
 
     // Update social photos and videos (replaces entirely to allow adding/deleting)
     // We collect the removed URLs to delete them from Storage *after* Firestore updates successfully.
-    const filesToDelete = [];
+    let newPhotos = dogData.social_photos || [];
+    let newVideos = dogData.videos || [];
+    const oldMedia = [];
 
     if (Array.isArray(data.social_photos)) {
-      const newPhotos = data.social_photos.filter((p) => typeof p === "string" && p.trim().length > 0);
+      newPhotos = data.social_photos.filter((p) => typeof p === "string" && p.trim().length > 0);
       updates.social_photos = newPhotos;
-      const oldPhotos = dogData.social_photos || [];
-      const removedPhotos = oldPhotos.filter((p) => !newPhotos.includes(p));
-      filesToDelete.push(...removedPhotos);
+      oldMedia.push(...(dogData.social_photos || []));
     }
 
     if (Array.isArray(data.videos)) {
-      const newVideos = data.videos.filter((v) => typeof v === "string" && v.trim().length > 0);
+      newVideos = data.videos.filter((v) => typeof v === "string" && v.trim().length > 0);
       updates.videos = newVideos;
-      const oldVideos = dogData.videos || [];
-      const removedVideos = oldVideos.filter((v) => !newVideos.includes(v));
-      filesToDelete.push(...removedVideos);
+      oldMedia.push(...(dogData.videos || []));
     }
+
+    const finalMedia = [...newPhotos, ...newVideos];
+    const filesToDelete = oldMedia.filter((url) => !finalMedia.includes(url));
 
     // Update breed
     if (data.breed) {

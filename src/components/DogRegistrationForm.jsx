@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { BREED_OPTIONS, GENDER_OPTIONS, emptyDogForm } from '../constants';
 import { registerDog, uploadImage, deleteImage } from '../services';
 export default function DogRegistrationForm({ onDogRegistered, contextLabel }) {
@@ -8,6 +8,10 @@ export default function DogRegistrationForm({ onDogRegistered, contextLabel }) {
   const [success, setSuccess] = useState('');
   const [mediaFiles, setMediaFiles] = useState([]);
   const [previewUrls, setPreviewUrls] = useState([]);
+
+  useEffect(() => {
+    return () => previewUrls.forEach(url => URL.revokeObjectURL(url));
+  }, [previewUrls]);
 
   const set = (key, value) => setForm(prev => ({ ...prev, [key]: value }));
 

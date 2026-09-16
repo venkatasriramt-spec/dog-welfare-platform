@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { BREED_OPTIONS, GENDER_OPTIONS } from '../constants';
 import { reportDog, uploadImage, deleteImage } from '../services';import Confetti from '../components/Confetti';
 import ParticleBackground from '../components/ParticleBackground';
@@ -18,6 +18,10 @@ export default function Report({ session, setPage, isWorkspace }) {
   const [mediaFiles, setMediaFiles] = useState([]);
   const [previewUrls, setPreviewUrls] = useState([]);
   const [showSuccess, setShowSuccess] = useState(false);
+
+  useEffect(() => {
+    return () => previewUrls.forEach(url => URL.revokeObjectURL(url));
+  }, [previewUrls]);
 
   const handleMediaChange = (e) => {
     const files = Array.from(e.target.files);
