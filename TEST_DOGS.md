@@ -21,7 +21,7 @@ To make testing easier and more realistic, these dogs flow through the different
   - Estimated Age: Puppy (6 months)
   - Description/Notes: Puppy found crying alone near the garbage dump.
   - Condition/Admission Notes: Weak and scared, possible minor injuries.
-* **Image Name:** `Apollo.jpg`
+* **Image Name:** `Apollo.png`
 
 ### Fiona (Full Lifecycle)
 * **Scenario:** Community Report
