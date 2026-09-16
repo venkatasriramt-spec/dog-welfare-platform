@@ -1,6 +1,6 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { BREED_OPTIONS, GENDER_OPTIONS } from '../constants';
-import { updateDogRecord, uploadImage } from '../services';
+import { updateDogRecord, uploadImage, deleteImage } from '../services';
 
 export default function EditProfileForm({ dog, onUpdated }) {
   const [name, setName] = useState(dog.name || '');
@@ -10,6 +10,20 @@ export default function EditProfileForm({ dog, onUpdated }) {
 
   const [socialPhotos, setSocialPhotos] = useState(dog.social_photos || []);
   const [videos, setVideos] = useState(dog.videos || []);
+  
+  const [stagedFiles, setStagedFiles] = useState([]);
+  const [stagedUrls, setStagedUrls] = useState([]);
+  const stagedUrlsRef = useRef([]);
+
+  useEffect(() => {
+    stagedUrlsRef.current = stagedUrls;
+  }, [stagedUrls]);
+
+  useEffect(() => {
+    return () => {
+      stagedUrlsRef.current.forEach(url => URL.revokeObjectURL(url));
+    };
+  }, []);
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -18,36 +32,15 @@ export default function EditProfileForm({ dog, onUpdated }) {
   const fileInputRef = useRef(null);
   const isSubmitting = useRef(false);
 
-  const handleMediaChange = async (e) => {
+  const handleMediaChange = (e) => {
     const files = Array.from(e.target.files);
     if (!files.length) return;
 
-    setLoading(true);
-    setError('');
-    try {
-      const newPhotos = [...socialPhotos];
-      const newVideos = [...videos];
-
-      for (const file of files) {
-        // We reuse uploadImage, which supports any file type based on file.type
-        const url = await uploadImage(file, 'dog_photos');
-        if (file.type.startsWith('video/')) {
-          newVideos.push(url);
-        } else {
-          newPhotos.push(url);
-        }
-      }
-
-      setSocialPhotos(newPhotos);
-      setVideos(newVideos);
-    } catch (err) {
-      setError(err.message || 'Failed to upload media.');
-    } finally {
-      setLoading(false);
-      // reset file input
-      if (fileInputRef.current) {
-        fileInputRef.current.value = '';
-      }
+    setStagedFiles(prev => [...prev, ...files]);
+    setStagedUrls(prev => [...prev, ...files.map(f => URL.createObjectURL(f))]);
+    
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
     }
   };
 
@@ -58,6 +51,16 @@ export default function EditProfileForm({ dog, onUpdated }) {
   const removeVideo = (index) => {
     setVideos(prev => prev.filter((_, i) => i !== index));
   };
+  
+  const removeStaged = (index) => {
+    setStagedFiles(prev => prev.filter((_, i) => i !== index));
+    setStagedUrls(prev => {
+      const newUrls = [...prev];
+      URL.revokeObjectURL(newUrls[index]);
+      newUrls.splice(index, 1);
+      return newUrls;
+    });
+  };
 
   const submit = async (e) => {
     e.preventDefault();
@@ -67,27 +70,63 @@ export default function EditProfileForm({ dog, onUpdated }) {
     setError('');
     setSuccess('');
 
+    let updateSuccess = false;
     try {
-      await updateDogRecord({
-        dogId: dog.id,
-        name,
-        estimated_age: estimatedAge,
-        breed,
-        gender,
-        social_photos: socialPhotos,
-        videos: videos,
-        timeline_entry: {
-          type: 'general',
-          notes: 'Profile metadata and media updated by owner.'
+      const newPhotos = [...socialPhotos];
+      const newVideos = [...videos];
+      const uploadedUrls = [];
+      
+      try {
+        for (const file of stagedFiles) {
+          const url = await uploadImage(file, 'dog_photos');
+          uploadedUrls.push(url);
+          if (file.type.startsWith('video/')) {
+            newVideos.push(url);
+          } else {
+            newPhotos.push(url);
+          }
         }
-      });
-      setSuccess('Profile updated successfully!');
-      if (onUpdated) onUpdated();
+        
+        await updateDogRecord({
+          dogId: dog.id,
+          name,
+          estimated_age: estimatedAge,
+          breed,
+          gender,
+          social_photos: newPhotos,
+          videos: newVideos,
+          timeline_entry: {
+            type: 'general',
+            notes: 'Profile metadata and media updated by owner.'
+          }
+        });
+        
+        setSocialPhotos(newPhotos);
+        setVideos(newVideos);
+        stagedUrls.forEach(url => URL.revokeObjectURL(url));
+        setStagedFiles([]);
+        setStagedUrls([]);
+        setSuccess('Profile updated successfully!');
+        updateSuccess = true;
+      } catch (innerErr) {
+        if (uploadedUrls.length > 0) {
+          await Promise.allSettled(uploadedUrls.map(url => deleteImage(url)));
+        }
+        throw innerErr;
+      }
     } catch (err) {
       setError(err.message || 'Failed to update profile.');
     } finally {
       setLoading(false);
       isSubmitting.current = false;
+    }
+
+    if (updateSuccess && onUpdated) {
+      try {
+        await onUpdated();
+      } catch (cbErr) {
+        console.error('Callback error', cbErr);
+      }
     }
   };
 
@@ -160,6 +199,25 @@ export default function EditProfileForm({ dog, onUpdated }) {
               </button>
               <span style={{ position: 'absolute', bottom: '4px', left: '4px', background: 'rgba(0,0,0,0.6)', color: 'white', fontSize: '10px', padding: '2px 4px', borderRadius: '2px' }}>
                 VIDEO
+              </span>
+            </div>
+          ))}
+          {stagedUrls.map((url, i) => (
+            <div key={url} style={{ position: 'relative', width: '100px', height: '100px' }}>
+              {stagedFiles[i]?.type.startsWith('video/') ? (
+                <video src={url} style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '4px', opacity: 0.8 }} muted />
+              ) : (
+                <img src={url} alt="Staged photo" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '4px', opacity: 0.8 }} />
+              )}
+              <button 
+                type="button" 
+                onClick={() => removeStaged(i)}
+                style={{ position: 'absolute', top: '4px', right: '4px', background: 'rgba(0,0,0,0.6)', color: 'white', border: 'none', borderRadius: '50%', width: '20px', height: '20px', fontSize: '12px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+              >
+                ✕
+              </button>
+              <span style={{ position: 'absolute', bottom: '4px', left: '4px', background: 'rgba(0,0,0,0.6)', color: 'white', fontSize: '10px', padding: '2px 4px', borderRadius: '2px' }}>
+                NEW
               </span>
             </div>
           ))}

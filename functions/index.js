@@ -497,28 +497,15 @@ exports.updateDogRecord = functions.region("us-central1").https.onCall(async (da
     }
 
     // Update social photos and videos (replaces entirely to allow adding/deleting)
-    // We also delete the removed files from Storage
-    const storageBucket = getStorage().bucket();
-    const deleteFromStorage = async (url) => {
-      try {
-        const match = url.match(/\/o\/(.+?)\?/);
-        if (match && match[1]) {
-          const filePath = decodeURIComponent(match[1]);
-          await storageBucket.file(filePath).delete();
-        }
-      } catch (e) {
-        console.error("Failed to delete from storage", url, e);
-      }
-    };
+    // We collect the removed URLs to delete them from Storage *after* Firestore updates successfully.
+    const filesToDelete = [];
 
     if (Array.isArray(data.social_photos)) {
       const newPhotos = data.social_photos.filter((p) => typeof p === "string" && p.trim().length > 0);
       updates.social_photos = newPhotos;
       const oldPhotos = dogData.social_photos || [];
       const removedPhotos = oldPhotos.filter((p) => !newPhotos.includes(p));
-      for (const p of removedPhotos) {
-        await deleteFromStorage(p);
-      }
+      filesToDelete.push(...removedPhotos);
     }
 
     if (Array.isArray(data.videos)) {
@@ -526,9 +513,7 @@ exports.updateDogRecord = functions.region("us-central1").https.onCall(async (da
       updates.videos = newVideos;
       const oldVideos = dogData.videos || [];
       const removedVideos = oldVideos.filter((v) => !newVideos.includes(v));
-      for (const v of removedVideos) {
-        await deleteFromStorage(v);
-      }
+      filesToDelete.push(...removedVideos);
     }
 
     // Update breed
@@ -574,7 +559,29 @@ exports.updateDogRecord = functions.region("us-central1").https.onCall(async (da
       updates.treatment_timeline = FieldValue.arrayUnion(entry);
     }
 
+    // Wait for the record update to complete before modifying Storage
     await dogRef.update(updates);
+
+    // Clean up removed files from Storage
+    if (filesToDelete.length > 0) {
+      const storageBucket = getStorage().bucket();
+      await Promise.allSettled(filesToDelete.map(async (url) => {
+        try {
+          const match = url.match(/\/o\/(.+?)\?/);
+          if (match && match[1]) {
+            const filePath = decodeURIComponent(match[1]);
+            // Validate that the decoded object path is in our expected directories
+            if (filePath.startsWith("dog_photos/") || filePath.startsWith("dog_media/")) {
+              await storageBucket.file(filePath).delete();
+            } else {
+              functions.logger.warn("Skipping deletion of invalid storage path", {filePath});
+            }
+          }
+        } catch (e) {
+          functions.logger.error("Failed to delete from storage", url, e);
+        }
+      }));
+    }
 
     functions.logger.info("Dog record updated", {dogId, callerUid});
     return {success: true};

@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { BREED_OPTIONS, GENDER_OPTIONS } from '../constants';
-import { reportDog, uploadImage } from '../services';
-import Confetti from '../components/Confetti';
+import { reportDog, uploadImage, deleteImage } from '../services';import Confetti from '../components/Confetti';
 import ParticleBackground from '../components/ParticleBackground';
 
 export default function Report({ session, setPage, isWorkspace }) {
@@ -38,18 +37,27 @@ export default function Report({ session, setPage, isWorkspace }) {
     try {
       const social_photos = [];
       const videos = [];
-      if (mediaFiles.length) {
-        for (const file of mediaFiles) {
-          const url = await uploadImage(file, 'dog_photos');
-          if (file.type.startsWith('video/')) {
-            videos.push(url);
-          } else {
-            social_photos.push(url);
+      const uploadedUrls = [];
+      try {
+        if (mediaFiles.length) {
+          for (const file of mediaFiles) {
+            const url = await uploadImage(file, 'dog_photos');
+            uploadedUrls.push(url);
+            if (file.type.startsWith('video/')) {
+              videos.push(url);
+            } else {
+              social_photos.push(url);
+            }
           }
         }
+        await reportDog({ ...form, social_photos, videos }, session.user.uid);
+        setShowSuccess(true);
+      } catch (innerErr) {
+        if (uploadedUrls.length > 0) {
+          await Promise.allSettled(uploadedUrls.map(url => deleteImage(url)));
+        }
+        throw innerErr;
       }
-      await reportDog({ ...form, social_photos, videos }, session.user.uid);
-      setShowSuccess(true);
     } catch (err) {
       setError(err.message);
     } finally {

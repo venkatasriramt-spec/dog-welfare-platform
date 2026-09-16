@@ -1,7 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { BREED_OPTIONS, GENDER_OPTIONS, emptyDogForm } from '../constants';
-import { registerDog, uploadImage } from '../services';
-
+import { registerDog, uploadImage, deleteImage } from '../services';
 export default function DogRegistrationForm({ onDogRegistered, contextLabel }) {
   const [form, setForm] = useState({ ...emptyDogForm });
   const [loading, setLoading] = useState(false);
@@ -31,45 +30,64 @@ export default function DogRegistrationForm({ onDogRegistered, contextLabel }) {
     setSuccess('');
     setLoading(true);
 
+    let registeredDogData = null;
     try {
       const social_photos = [];
       const videos = [];
-      if (mediaFiles.length) {
-        for (const file of mediaFiles) {
-          const url = await uploadImage(file, 'dog_photos');
-          if (file.type.startsWith('video/')) {
-            videos.push(url);
-          } else {
-            social_photos.push(url);
+      const uploadedUrls = [];
+
+      try {
+        if (mediaFiles.length) {
+          for (const file of mediaFiles) {
+            const url = await uploadImage(file, 'dog_photos');
+            uploadedUrls.push(url);
+            if (file.type.startsWith('video/')) {
+              videos.push(url);
+            } else {
+              social_photos.push(url);
+            }
           }
         }
+
+        const result = await registerDog({
+          name: form.name,
+          breed: form.breed,
+          estimated_age: form.estimated_age,
+          gender: form.gender,
+          location_found: form.location_found,
+          description: form.description,
+          condition_notes: form.condition_notes,
+          social_photos: social_photos,
+          videos: videos,
+          is_vaccinated: form.is_vaccinated,
+          is_neutered: form.is_neutered,
+        });
+
+        const tag = result?.data?.tag || 'Registered';
+        setSuccess(`Dog registered successfully! Tag: ${tag}`);
+        setForm({ ...emptyDogForm });
+        setMediaFiles([]);
+        setPreviewUrls([]);
+        registeredDogData = result?.data;
+      } catch (innerErr) {
+        if (uploadedUrls.length > 0) {
+          await Promise.allSettled(uploadedUrls.map(url => deleteImage(url)));
+        }
+        throw innerErr;
       }
-
-      const result = await registerDog({
-        name: form.name,
-        breed: form.breed,
-        estimated_age: form.estimated_age,
-        gender: form.gender,
-        location_found: form.location_found,
-        description: form.description,
-        condition_notes: form.condition_notes,
-        social_photos: social_photos,
-        videos: videos,
-        is_vaccinated: form.is_vaccinated,
-        is_neutered: form.is_neutered,
-      });
-
-      const tag = result?.data?.tag || 'Registered';
-      setSuccess(`Dog registered successfully! Tag: ${tag}`);
-      setForm({ ...emptyDogForm });
-      setMediaFiles([]);
-      setPreviewUrls([]);
-      if (onDogRegistered) onDogRegistered(result?.data);
     } catch (err) {
       setError(err.message || 'Failed to register dog.');
     } finally {
       setLoading(false);
       isSubmitting.current = false;
+    }
+
+    if (registeredDogData && onDogRegistered) {
+      try {
+        await onDogRegistered(registeredDogData);
+      } catch (cbErr) {
+        console.error('Callback error', cbErr);
+      }
     }
   };
 

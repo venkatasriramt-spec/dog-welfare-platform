@@ -215,18 +215,19 @@ export default function MedicalRecordForm({ dog, organizations = [], session, on
       <Confetti isActive={showConfetti} />
       {/* Action tabs based on role */}
       <div className="tabs" style={{ marginTop: '10px', marginBottom: '20px' }}>
+        {(canEditMedicalRecord || canUpdateAgencyRecord) && (
+          <>
+            <button className={tab === 'edit_profile' ? 'selected' : ''} onClick={() => { setTab('edit_profile'); setError(''); setSuccess(''); }}>
+              ✏️ Edit Profile
+            </button>
+            <button className={tab === 'record' ? 'selected' : ''} onClick={() => { setTab('record'); setError(''); setSuccess(''); }}>
+              {canEditMedicalRecord ? '🩺 Add Medical Record' : '📝 Update Record'}
+            </button>
+          </>
+        )}
+        
         {(isHospitalAdmin || isVet) && (
           <>
-            {canEditMedicalRecord && (
-              <>
-                <button className={tab === 'edit_profile' ? 'selected' : ''} onClick={() => { setTab('edit_profile'); setError(''); setSuccess(''); }}>
-                  ✏️ Edit Profile
-                </button>
-                <button className={tab === 'record' ? 'selected' : ''} onClick={() => { setTab('record'); setError(''); setSuccess(''); }}>
-                  🩺 Add Medical Record
-                </button>
-              </>
-            )}
             {isHospitalAdmin && dog.status === 'street' && (
               <button className={tab === 'admit' ? 'selected' : ''} onClick={() => { setTab('admit'); setError(''); setSuccess(''); }}>
                 🏥 Admit to Hospital
@@ -249,18 +250,9 @@ export default function MedicalRecordForm({ dog, organizations = [], session, on
             )}
           </>
         )}
+
         {(isAgencyAdmin || isAgencyEmployee) && (
           <>
-            {canUpdateAgencyRecord && (
-              <>
-                <button className={tab === 'edit_profile' ? 'selected' : ''} onClick={() => { setTab('edit_profile'); setError(''); setSuccess(''); }}>
-                  ✏️ Edit Profile
-                </button>
-                <button className={tab === 'record' ? 'selected' : ''} onClick={() => { setTab('record'); setError(''); setSuccess(''); }}>
-                  📝 Update Record
-                </button>
-              </>
-            )}
             {isAgencyAdmin && dog.status === 'adoptable' && canUpdateAgencyRecord && (
               <button className={tab === 'adopt' ? 'selected' : ''} onClick={() => { setTab('adopt'); setError(''); setSuccess(''); }}>
                 ❤️ Mark as Adopted

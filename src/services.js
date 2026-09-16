@@ -1,7 +1,7 @@
 import { createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword, signOut, updateProfile } from 'firebase/auth';
 import { addDoc, collection, doc, getDoc, onSnapshot, orderBy, query, serverTimestamp, setDoc, where } from 'firebase/firestore';
 import { httpsCallable } from 'firebase/functions';
-import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
+import { getDownloadURL, ref, uploadBytes, deleteObject } from 'firebase/storage';
 import { auth, db, firebaseEnabled, functions, storage } from './firebase';
 
 const needFirebase = () => { if (!firebaseEnabled || !auth || !db) throw new Error('Firebase is not configured. Check your .env file and restart Vite.'); };
@@ -96,6 +96,24 @@ export async function uploadImage(file, folder = 'dog_photos') {
   const metadata = { contentType: file.type };
   await uploadBytes(storageRef, file, metadata);
   return getDownloadURL(storageRef);
+}
+
+export async function deleteImage(url) {
+  if (!url || !storage) return;
+  let loggedUrl = url.substring(0, 50) + '...'; // fallback truncated url
+  try {
+    const match = url.match(/\/o\/(.+?)\?/);
+    if (match && match[1]) {
+      const filePath = decodeURIComponent(match[1]);
+      loggedUrl = filePath;
+      if (filePath.startsWith('dog_photos/') || filePath.startsWith('dog_media/')) {
+        const fileRef = ref(storage, filePath);
+        await deleteObject(fileRef);
+      }
+    }
+  } catch (error) {
+    console.warn('Failed to delete orphaned image from storage', loggedUrl, error);
+  }
 }
 
 // --- Accounts & Orgs ---
