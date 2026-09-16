@@ -2,6 +2,7 @@ const functions = require("firebase-functions/v1");
 const {initializeApp} = require("firebase-admin/app");
 const {getAuth} = require("firebase-admin/auth");
 const {FieldValue, getFirestore} = require("firebase-admin/firestore");
+const {getStorage} = require("firebase-admin/storage");
 
 initializeApp();
 const db = getFirestore();
@@ -355,6 +356,8 @@ exports.registerDog = functions.region("us-central1").https.onCall(async (data, 
   const description = (data.description || "").trim();
   const conditionNotes = (data.condition_notes || "").trim();
   const imageUrl = (data.image_url || "").trim();
+  const socialPhotos = Array.isArray(data.social_photos) ? data.social_photos : (imageUrl ? [imageUrl] : []);
+  const videos = Array.isArray(data.videos) ? data.videos : [];
   const isVaccinated = data.is_vaccinated === true;
   const isNeutered = data.is_neutered === true;
 
@@ -402,7 +405,8 @@ exports.registerDog = functions.region("us-central1").https.onCall(async (data, 
         hospital_id: hospitalId,
       }] : [],
       hospital_history: hospitalId ? [hospitalId] : [],
-      social_photos: imageUrl ? [imageUrl] : [],
+      social_photos: socialPhotos,
+      videos: videos,
       created_at: FieldValue.serverTimestamp(),
       updated_at: FieldValue.serverTimestamp(),
     };
@@ -479,6 +483,52 @@ exports.updateDogRecord = functions.region("us-central1").https.onCall(async (da
     }
     if (data.is_neutered !== undefined) {
       updates["medical_status.is_neutered"] = data.is_neutered === true;
+    }
+
+    // Update metadata
+    if (data.name) {
+      updates.name = data.name.trim();
+    }
+    if (data.estimated_age !== undefined) {
+      updates.estimated_age = (data.estimated_age || "").trim();
+    }
+    if (data.gender) {
+      updates.gender = data.gender.trim();
+    }
+
+    // Update social photos and videos (replaces entirely to allow adding/deleting)
+    // We also delete the removed files from Storage
+    const storageBucket = getStorage().bucket();
+    const deleteFromStorage = async (url) => {
+      try {
+        const match = url.match(/\/o\/(.+?)\?/);
+        if (match && match[1]) {
+          const filePath = decodeURIComponent(match[1]);
+          await storageBucket.file(filePath).delete();
+        }
+      } catch (e) {
+        console.error("Failed to delete from storage", url, e);
+      }
+    };
+
+    if (Array.isArray(data.social_photos)) {
+      const newPhotos = data.social_photos.filter((p) => typeof p === "string" && p.trim().length > 0);
+      updates.social_photos = newPhotos;
+      const oldPhotos = dogData.social_photos || [];
+      const removedPhotos = oldPhotos.filter((p) => !newPhotos.includes(p));
+      for (const p of removedPhotos) {
+        await deleteFromStorage(p);
+      }
+    }
+
+    if (Array.isArray(data.videos)) {
+      const newVideos = data.videos.filter((v) => typeof v === "string" && v.trim().length > 0);
+      updates.videos = newVideos;
+      const oldVideos = dogData.videos || [];
+      const removedVideos = oldVideos.filter((v) => !newVideos.includes(v));
+      for (const v of removedVideos) {
+        await deleteFromStorage(v);
+      }
     }
 
     // Update breed

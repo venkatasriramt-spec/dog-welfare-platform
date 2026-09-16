@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import { BREED_OPTIONS, DOG_STATUSES } from '../constants';
 import { processAdoption, transferDog, updateDogRecord } from '../services';
 import Confetti from './Confetti';
+import EditProfileForm from './EditProfileForm';
 
 export default function MedicalRecordForm({ dog, organizations = [], session, onUpdated }) {
   const role = session?.profile?.role;
@@ -20,7 +21,7 @@ export default function MedicalRecordForm({ dog, organizations = [], session, on
 
   let initialTab = '';
   if (isHospitalAdmin && dog.status === 'street') initialTab = 'admit';
-  else if (canEditMedicalRecord || canUpdateAgencyRecord) initialTab = 'record';
+  else if (canEditMedicalRecord || canUpdateAgencyRecord) initialTab = 'edit_profile';
   else if (isHospitalAdmin && (dog.status === 'in_treatment' || dog.status === 'fit_for_discharge')) initialTab = 'transfer';
   else if (isAgencyAdmin && dog.status === 'adoptable') initialTab = 'adopt';
 
@@ -217,9 +218,14 @@ export default function MedicalRecordForm({ dog, organizations = [], session, on
         {(isHospitalAdmin || isVet) && (
           <>
             {canEditMedicalRecord && (
-              <button className={tab === 'record' ? 'selected' : ''} onClick={() => { setTab('record'); setError(''); setSuccess(''); }}>
-                🩺 Add Medical Record
-              </button>
+              <>
+                <button className={tab === 'edit_profile' ? 'selected' : ''} onClick={() => { setTab('edit_profile'); setError(''); setSuccess(''); }}>
+                  ✏️ Edit Profile
+                </button>
+                <button className={tab === 'record' ? 'selected' : ''} onClick={() => { setTab('record'); setError(''); setSuccess(''); }}>
+                  🩺 Add Medical Record
+                </button>
+              </>
             )}
             {isHospitalAdmin && dog.status === 'street' && (
               <button className={tab === 'admit' ? 'selected' : ''} onClick={() => { setTab('admit'); setError(''); setSuccess(''); }}>
@@ -246,9 +252,14 @@ export default function MedicalRecordForm({ dog, organizations = [], session, on
         {(isAgencyAdmin || isAgencyEmployee) && (
           <>
             {canUpdateAgencyRecord && (
-              <button className={tab === 'record' ? 'selected' : ''} onClick={() => { setTab('record'); setError(''); setSuccess(''); }}>
-                📝 Update Record
-              </button>
+              <>
+                <button className={tab === 'edit_profile' ? 'selected' : ''} onClick={() => { setTab('edit_profile'); setError(''); setSuccess(''); }}>
+                  ✏️ Edit Profile
+                </button>
+                <button className={tab === 'record' ? 'selected' : ''} onClick={() => { setTab('record'); setError(''); setSuccess(''); }}>
+                  📝 Update Record
+                </button>
+              </>
             )}
             {isAgencyAdmin && dog.status === 'adoptable' && canUpdateAgencyRecord && (
               <button className={tab === 'adopt' ? 'selected' : ''} onClick={() => { setTab('adopt'); setError(''); setSuccess(''); }}>
@@ -258,6 +269,11 @@ export default function MedicalRecordForm({ dog, organizations = [], session, on
           </>
         )}
       </div>
+
+      {/* Edit Profile Tab */}
+      {tab === 'edit_profile' && (
+        <EditProfileForm dog={dog} onUpdated={onUpdated} />
+      )}
 
       {/* Medical Record Tab */}
       {tab === 'record' && (

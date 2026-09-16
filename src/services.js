@@ -187,7 +187,8 @@ export async function reportDog(data, uid) {
     location_found: data.location.trim(),
     description: data.description.trim(),
     condition_notes: data.condition_notes || '',
-    image_url: data.image_url || '',
+    social_photos: data.social_photos || [],
+    videos: data.videos || [],
     is_vaccinated: false,
     is_neutered: false,
   });

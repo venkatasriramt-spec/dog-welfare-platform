@@ -3,6 +3,7 @@ import DogRegistrationForm from '../../components/DogRegistrationForm';
 import StaffManager from '../../components/StaffManager';
 import { DOG_STATUSES } from '../../constants';
 import { watchOrgDogs } from '../../services';
+import HoverImageCarousel from '../../components/HoverImageCarousel';
 
 export default function AgencyDashboard({ session, dogs = [], organizations = [], setPage, currentTab = 'overview' }) {
   const [showAddForm, setShowAddForm] = useState(false);
@@ -161,11 +162,7 @@ export default function AgencyDashboard({ session, dogs = [], organizations = []
               <div className="dog-grid" style={{ gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px' }}>
                 {paginatedAdoptable.map(d => (
                   <article className="dog-card" key={d.id} style={{ background: '#fff' }}>
-                    {d.social_photos && d.social_photos.length > 0 ? (
-                      <img src={d.social_photos[0]} alt={d.name} loading="lazy" />
-                    ) : (
-                      <div className="dog-placeholder">🐾</div>
-                    )}
+                    <HoverImageCarousel images={d.social_photos} alt={d.name} />
                     <span className={`status ${d.status}`}>{DOG_STATUSES[d.status] || d.status}</span>
                     <div style={{ padding: '16px' }}>
                       {d.tag && <small style={{ color: 'var(--orange)', fontWeight: 'bold' }}>{d.tag}</small>}
@@ -239,11 +236,7 @@ export default function AgencyDashboard({ session, dogs = [], organizations = []
               <div className="dog-grid" style={{ gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px' }}>
                 {paginatedAdopted.map(d => (
                   <article className="dog-card" key={d.id} style={{ background: '#fff' }}>
-                    {d.social_photos && d.social_photos.length > 0 ? (
-                      <img src={d.social_photos[0]} alt={d.name} loading="lazy" />
-                    ) : (
-                      <div className="dog-placeholder">🐾</div>
-                    )}
+                    <HoverImageCarousel images={d.social_photos} alt={d.name} />
                     <span className={`status ${d.status}`}>{DOG_STATUSES[d.status] || d.status}</span>
                     <div style={{ padding: '16px' }}>
                       {d.tag && <small style={{ color: 'var(--orange)', fontWeight: 'bold' }}>{d.tag}</small>}

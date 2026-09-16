@@ -16,15 +16,16 @@ export default function Report({ session, setPage, isWorkspace }) {
   });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const [imageFile, setImageFile] = useState(null);
-  const [previewUrl, setPreviewUrl] = useState('');
+  const [mediaFiles, setMediaFiles] = useState([]);
+  const [previewUrls, setPreviewUrls] = useState([]);
   const [showSuccess, setShowSuccess] = useState(false);
 
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setImageFile(file);
-      setPreviewUrl(URL.createObjectURL(file));
+  const handleMediaChange = (e) => {
+    const files = Array.from(e.target.files);
+    if (files.length) {
+      setMediaFiles(files);
+      const urls = files.map(file => URL.createObjectURL(file));
+      setPreviewUrls(urls);
     }
   };
 
@@ -35,11 +36,19 @@ export default function Report({ session, setPage, isWorkspace }) {
     setLoading(true);
     setError('');
     try {
-      let imageUrl = '';
-      if (imageFile) {
-        imageUrl = await uploadImage(imageFile, 'dog_photos');
+      const social_photos = [];
+      const videos = [];
+      if (mediaFiles.length) {
+        for (const file of mediaFiles) {
+          const url = await uploadImage(file, 'dog_photos');
+          if (file.type.startsWith('video/')) {
+            videos.push(url);
+          } else {
+            social_photos.push(url);
+          }
+        }
       }
-      await reportDog({ ...form, image_url: imageUrl }, session.user.uid);
+      await reportDog({ ...form, social_photos, videos }, session.user.uid);
       setShowSuccess(true);
     } catch (err) {
       setError(err.message);
@@ -60,8 +69,8 @@ export default function Report({ session, setPage, isWorkspace }) {
             <button className="primary" onClick={() => setPage('discover')}>View discovered dogs</button>
             <button className="outline" onClick={() => {
               setForm({ name: '', location: '', description: '', breed: 'Unknown / Unidentified', estimated_age: '', gender: 'Unknown', condition_notes: '' });
-              setImageFile(null);
-              setPreviewUrl('');
+              setMediaFiles([]);
+              setPreviewUrls([]);
               setShowSuccess(false);
             }}>Report another</button>
           </div>
@@ -129,13 +138,19 @@ export default function Report({ session, setPage, isWorkspace }) {
             </label>
 
             <label>
-              Upload Photo (Optional)
-              <input type="file" accept="image/*" onChange={handleImageChange} style={{ padding: '8px' }} />
+              Upload Photos & Videos (Optional)
+              <input type="file" multiple accept="image/*,video/*" onChange={handleMediaChange} style={{ padding: '8px' }} />
             </label>
 
-            {previewUrl && (
-              <div style={{ marginBottom: '15px' }}>
-                <img src={previewUrl} alt="Preview" style={{ width: '100%', maxHeight: '250px', objectFit: 'cover', borderRadius: '5px', border: '1px solid var(--line)' }} />
+            {previewUrls.length > 0 && (
+              <div style={{ marginBottom: '15px', display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                {previewUrls.map((url, i) => (
+                  mediaFiles[i]?.type.startsWith('video/') ? (
+                    <video key={url} src={url} style={{ width: '100px', height: '100px', objectFit: 'cover', borderRadius: '5px', border: '1px solid var(--line)' }} muted />
+                  ) : (
+                    <img key={url} src={url} alt="Preview" style={{ width: '100px', height: '100px', objectFit: 'cover', borderRadius: '5px', border: '1px solid var(--line)' }} />
+                  )
+                ))}
               </div>
             )}
 

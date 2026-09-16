@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { DOG_STATUSES } from '../constants';
 import ParticleBackground from '../components/ParticleBackground';
+import HoverImageCarousel from '../components/HoverImageCarousel';
 
 export default function Discover({ dogs, setPage, session, isWorkspace }) {
   const [search, setSearch] = useState('');
@@ -95,11 +96,7 @@ export default function Discover({ dogs, setPage, session, isWorkspace }) {
                   style={{ '--card-index': index }}
                 >
                   <div className="dog-image-wrap">
-                    {d.social_photos && d.social_photos.length > 0 ? (
-                      <img src={d.social_photos[0]} alt={d.name} loading="lazy" />
-                    ) : (
-                      <div className="dog-placeholder">🐾</div>
-                    )}
+                    <HoverImageCarousel images={d.social_photos} alt={d.name} className="dog-hero-img" />
                     <span className={`status ${d.status}`}>{DOG_STATUSES[d.status] || d.status}</span>
                     <span className="photo-sheen" aria-hidden="true" />
                   </div>

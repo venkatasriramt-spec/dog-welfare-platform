@@ -134,6 +134,26 @@ export default function DogProfile({ dog, setPage, session, organizations = [], 
               </div>
             </div>
 
+            {/* Media Gallery */}
+            {((dog.social_photos && dog.social_photos.length > 0) || (dog.videos && dog.videos.length > 0)) && (
+              <div className="media-gallery-section" style={{ marginTop: '32px' }}>
+                <h3>📸 Media Gallery</h3>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '16px', marginTop: '16px' }}>
+                  {dog.social_photos?.map((url, idx) => (
+                    <div key={idx} style={{ borderRadius: '8px', overflow: 'hidden', aspectRatio: '1/1' }}>
+                      <img src={url} alt={`${dog.name} photo ${idx + 1}`} style={{ width: '100%', height: '100%', objectFit: 'cover' }} loading="lazy" />
+                    </div>
+                  ))}
+                  {dog.videos?.map((url, idx) => (
+                    <div key={idx} style={{ borderRadius: '8px', overflow: 'hidden', aspectRatio: '1/1', position: 'relative' }}>
+                      <video src={url} style={{ width: '100%', height: '100%', objectFit: 'cover' }} controls preload="none" />
+                      <span style={{ position: 'absolute', top: '8px', left: '8px', background: 'rgba(0,0,0,0.6)', color: 'white', fontSize: '12px', padding: '4px 8px', borderRadius: '4px' }}>VIDEO</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
             {/* Treatment Timeline */}
             {timelineEvents.length > 0 && (
               <div className="timeline-section">

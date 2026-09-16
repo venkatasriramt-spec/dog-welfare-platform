@@ -7,16 +7,17 @@ export default function DogRegistrationForm({ onDogRegistered, contextLabel }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
-  const [imageFile, setImageFile] = useState(null);
-  const [previewUrl, setPreviewUrl] = useState('');
+  const [mediaFiles, setMediaFiles] = useState([]);
+  const [previewUrls, setPreviewUrls] = useState([]);
 
   const set = (key, value) => setForm(prev => ({ ...prev, [key]: value }));
 
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setImageFile(file);
-      setPreviewUrl(URL.createObjectURL(file));
+  const handleMediaChange = (e) => {
+    const files = Array.from(e.target.files);
+    if (files.length) {
+      setMediaFiles(files);
+      const urls = files.map(file => URL.createObjectURL(file));
+      setPreviewUrls(urls);
     }
   };
 
@@ -31,9 +32,17 @@ export default function DogRegistrationForm({ onDogRegistered, contextLabel }) {
     setLoading(true);
 
     try {
-      let imageUrl = '';
-      if (imageFile) {
-        imageUrl = await uploadImage(imageFile, 'dog_photos');
+      const social_photos = [];
+      const videos = [];
+      if (mediaFiles.length) {
+        for (const file of mediaFiles) {
+          const url = await uploadImage(file, 'dog_photos');
+          if (file.type.startsWith('video/')) {
+            videos.push(url);
+          } else {
+            social_photos.push(url);
+          }
+        }
       }
 
       const result = await registerDog({
@@ -44,7 +53,8 @@ export default function DogRegistrationForm({ onDogRegistered, contextLabel }) {
         location_found: form.location_found,
         description: form.description,
         condition_notes: form.condition_notes,
-        image_url: imageUrl,
+        social_photos: social_photos,
+        videos: videos,
         is_vaccinated: form.is_vaccinated,
         is_neutered: form.is_neutered,
       });
@@ -52,8 +62,8 @@ export default function DogRegistrationForm({ onDogRegistered, contextLabel }) {
       const tag = result?.data?.tag || 'Registered';
       setSuccess(`Dog registered successfully! Tag: ${tag}`);
       setForm({ ...emptyDogForm });
-      setImageFile(null);
-      setPreviewUrl('');
+      setMediaFiles([]);
+      setPreviewUrls([]);
       if (onDogRegistered) onDogRegistered(result?.data);
     } catch (err) {
       setError(err.message || 'Failed to register dog.');
@@ -154,13 +164,19 @@ export default function DogRegistrationForm({ onDogRegistered, contextLabel }) {
         </div>
 
         <label style={{ marginTop: '16px' }}>
-          Upload Photo (Optional)
-          <input type="file" accept="image/*" onChange={handleImageChange} style={{ padding: '8px' }} />
+          Upload Photos & Videos (Optional)
+          <input type="file" multiple accept="image/*,video/*" onChange={handleMediaChange} style={{ padding: '8px' }} />
         </label>
 
-        {previewUrl && (
-          <div style={{ marginBottom: '15px' }}>
-            <img src={previewUrl} alt="Preview" style={{ width: '100%', maxHeight: '250px', objectFit: 'cover', borderRadius: '5px', border: '1px solid var(--line)' }} />
+        {previewUrls.length > 0 && (
+          <div style={{ marginBottom: '15px', display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+            {previewUrls.map((url, i) => (
+              mediaFiles[i]?.type.startsWith('video/') ? (
+                <video key={url} src={url} style={{ width: '100px', height: '100px', objectFit: 'cover', borderRadius: '5px', border: '1px solid var(--line)' }} muted />
+              ) : (
+                <img key={url} src={url} alt="Preview" style={{ width: '100px', height: '100px', objectFit: 'cover', borderRadius: '5px', border: '1px solid var(--line)' }} />
+              )
+            ))}
           </div>
         )}
 
