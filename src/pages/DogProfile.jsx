@@ -1,11 +1,28 @@
 import React, { useMemo } from 'react';
+import { doc, updateDoc } from 'firebase/firestore';
 import MedicalRecordForm from '../components/MedicalRecordForm';
 import { DOG_STATUSES } from '../constants';
 import ParticleBackground from '../components/ParticleBackground';
+import { db } from '../firebase';
 
 export default function DogProfile({ dog, setPage, session, organizations = [], isWorkspace }) {
   const role = session?.profile?.role;
   const canEdit = ['platform_admin', 'hospital_admin', 'veterinarian', 'agency_admin', 'agency_employee'].includes(role);
+  const isOwnerOrStaff = canEdit || session?.user?.uid === dog?.registered_by;
+
+  const handleMakePrimary = async (urlToMakePrimary) => {
+    try {
+      const newPhotos = [
+        urlToMakePrimary,
+        ...(dog.social_photos || []).filter(url => url !== urlToMakePrimary)
+      ];
+      await updateDoc(doc(db, 'Dogs', dog.id), {
+        social_photos: newPhotos
+      });
+    } catch (err) {
+      alert('Failed to update primary photo: ' + err.message);
+    }
+  };
 
   // Resolve organization names from IDs
   const hospitalName = useMemo(() => {
@@ -75,7 +92,7 @@ export default function DogProfile({ dog, setPage, session, organizations = [], 
                 ) : (
                   <div className="dog-hero-placeholder">🐾</div>
                 )}
-                
+
                 {/* Badges top-left */}
                 <div className="dog-hero-badges">
                   <span className={`status ${dog.status}`}>{statusLabel}</span>
@@ -140,8 +157,27 @@ export default function DogProfile({ dog, setPage, session, organizations = [], 
                 <h3>📸 Media Gallery</h3>
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '16px', marginTop: '16px' }}>
                   {dog.social_photos?.map((url, idx) => (
-                    <div key={idx} style={{ borderRadius: '8px', overflow: 'hidden', aspectRatio: '1/1' }}>
+                    <div key={idx} style={{ borderRadius: '8px', overflow: 'hidden', aspectRatio: '1/1', position: 'relative' }}>
                       <img src={url} alt={`${dog.name} photo ${idx + 1}`} style={{ width: '100%', height: '100%', objectFit: 'cover' }} loading="lazy" />
+                      {idx > 0 && isOwnerOrStaff && (
+                        <button
+                          onClick={() => handleMakePrimary(url)}
+                          style={{
+                            position: 'absolute',
+                            bottom: '8px',
+                            right: '8px',
+                            background: 'rgba(0,0,0,0.7)',
+                            color: 'white',
+                            border: 'none',
+                            padding: '4px 8px',
+                            borderRadius: '4px',
+                            fontSize: '12px',
+                            cursor: 'pointer'
+                          }}
+                        >
+                          ⭐ Set Primary
+                        </button>
+                      )}
                     </div>
                   ))}
                   {dog.videos?.map((url, idx) => (
@@ -166,12 +202,12 @@ export default function DogProfile({ dog, setPage, session, organizations = [], 
                         <div className="timeline-header">
                           <span className={`timeline-type ${entry.type}`}>
                             {entry.type === 'report' ? '🚨 Reported' :
-                             entry.type === 'admission' ? '🏥 Admission' :
-                             entry.type === 'treatment' ? '💊 Treatment' :
-                             entry.type === 'transfer' ? '🏡 Transfer' :
-                             entry.type === 'discharge' ? '🌳 Discharge' :
-                             entry.type === 'adoption' ? '❤️ Adoption' :
-                             '📝 Update'}
+                              entry.type === 'admission' ? '🏥 Admission' :
+                                entry.type === 'treatment' ? '💊 Treatment' :
+                                  entry.type === 'transfer' ? '🏡 Transfer' :
+                                    entry.type === 'discharge' ? '🌳 Discharge' :
+                                      entry.type === 'adoption' ? '❤️ Adoption' :
+                                        '📝 Update'}
                           </span>
                           <small>{formatDate(entry.date)}</small>
                         </div>
