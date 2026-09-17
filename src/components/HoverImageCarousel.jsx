@@ -32,7 +32,7 @@ export default function HoverImageCarousel({ images, alt, className = '' }) {
       className={`hover-carousel-container ${className}`} 
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      style={{ position: 'relative', width: '100%', height: '100%', overflow: 'hidden' }}
+      style={{ position: 'relative', width: '100%', height: '225px', overflow: 'hidden' }}
     >
       {validImages.map((src, i) => (
         <img 
