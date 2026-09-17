@@ -78,7 +78,7 @@ export default function EditProfileForm({ dog, onUpdated }) {
       
       try {
         for (const file of stagedFiles) {
-          const url = await uploadImage(file, 'dog_photos');
+          const url = await uploadImage(file, 'dog_media');
           uploadedUrls.push(url);
           if (file.type.startsWith('video/')) {
             newVideos.push(url);

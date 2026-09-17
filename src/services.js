@@ -84,7 +84,7 @@ export async function registerPartner({ organization_name, type, contact_name, c
 export async function login({ email, password }) { needFirebase(); await signInWithEmailAndPassword(auth, email.trim(), password); }
 export async function logout() { if (auth) await signOut(auth); }
 
-export async function uploadImage(file, folder = 'dog_photos') {
+export async function uploadImage(file, folder = 'dog_media') {
   needFirebase();
   if (!storage) throw new Error('Cloud Storage is not available.');
   if (!file) return null;
@@ -111,7 +111,7 @@ export async function deleteImage(url) {
     if (match && match[1]) {
       const filePath = decodeURIComponent(match[1]);
       loggedUrl = filePath;
-      if (filePath.startsWith('dog_photos/') || filePath.startsWith('dog_media/')) {
+      if (filePath.startsWith('dog_media/')) {
         const fileRef = ref(storage, filePath);
         await deleteObject(fileRef);
       }

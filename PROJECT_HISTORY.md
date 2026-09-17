@@ -61,7 +61,7 @@ The core of the application revolves around the `Dogs` collection. Every dog is 
 
 ### Dog Document Fields:
 * **Identity:** `tag`, `name`, `breed`, `estimated_age`, `gender`, `location_found`, `location` (duplicate of `location_found` for backwards compatibility), `description`.
-* **Visual:** `social_photos` — an array of image URLs (from Firebase Cloud Storage `dog_photos/` folder). `videos` — an array of video URLs (from `dog_photos/` or `dog_media/` folders).
+* **Visual:** `social_photos` — an array of image URLs (from Firebase Cloud Storage `dog_media/` folder). `videos` — an array of video URLs (from the `dog_media/` folder).
 * **Medical Status:** `medical_status.is_vaccinated`, `medical_status.is_neutered` — real-time boolean flags.
 * **Lifecycle:** `status` — one of the six statuses listed above.
 * **Provenance:** `registered_by` (UID), `registered_by_name`, `registered_by_role`, `hospital_id` (current hospital), `agency_id` (current agency), `hospital_history` (array of all hospital IDs that have treated this dog).
@@ -82,7 +82,7 @@ The core of the application revolves around the `Dogs` collection. Every dog is 
 To ensure data integrity and bypass client-side manipulation, sensitive operations are handled via Firebase Cloud Functions (v1, region `us-central1`):
 
 * **`registerDog`**: Generates a secure `PAW-XXXX` tag via the `Counters` collection, initialises the dog's record, and sets the initial status based on the caller's role (`street` for community members, `in_treatment` for hospital staff, `adoptable` for agency staff).
-* **`updateDogRecord`**: Appends treatment timeline entries, updates medical status flags (vaccinated, neutered), breed, dog metadata (name, estimated age, gender), and dog status. Supports full replacement of `social_photos` and `videos` arrays (for add/remove media workflows). When photos or videos are removed, the function performs server-side cleanup by deleting the corresponding files from Firebase Cloud Storage (validated against `dog_photos/` and `dog_media/` prefixes). When admitting a street dog (`status → in_treatment`), it also sets `hospital_id` and appends to `hospital_history`. Veterinarians can only change status to `fit_for_discharge`. Agency employees cannot change dog status.
+* **`updateDogRecord`**: Appends treatment timeline entries, updates medical status flags (vaccinated, neutered), breed, dog metadata (name, estimated age, gender), and dog status. Supports full replacement of `social_photos` and `videos` arrays (for add/remove media workflows). When photos or videos are removed, the function performs server-side cleanup by deleting the corresponding files from Firebase Cloud Storage (validated against the `dog_media/` prefix). When admitting a street dog (`status → in_treatment`), it also sets `hospital_id` and appends to `hospital_history`. Veterinarians can only change status to `fit_for_discharge`. Agency employees cannot change dog status.
 * **`transferDog`**: Safely transfers a dog from a hospital's custody to an agency's custody. Sets `status` to `adoptable`, updates `agency_id`, and appends a transfer entry to the treatment timeline. Validates that the target agency exists. Restricted to platform and hospital administrators.
 * **`processAdoption`**: Marks a dog as `adopted`, appends an adoption timeline entry, and stores the private adopter details (name, email, phone, address, notes) in the `Dogs/{dogId}/AdoptionDetails/record` subcollection. Restricted to platform and agency administrators. Verifies the caller's agency matches the dog's `agency_id`.
 * **`createPartnerApplication`**: Creates a partner organisation application and sets the caller's role to `pending_partner`. Prevents duplicate applications from users who already hold an active role.
@@ -156,7 +156,6 @@ The frontend features a modern, responsive design with animated particle backgro
 * **Counters:** Read allowed for signed-in users. All writes denied (server-managed via Cloud Functions).
 
 ### Storage Rules:
-* **`dog_photos/{imageId}`:** Public read access. Write access (create/update/delete) is owner-scoped, ensuring users can only modify their own uploads. Uploads must be under 50 MB, and content types are strictly enforced to `image/*` or `video/*`.
 * **`dog_media/{mediaId}`:** Public read access. Write access (create/update/delete) is owner-scoped, ensuring users can only modify their own uploads. Uploads must be under 50 MB, and content types are strictly enforced to `image/*` or `video/*`.
 
 ---

@@ -572,7 +572,7 @@ exports.updateDogRecord = functions.region("us-central1").https.onCall(async (da
           if (match && match[1]) {
             const filePath = decodeURIComponent(match[1]);
             // Validate that the decoded object path is in our expected directories
-            if (filePath.startsWith("dog_photos/") || filePath.startsWith("dog_media/")) {
+            if (filePath.startsWith("dog_media/")) {
               await storageBucket.file(filePath).delete();
             } else {
               functions.logger.warn("Skipping deletion of invalid storage path", {filePath});

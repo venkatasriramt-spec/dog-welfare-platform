@@ -43,7 +43,7 @@ export default function DogRegistrationForm({ onDogRegistered, contextLabel }) {
       try {
         if (mediaFiles.length) {
           for (const file of mediaFiles) {
-            const url = await uploadImage(file, 'dog_photos');
+            const url = await uploadImage(file, 'dog_media');
             uploadedUrls.push(url);
             if (file.type.startsWith('video/')) {
               videos.push(url);
