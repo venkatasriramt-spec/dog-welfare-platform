@@ -84,15 +84,18 @@ export default function StaffDogs({ session, organizations = [], setPage }) {
           <>
             <div className="dog-grid" style={{ gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px' }}>
               {paginatedList.map(d => (
-                <article className="dog-card" key={d.id} style={{ background: '#f7f5f0' }}>
-                  <HoverImageCarousel images={d.social_photos} alt={d.name} />
-                  <span className={`status ${d.status}`}>{DOG_STATUSES[d.status] || d.status}</span>
-                  <div style={{ padding: '16px' }}>
-                    {d.tag && <small style={{ color: 'var(--orange)', fontWeight: 'bold' }}>{d.tag}</small>}
+                <article className="dog-card discover-card dog-card--enhanced" key={d.id} style={{ '--card-index': d.id }}>
+                  <div className="dog-image-wrap">
+                    <HoverImageCarousel images={d.social_photos} alt={d.name} className="dog-hero-img" />
+                    <span className={`status ${d.status}`}>{DOG_STATUSES[d.status] || d.status}</span>
+                    <span className="photo-sheen" aria-hidden="true" />
+                  </div>
+                  <div className="dog-card-content">
+                    {d.tag && <small className="dog-tagline">{d.tag}</small>}
                     <h3>{d.name}</h3>
                     <p>{d.breed || 'Breed pending'} · {d.gender || ''}</p>
-                    <button className="link" onClick={() => setPage(`dog:${d.id}`)}>
-                      {isVet ? 'Add medical record →' : 'View record →'}
+                    <button className="card-link" onClick={() => setPage(`dog:${d.id}`)}>
+                      {isVet ? 'Add medical record' : 'View record'} <b>→</b>
                     </button>
                   </div>
                 </article>

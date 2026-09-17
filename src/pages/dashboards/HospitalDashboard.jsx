@@ -169,15 +169,18 @@ export default function HospitalDashboard({ session, dogs = [], organizations = 
             <>
               <div className="dog-grid" style={{ gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px' }}>
                 {paginatedActive.map(d => (
-                  <article className="dog-card" key={d.id} style={{ background: '#fff' }}>
-                    <HoverImageCarousel images={d.social_photos} alt={d.name} />
-                    <span className={`status ${d.status}`}>{DOG_STATUSES[d.status] || d.status}</span>
-                    <div style={{ padding: '16px' }}>
-                      {d.tag && <small style={{ color: 'var(--orange)', fontWeight: 'bold' }}>{d.tag}</small>}
+                  <article className="dog-card discover-card dog-card--enhanced" key={d.id} style={{ '--card-index': d.id }}>
+                    <div className="dog-image-wrap">
+                      <HoverImageCarousel images={d.social_photos} alt={d.name} className="dog-hero-img" />
+                      <span className={`status ${d.status}`}>{DOG_STATUSES[d.status] || d.status}</span>
+                      <span className="photo-sheen" aria-hidden="true" />
+                    </div>
+                    <div className="dog-card-content">
+                      {d.tag && <small className="dog-tagline">{d.tag}</small>}
                       <h3>{d.name}</h3>
                       <p>{d.breed || 'Breed pending'} · {d.gender || ''}</p>
-                      <button className="link" onClick={() => setPage(`dog:${d.id}`)}>
-                        View full record →
+                      <button className="card-link" onClick={() => setPage(`dog:${d.id}`)}>
+                        View full record <b>→</b>
                       </button>
                     </div>
                   </article>
@@ -242,15 +245,18 @@ export default function HospitalDashboard({ session, dogs = [], organizations = 
             <>
               <div className="dog-grid" style={{ gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px' }}>
                 {paginatedReady.map(d => (
-                  <article className="dog-card" key={d.id} style={{ background: '#fff' }}>
-                    <HoverImageCarousel images={d.social_photos} alt={d.name} />
-                    <span className={`status ${d.status}`}>{DOG_STATUSES[d.status] || d.status}</span>
-                    <div style={{ padding: '16px' }}>
-                      {d.tag && <small style={{ color: 'var(--orange)', fontWeight: 'bold' }}>{d.tag}</small>}
+                  <article className="dog-card discover-card dog-card--enhanced" key={d.id} style={{ '--card-index': d.id }}>
+                    <div className="dog-image-wrap">
+                      <HoverImageCarousel images={d.social_photos} alt={d.name} className="dog-hero-img" />
+                      <span className={`status ${d.status}`}>{DOG_STATUSES[d.status] || d.status}</span>
+                      <span className="photo-sheen" aria-hidden="true" />
+                    </div>
+                    <div className="dog-card-content">
+                      {d.tag && <small className="dog-tagline">{d.tag}</small>}
                       <h3>{d.name}</h3>
                       <p>{d.breed || 'Breed pending'} · {d.gender || ''}</p>
-                      <button className="link" onClick={() => setPage(`dog:${d.id}`)}>
-                        Process Discharge / Transfer →
+                      <button className="card-link" onClick={() => setPage(`dog:${d.id}`)}>
+                        Process Discharge / Transfer <b>→</b>
                       </button>
                     </div>
                   </article>
@@ -329,18 +335,21 @@ export default function HospitalDashboard({ session, dogs = [], organizations = 
             <>
               <div className="dog-grid" style={{ gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px' }}>
                 {paginatedQueue.map(d => (
-                  <article className="dog-card" key={d.id} style={{ background: '#fff' }}>
-                    <HoverImageCarousel images={d.social_photos} alt={d.name} />
-                    <span className={`status ${d.status}`}>{DOG_STATUSES[d.status] || d.status}</span>
-                    <div style={{ padding: '16px' }}>
-                      {d.tag && <small style={{ color: 'var(--orange)', fontWeight: 'bold' }}>{d.tag}</small>}
+                  <article className="dog-card discover-card dog-card--enhanced" key={d.id} style={{ '--card-index': d.id }}>
+                    <div className="dog-image-wrap">
+                      <HoverImageCarousel images={d.social_photos} alt={d.name} className="dog-hero-img" />
+                      <span className={`status ${d.status}`}>{DOG_STATUSES[d.status] || d.status}</span>
+                      <span className="photo-sheen" aria-hidden="true" />
+                    </div>
+                    <div className="dog-card-content">
+                      {d.tag && <small className="dog-tagline">{d.tag}</small>}
                       <h3>{d.name}</h3>
                       <p>{d.location || 'Location unknown'}</p>
-                      <p style={{ fontSize: '12px', color: 'var(--muted)' }}>
+                      <p style={{ fontSize: '12px', color: 'var(--muted)', margin: '4px 0 13px 0' }}>
                         Reported by: {d.registered_by_name || 'Community Member'}
                       </p>
-                      <button className="link" onClick={() => setPage(`dog:${d.id}`)}>
-                        View & Admit →
+                      <button className="card-link" onClick={() => setPage(`dog:${d.id}`)}>
+                        View & Admit <b>→</b>
                       </button>
                     </div>
                   </article>

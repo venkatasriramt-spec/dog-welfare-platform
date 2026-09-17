@@ -161,15 +161,18 @@ export default function AgencyDashboard({ session, dogs = [], organizations = []
             <>
               <div className="dog-grid" style={{ gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px' }}>
                 {paginatedAdoptable.map(d => (
-                  <article className="dog-card" key={d.id} style={{ background: '#fff' }}>
-                    <HoverImageCarousel images={d.social_photos} alt={d.name} />
-                    <span className={`status ${d.status}`}>{DOG_STATUSES[d.status] || d.status}</span>
-                    <div style={{ padding: '16px' }}>
-                      {d.tag && <small style={{ color: 'var(--orange)', fontWeight: 'bold' }}>{d.tag}</small>}
+                  <article className="dog-card discover-card dog-card--enhanced" key={d.id} style={{ '--card-index': d.id }}>
+                    <div className="dog-image-wrap">
+                      <HoverImageCarousel images={d.social_photos} alt={d.name} className="dog-hero-img" />
+                      <span className={`status ${d.status}`}>{DOG_STATUSES[d.status] || d.status}</span>
+                      <span className="photo-sheen" aria-hidden="true" />
+                    </div>
+                    <div className="dog-card-content">
+                      {d.tag && <small className="dog-tagline">{d.tag}</small>}
                       <h3>{d.name}</h3>
                       <p>{d.breed || 'Breed pending'} · {d.gender || ''} · {d.estimated_age || ''}</p>
-                      <button className="link" onClick={() => setPage(`dog:${d.id}`)}>
-                        View & Manage Adoption →
+                      <button className="card-link" onClick={() => setPage(`dog:${d.id}`)}>
+                        View & Manage Adoption <b>→</b>
                       </button>
                     </div>
                   </article>
@@ -235,15 +238,18 @@ export default function AgencyDashboard({ session, dogs = [], organizations = []
             <>
               <div className="dog-grid" style={{ gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px' }}>
                 {paginatedAdopted.map(d => (
-                  <article className="dog-card" key={d.id} style={{ background: '#fff' }}>
-                    <HoverImageCarousel images={d.social_photos} alt={d.name} />
-                    <span className={`status ${d.status}`}>{DOG_STATUSES[d.status] || d.status}</span>
-                    <div style={{ padding: '16px' }}>
-                      {d.tag && <small style={{ color: 'var(--orange)', fontWeight: 'bold' }}>{d.tag}</small>}
+                  <article className="dog-card discover-card dog-card--enhanced" key={d.id} style={{ '--card-index': d.id }}>
+                    <div className="dog-image-wrap">
+                      <HoverImageCarousel images={d.social_photos} alt={d.name} className="dog-hero-img" />
+                      <span className={`status ${d.status}`}>{DOG_STATUSES[d.status] || d.status}</span>
+                      <span className="photo-sheen" aria-hidden="true" />
+                    </div>
+                    <div className="dog-card-content">
+                      {d.tag && <small className="dog-tagline">{d.tag}</small>}
                       <h3>{d.name}</h3>
                       <p>{d.breed || 'Breed pending'} · {d.gender || ''}</p>
-                      <button className="link" onClick={() => setPage(`dog:${d.id}`)}>
-                        View Historical Record →
+                      <button className="card-link" onClick={() => setPage(`dog:${d.id}`)}>
+                        View Historical Record <b>→</b>
                       </button>
                     </div>
                   </article>
