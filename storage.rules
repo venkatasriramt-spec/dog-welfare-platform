@@ -15,16 +15,28 @@ service firebase.storage {
                     && request.resource.contentType.matches('image/.*|video/.*')
                     && request.resource.metadata.ownerId == resource.metadata.ownerId;
     }
+    function isOrgAdmin(orgId) {
+      let profile = firestore.get(/databases/(default)/documents/Users/$(request.auth.uid));
+      return profile != null 
+             && profile.data.works_at == orgId 
+             && (profile.data.role == 'hospital_admin' || profile.data.role == 'agency_admin');
+    }
+    
+    function isPlatformAdmin() {
+      let profile = firestore.get(/databases/(default)/documents/Users/$(request.auth.uid));
+      return profile != null && profile.data.role == 'platform_admin';
+    }
+
     match /organization_media/{orgId}/{fileName} {
       allow read: if true;
       allow create: if request.auth != null
                     && request.resource.size < 50 * 1024 * 1024
                     && request.resource.contentType.matches('image/.*|video/.*')
-                    && request.resource.metadata.ownerId == request.auth.uid;
+                    && (request.resource.metadata.ownerId == request.auth.uid || isOrgAdmin(orgId) || isPlatformAdmin());
       allow delete: if request.auth != null 
-                    && resource.metadata.ownerId == request.auth.uid;
+                    && (resource.metadata.ownerId == request.auth.uid || isOrgAdmin(orgId) || isPlatformAdmin());
       allow update: if request.auth != null 
-                    && resource.metadata.ownerId == request.auth.uid
+                    && (resource.metadata.ownerId == request.auth.uid || isOrgAdmin(orgId) || isPlatformAdmin())
                     && request.resource.size < 50 * 1024 * 1024
                     && request.resource.contentType.matches('image/.*|video/.*')
                     && request.resource.metadata.ownerId == resource.metadata.ownerId;

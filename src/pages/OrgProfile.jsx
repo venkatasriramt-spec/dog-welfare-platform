@@ -60,19 +60,18 @@ export default function OrgProfile({ session, organizations = [], setPage, orgId
     e.preventDefault();
     setLoading(true);
     try {
+      const urlsToDelete = [];
       let logo_url = editForm.existingLogo;
       if (editForm.logoFile) {
         logo_url = await uploadImage(editForm.logoFile, `organization_media/${org.id}`);
-        if (org.logo_url) await deleteImage(org.logo_url);
+        if (org.logo_url) urlsToDelete.push(org.logo_url);
       } else if (!editForm.existingLogo && org.logo_url) {
-        await deleteImage(org.logo_url);
+        urlsToDelete.push(org.logo_url);
         logo_url = null;
       }
 
       const deletedMediaUrls = org.media_urls?.filter(url => !editForm.existingMedia.includes(url)) || [];
-      for (const url of deletedMediaUrls) {
-        await deleteImage(url);
-      }
+      urlsToDelete.push(...deletedMediaUrls);
 
       let newMediaUrls = [...editForm.existingMedia];
       if (editForm.newMediaFiles && editForm.newMediaFiles.length > 0) {
@@ -101,6 +100,11 @@ export default function OrgProfile({ session, organizations = [], setPage, orgId
         logo_url,
         media_urls: newMediaUrls
       });
+
+      for (const url of urlsToDelete) {
+        await deleteImage(url).catch(console.error);
+      }
+
       setIsEditing(false);
     } catch (err) {
       alert("Failed to update organization: " + err.message);
