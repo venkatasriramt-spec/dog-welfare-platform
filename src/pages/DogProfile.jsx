@@ -26,7 +26,7 @@ export default function DogProfile({ dog, setPage, session, organizations = [], 
 
         const newPhotos = [
           urlToMakePrimary,
-          ...currentPhotos.filter(url => url !== urlToMakePrimary)
+          ...Array.from(new Set(currentPhotos)).filter(url => url !== urlToMakePrimary)
         ];
         
         transaction.update(dogRef, {
