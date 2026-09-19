@@ -47,13 +47,15 @@ export default function DogProfile({ dog, setPage, session, organizations = [], 
 
   const statusLabel = DOG_STATUSES[dog?.status] || dog?.status || 'Unknown';
 
-  const formatDate = dateStr => {
-    if (!dateStr) return '';
+  const formatDate = dateInput => {
+    if (!dateInput) return '';
     try {
-      return new Date(dateStr).toLocaleDateString('en-IN', {
+      const d = typeof dateInput.toDate === 'function' ? dateInput.toDate() : new Date(dateInput);
+      if (isNaN(d.getTime())) return String(dateInput);
+      return d.toLocaleDateString('en-IN', {
         day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit'
       });
-    } catch { return dateStr; }
+    } catch { return String(dateInput); }
   };
 
   const timelineEvents = useMemo(() => {
