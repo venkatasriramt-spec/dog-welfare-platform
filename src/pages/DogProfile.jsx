@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { doc, updateDoc } from 'firebase/firestore';
+import { doc, updateDoc, runTransaction } from 'firebase/firestore';
 import MedicalRecordForm from '../components/MedicalRecordForm';
 import { DOG_STATUSES } from '../constants';
 import ParticleBackground from '../components/ParticleBackground';
@@ -12,12 +12,26 @@ export default function DogProfile({ dog, setPage, session, organizations = [], 
 
   const handleMakePrimary = async (urlToMakePrimary) => {
     try {
-      const newPhotos = [
-        urlToMakePrimary,
-        ...(dog.social_photos || []).filter(url => url !== urlToMakePrimary)
-      ];
-      await updateDoc(doc(db, 'Dogs', dog.id), {
-        social_photos: newPhotos
+      const dogRef = doc(db, 'Dogs', dog.id);
+      await runTransaction(db, async (transaction) => {
+        const dogDoc = await transaction.get(dogRef);
+        if (!dogDoc.exists()) throw new Error('Dog record not found.');
+        
+        const data = dogDoc.data();
+        const currentPhotos = data.social_photos || [];
+        
+        if (!currentPhotos.includes(urlToMakePrimary)) {
+          throw new Error('Photo no longer exists on this profile.');
+        }
+
+        const newPhotos = [
+          urlToMakePrimary,
+          ...currentPhotos.filter(url => url !== urlToMakePrimary)
+        ];
+        
+        transaction.update(dogRef, {
+          social_photos: newPhotos
+        });
       });
     } catch (err) {
       alert('Failed to update primary photo: ' + err.message);
