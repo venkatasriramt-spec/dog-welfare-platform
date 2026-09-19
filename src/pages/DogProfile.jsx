@@ -1,5 +1,5 @@
-import React, { useMemo } from 'react';
-import { doc, updateDoc, runTransaction } from 'firebase/firestore';
+import React, { useMemo, useEffect, useState } from 'react';
+import { doc, updateDoc, runTransaction, getDoc } from 'firebase/firestore';
 import MedicalRecordForm from '../components/MedicalRecordForm';
 import { DOG_STATUSES } from '../constants';
 import ParticleBackground from '../components/ParticleBackground';
@@ -9,6 +9,24 @@ export default function DogProfile({ dog, setPage, session, organizations = [], 
   const role = session?.profile?.role;
   const canEdit = ['platform_admin', 'hospital_admin', 'veterinarian', 'agency_admin', 'agency_employee'].includes(role);
   const isOwnerOrStaff = canEdit || session?.user?.uid === dog?.registered_by;
+
+  const [adoptionDetails, setAdoptionDetails] = useState(null);
+
+  useEffect(() => {
+    async function fetchAdoptionDetails() {
+      if (dog?.status === 'adopted' && ['platform_admin', 'agency_admin', 'agency_employee'].includes(role)) {
+        try {
+          const snap = await getDoc(doc(db, 'Dogs', dog.id, 'AdoptionDetails', 'record'));
+          if (snap.exists()) {
+            setAdoptionDetails(snap.data());
+          }
+        } catch (err) {
+          console.error("Failed to fetch adoption details", err);
+        }
+      }
+    }
+    fetchAdoptionDetails();
+  }, [dog, role]);
 
   const handleMakePrimary = async (urlToMakePrimary) => {
     try {
@@ -165,6 +183,28 @@ export default function DogProfile({ dog, setPage, session, organizations = [], 
                   )}
                 </dl>
               </div>
+
+              {adoptionDetails && (
+                <div className="detail-card">
+                  <h3>❤️ Adoption Records (Private)</h3>
+                  <dl className="detail-list">
+                    <div><dt>Adopter Name</dt><dd>{adoptionDetails.adopter_name || 'Unknown'}</dd></div>
+                    {adoptionDetails.email && <div><dt>Email</dt><dd>{adoptionDetails.email}</dd></div>}
+                    {adoptionDetails.phone && <div><dt>Phone</dt><dd>{adoptionDetails.phone}</dd></div>}
+                    {adoptionDetails.address && <div><dt>Address</dt><dd>{adoptionDetails.address}</dd></div>}
+                    {adoptionDetails.notes && (
+                      <div>
+                        <dt>Notes</dt>
+                        <dd>{adoptionDetails.notes}</dd>
+                      </div>
+                    )}
+                    <div>
+                      <dt>Processed By</dt>
+                      <dd>{adoptionDetails.processed_by_name || 'Unknown'}</dd>
+                    </div>
+                  </dl>
+                </div>
+              )}
             </div>
 
             {/* Media Gallery */}
