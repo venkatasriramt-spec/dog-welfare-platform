@@ -14,7 +14,7 @@ export default function Header({ page, setPage }) {
         <span>PawPath</span>
       </button>
       <nav>
-        {['home', 'about', 'discover'].map(item => (
+        {['home', 'about', 'discover', 'partners'].map(item => (
           <button
             className={selected === item ? 'active' : ''}
             key={item}

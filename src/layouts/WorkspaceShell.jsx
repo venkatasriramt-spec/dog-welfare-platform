@@ -31,6 +31,11 @@ export default function WorkspaceShell({ session, page, setPage, children }) {
             <button className={page === 'dashboard' ? 'active' : ''} onClick={() => setPage('dashboard')}>
               🏠 Workspace Dashboard
             </button>
+            {(isPlatformAdmin || isHospitalAdmin || isAgencyAdmin) && (
+              <button className={page === 'partners' ? 'active' : ''} onClick={() => setPage('partners')}>
+                🤝 Our Partners
+              </button>
+            )}
             {isStaff && (
               <>
                 <button className={page === 'staff_dogs' ? 'active' : ''} onClick={() => setPage('staff_dogs')}>
