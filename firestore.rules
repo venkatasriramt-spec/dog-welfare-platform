@@ -34,7 +34,11 @@ service cloud.firestore {
     // --- Organizations ---
     match /Organizations/{organizationId} {
       allow read: if true;
-      allow write: if false;
+      allow update: if signedIn() && (
+        isPlatformAdmin() || 
+        (profile().works_at == organizationId && profile().role in ['hospital_admin', 'agency_admin'])
+      );
+      allow create, delete: if false;
     }
 
     // --- Dogs ---
