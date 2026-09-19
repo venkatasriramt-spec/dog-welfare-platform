@@ -4,6 +4,7 @@ import MedicalRecordForm from '../components/MedicalRecordForm';
 import { DOG_STATUSES } from '../constants';
 import ParticleBackground from '../components/ParticleBackground';
 import { db } from '../firebase';
+import { useMediaViewer } from '../contexts/MediaViewerContext';
 
 export default function DogProfile({ dog, setPage, session, organizations = [], isWorkspace }) {
   const role = session?.profile?.role;
@@ -11,6 +12,18 @@ export default function DogProfile({ dog, setPage, session, organizations = [], 
   const isOwnerOrStaff = canEdit || session?.user?.uid === dog?.registered_by;
 
   const [adoptionDetails, setAdoptionDetails] = useState(null);
+  const { openMedia } = useMediaViewer();
+
+  const galleryMedia = useMemo(() => {
+    const media = [];
+    if (dog?.social_photos) {
+      dog.social_photos.forEach(url => media.push({ url, type: 'image' }));
+    }
+    if (dog?.videos) {
+      dog.videos.forEach(url => media.push({ url, type: 'video' }));
+    }
+    return media;
+  }, [dog]);
 
   useEffect(() => {
     let isMounted = true;
@@ -124,7 +137,7 @@ export default function DogProfile({ dog, setPage, session, organizations = [], 
                 {dog.social_photos && dog.social_photos.length > 0 ? (
                   <>
                     <div className="dog-hero-blur-bg" style={{ backgroundImage: `url(${dog.social_photos[0]})` }} />
-                    <img src={dog.social_photos[0]} alt={dog.name} className="dog-hero-img" />
+                    <img src={dog.social_photos[0]} alt={dog.name} className="dog-hero-img" onClick={() => openMedia(galleryMedia, 0)} style={{ cursor: 'pointer' }} />
                   </>
                 ) : (
                   <div className="dog-hero-placeholder">🐾</div>
@@ -217,7 +230,7 @@ export default function DogProfile({ dog, setPage, session, organizations = [], 
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '16px', marginTop: '16px' }}>
                   {dog.social_photos?.map((url, idx) => (
                     <div key={idx} style={{ borderRadius: '8px', overflow: 'hidden', aspectRatio: '1/1', position: 'relative' }}>
-                      <img src={url} alt={`${dog.name} photo ${idx + 1}`} style={{ width: '100%', height: '100%', objectFit: 'cover' }} loading="lazy" />
+                      <img src={url} alt={`${dog.name} photo ${idx + 1}`} style={{ width: '100%', height: '100%', objectFit: 'cover', cursor: 'pointer' }} loading="lazy" onClick={() => openMedia(galleryMedia, idx)} />
                       {idx > 0 && isOwnerOrStaff && (
                         <button
                           onClick={() => handleMakePrimary(url)}
@@ -241,7 +254,7 @@ export default function DogProfile({ dog, setPage, session, organizations = [], 
                   ))}
                   {dog.videos?.map((url, idx) => (
                     <div key={idx} style={{ borderRadius: '8px', overflow: 'hidden', aspectRatio: '1/1', position: 'relative' }}>
-                      <video src={url} style={{ width: '100%', height: '100%', objectFit: 'cover' }} controls preload="none" />
+                      <video src={url} style={{ width: '100%', height: '100%', objectFit: 'cover', cursor: 'pointer' }} controls preload="none" onClick={(e) => { e.preventDefault(); openMedia(galleryMedia, (dog.social_photos?.length || 0) + idx); }} />
                       <span style={{ position: 'absolute', top: '8px', left: '8px', background: 'rgba(0,0,0,0.6)', color: 'white', fontSize: '12px', padding: '4px 8px', borderRadius: '4px' }}>VIDEO</span>
                     </div>
                   ))}

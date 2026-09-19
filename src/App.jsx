@@ -12,6 +12,8 @@ import StaffDogs from './pages/StaffDogs';
 import { watchApplications, watchDogs, watchOrganizations, watchSession } from './services';
 import WorkspaceShell from './layouts/WorkspaceShell';
 import PublicShell from './layouts/PublicShell';
+import { MediaViewerProvider } from './contexts/MediaViewerContext';
+import OrgProfile from './pages/OrgProfile';
 
 export default function App() {
   const [page, setPage] = useState('home');
@@ -70,7 +72,7 @@ export default function App() {
     } else if (page === 'report') {
       body = <Report session={session} setPage={setPage} isWorkspace={true} />;
     } else if (page === 'partners') {
-      body = <Partners session={session} organizations={organizations} isWorkspace={true} />;
+      body = <Partners session={session} organizations={organizations} setPage={setPage} isWorkspace={true} />;
     } else if (page === 'staff_dogs') {
       body = <StaffDogs session={session} organizations={organizations} setPage={setPage} />;
     } else if (page === 'apply') {
@@ -79,6 +81,16 @@ export default function App() {
       body = (
         <DogProfile
           dog={dog}
+          setPage={setPage}
+          session={session}
+          organizations={organizations}
+          isWorkspace={true}
+        />
+      );
+    } else if (page.startsWith('org:')) {
+      body = (
+        <OrgProfile
+          orgId={page.slice(4)}
           setPage={setPage}
           session={session}
           organizations={organizations}
@@ -99,9 +111,11 @@ export default function App() {
     }
 
     return (
-      <WorkspaceShell session={session} page={page} setPage={setPage}>
-        {body}
-      </WorkspaceShell>
+      <MediaViewerProvider>
+        <WorkspaceShell session={session} page={page} setPage={setPage}>
+          {body}
+        </WorkspaceShell>
+      </MediaViewerProvider>
     );
   }
 
@@ -114,7 +128,7 @@ export default function App() {
   } else if (page === 'discover') {
     body = <Discover dogs={dogs} setPage={setPage} session={session} />;
   } else if (page === 'partners') {
-    body = <Partners session={session} organizations={organizations} />;
+    body = <Partners session={session} organizations={organizations} setPage={setPage} />;
   } else if (page === 'login') {
     body = <Login setPage={setPage} />;
   } else if (page === 'apply') {
@@ -128,13 +142,24 @@ export default function App() {
         organizations={organizations}
       />
     );
+  } else if (page.startsWith('org:')) {
+    body = (
+      <OrgProfile
+        orgId={page.slice(4)}
+        setPage={setPage}
+        session={session}
+        organizations={organizations}
+      />
+    );
   } else {
     body = <Home setPage={setPage} dogs={dogs} organizations={organizations} />;
   }
 
   return (
-    <PublicShell session={session} page={page} setPage={setPage}>
-      {body}
-    </PublicShell>
+    <MediaViewerProvider>
+      <PublicShell session={session} page={page} setPage={setPage}>
+        {body}
+      </PublicShell>
+    </MediaViewerProvider>
   );
 }

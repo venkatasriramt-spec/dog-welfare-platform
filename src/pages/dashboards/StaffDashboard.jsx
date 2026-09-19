@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { DOG_STATUSES, ROLES } from '../../constants';
 import { watchOrgDogs } from '../../services';
+import { useMediaViewer } from '../../contexts/MediaViewerContext';
 
 export default function StaffDashboard({ session, dogs = [], organizations = [], setPage, currentTab = 'overview' }) {
   const profile = session.profile;
@@ -9,6 +10,7 @@ export default function StaffDashboard({ session, dogs = [], organizations = [],
   const isVet = profile?.role === 'veterinarian';
   const org = useMemo(() => organizations.find(o => o.id === profile?.works_at), [organizations, profile?.works_at]);
   const orgType = org?.type || (isVet ? 'hospital' : 'agency');
+  const { openMedia } = useMediaViewer();
 
   const [orgDogs, setOrgDogs] = useState([]);
   useEffect(() => {
@@ -83,7 +85,7 @@ export default function StaffDashboard({ session, dogs = [], organizations = [],
                 {paginatedReadyToLeaveDogs.map(d => (
                   <article className="dog-card" key={d.id} style={{ background: '#f7f5f0' }}>
                     {d.social_photos && d.social_photos.length > 0 ? (
-                      <img src={d.social_photos[0]} alt={d.name} loading="lazy" />
+                      <img src={d.social_photos[0]} alt={d.name} loading="lazy" onClick={() => openMedia([d.social_photos[0]], 0)} style={{ cursor: 'pointer' }} />
                     ) : (
                       <div className="dog-placeholder">🐾</div>
                     )}

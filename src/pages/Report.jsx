@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { BREED_OPTIONS, GENDER_OPTIONS } from '../constants';
-import { reportDog, uploadImage, deleteImage } from '../services';import Confetti from '../components/Confetti';
+import { reportDog, uploadImage, deleteImage } from '../services';
+import Confetti from '../components/Confetti';
 import ParticleBackground from '../components/ParticleBackground';
+import { useMediaViewer } from '../contexts/MediaViewerContext';
 
 export default function Report({ session, setPage, isWorkspace }) {
   const [form, setForm] = useState({
@@ -18,6 +20,7 @@ export default function Report({ session, setPage, isWorkspace }) {
   const [mediaFiles, setMediaFiles] = useState([]);
   const [previewUrls, setPreviewUrls] = useState([]);
   const [showSuccess, setShowSuccess] = useState(false);
+  const { openMedia } = useMediaViewer();
 
   useEffect(() => {
     return () => previewUrls.forEach(url => URL.revokeObjectURL(url));
@@ -156,13 +159,17 @@ export default function Report({ session, setPage, isWorkspace }) {
 
             {previewUrls.length > 0 && (
               <div style={{ marginBottom: '15px', display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-                {previewUrls.map((url, i) => (
-                  mediaFiles[i]?.type.startsWith('video/') ? (
-                    <video key={url} src={url} style={{ width: '100px', height: '100px', objectFit: 'cover', borderRadius: '5px', border: '1px solid var(--line)' }} muted />
+                {previewUrls.map((url, i) => {
+                  const mediaItems = previewUrls.map((pUrl, idx) => ({
+                    url: pUrl,
+                    type: mediaFiles[idx]?.type.startsWith('video/') ? 'video' : 'image'
+                  }));
+                  return mediaFiles[i]?.type.startsWith('video/') ? (
+                    <video key={url} src={url} onClick={(e) => { e.preventDefault(); openMedia(mediaItems, i); }} style={{ width: '100px', height: '100px', objectFit: 'cover', borderRadius: '5px', border: '1px solid var(--line)', cursor: 'pointer' }} muted />
                   ) : (
-                    <img key={url} src={url} alt="Preview" style={{ width: '100px', height: '100px', objectFit: 'cover', borderRadius: '5px', border: '1px solid var(--line)' }} />
-                  )
-                ))}
+                    <img key={url} src={url} alt="Preview" onClick={() => openMedia(mediaItems, i)} style={{ width: '100px', height: '100px', objectFit: 'cover', borderRadius: '5px', border: '1px solid var(--line)', cursor: 'pointer' }} />
+                  );
+                })}
               </div>
             )}
 

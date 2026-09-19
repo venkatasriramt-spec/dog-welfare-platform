@@ -111,7 +111,7 @@ export async function deleteImage(url) {
     if (match && match[1]) {
       const filePath = decodeURIComponent(match[1]);
       loggedUrl = filePath;
-      if (filePath.startsWith('dog_media/')) {
+      if (filePath.startsWith('dog_media/') || filePath.startsWith('organization_media/')) {
         const fileRef = ref(storage, filePath);
         await deleteObject(fileRef);
       }
