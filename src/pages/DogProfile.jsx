@@ -13,11 +13,13 @@ export default function DogProfile({ dog, setPage, session, organizations = [], 
   const [adoptionDetails, setAdoptionDetails] = useState(null);
 
   useEffect(() => {
+    let isMounted = true;
+    setAdoptionDetails(null);
     async function fetchAdoptionDetails() {
       if (dog?.status === 'adopted' && ['platform_admin', 'agency_admin', 'agency_employee'].includes(role)) {
         try {
           const snap = await getDoc(doc(db, 'Dogs', dog.id, 'AdoptionDetails', 'record'));
-          if (snap.exists()) {
+          if (snap.exists() && isMounted) {
             setAdoptionDetails(snap.data());
           }
         } catch (err) {
@@ -26,6 +28,7 @@ export default function DogProfile({ dog, setPage, session, organizations = [], 
       }
     }
     fetchAdoptionDetails();
+    return () => { isMounted = false; };
   }, [dog, role]);
 
   const handleMakePrimary = async (urlToMakePrimary) => {
