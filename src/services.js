@@ -1,4 +1,4 @@
-import { createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword, signOut, updateProfile } from 'firebase/auth';
+import { createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword, signOut, updateProfile, deleteUser } from 'firebase/auth';
 import { addDoc, collection, doc, getDoc, onSnapshot, orderBy, query, serverTimestamp, setDoc, where } from 'firebase/firestore';
 import { httpsCallable } from 'firebase/functions';
 import { getDownloadURL, ref, uploadBytes, deleteObject } from 'firebase/storage';
@@ -58,18 +58,15 @@ export function watchSession(callback) {
 
 export async function registerCommunity({ name, email, password }) {
   needFirebase();
+  if (!functions) throw new Error('Cloud Functions is required to finish account setup. Please try again later.');
+  
   const result = await createUserWithEmailAndPassword(auth, email.trim(), password);
-  await updateProfile(result.user, { displayName: name.trim() });
   try {
-    if (functions) {
-      const call = httpsCallable(functions, 'createCommunityProfile');
-      await call({ name: name.trim() });
-    } else {
-      // In secure mode, profile creation is always server-side.
-      // If Cloud Functions is unavailable, fail closed rather than writing privileged fields client-side.
-      throw new Error('Cloud Functions is required to finish account setup. Please try again later.');
-    }
-  } catch {
+    await updateProfile(result.user, { displayName: name.trim() });
+    const call = httpsCallable(functions, 'createCommunityProfile');
+    await call({ name: name.trim() });
+  } catch (err) {
+    if (result.user) await deleteUser(result.user).catch(() => {});
     throw new Error('Could not finish account setup. Please try again.');
   }
 }
@@ -84,7 +81,7 @@ export async function registerPartner({ organization_name, type, contact_name, c
     const call = httpsCallable(functions, 'createPartnerApplication');
     await call({ organization_name, type, contact_name, phone, address });
   } catch (err) {
-    await signOut(auth);
+    if (result.user) await deleteUser(result.user).catch(() => {});
     throw err;
   }
 }

@@ -27,9 +27,11 @@ service cloud.firestore {
     function myRole() { return hasProfile(request.auth.uid) ? myProfile().role : null; }
     function myOrg() { return hasProfile(request.auth.uid) ? myProfile().works_at : null; }
 
+    function isActive() { return hasProfile(request.auth.uid) && myProfile().is_active == true; }
+
     // Platform admin is either the bootstrap admin email or a server-provisioned role.
-    function isPlatformAdmin() { return isBootstrapAdmin() || (signedIn() && myRole() == 'platform_admin'); }
-    function isOrgAdmin() { return signedIn() && (myRole() in ['hospital_admin', 'agency_admin']); }
+    function isPlatformAdmin() { return isBootstrapAdmin() || (signedIn() && isActive() && myRole() == 'platform_admin'); }
+    function isOrgAdmin() { return signedIn() && isActive() && (myRole() in ['hospital_admin', 'agency_admin']); }
 
     function isNonEmptyString(v, maxLen) { return v is string && v.size() > 0 && v.size() <= maxLen; }
 
@@ -55,6 +57,7 @@ service cloud.firestore {
       // Create rules:
       // Prevent role self-assignment. Only allow safe initial profile creation.
       allow create: if owns(userId)
+        && request.auth.token.email_verified == true
         && request.resource.data.keys().hasOnly(['full_name', 'email', 'role', 'is_active', 'created_at'])
         && isNonEmptyString(request.resource.data.full_name, 120)
         && request.resource.data.email == request.auth.token.email
@@ -83,6 +86,7 @@ service cloud.firestore {
 
       // Applications must be tied to the authenticated user to prevent impersonation.
       allow create: if signedIn()
+        && request.auth.token.email_verified == true
         && request.resource.data.keys().hasOnly([
           'organization_name', 'type', 'contact_name', 'contact_email',
           'phone', 'address', 'creator_uid', 'status', 'created_at'
