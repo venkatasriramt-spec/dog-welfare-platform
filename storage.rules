@@ -6,6 +6,7 @@ service firebase.storage {
       allow create: if request.auth != null
                     && request.resource.size < 50 * 1024 * 1024
                     && request.resource.contentType.matches('image/.*|video/.*')
+                    // Client must set custom metadata "ownerId"; enforce ownership.
                     && request.resource.metadata.ownerId == request.auth.uid;
       allow delete: if request.auth != null 
                             && resource.metadata.ownerId == request.auth.uid;
@@ -32,7 +33,9 @@ service firebase.storage {
       allow create: if request.auth != null
                     && request.resource.size < 50 * 1024 * 1024
                     && request.resource.contentType.matches('image/.*|video/.*')
-                    && (request.resource.metadata.ownerId == request.auth.uid || isOrgAdmin(orgId) || isPlatformAdmin());
+                    // Require metadata to match uploader to prevent metadata spoofing.
+                    && request.resource.metadata.ownerId == request.auth.uid
+                    && (isOrgAdmin(orgId) || isPlatformAdmin());
       allow delete: if request.auth != null 
                     && (resource.metadata.ownerId == request.auth.uid || isOrgAdmin(orgId) || isPlatformAdmin());
       allow update: if request.auth != null 

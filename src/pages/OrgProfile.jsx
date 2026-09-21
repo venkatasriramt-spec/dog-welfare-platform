@@ -60,6 +60,9 @@ export default function OrgProfile({ session, organizations = [], setPage, orgId
     e.preventDefault();
     setLoading(true);
     try {
+      if (!canEdit) {
+        throw new Error('You do not have permission to edit this organization.');
+      }
       const urlsToDelete = [];
       let logo_url = editForm.existingLogo;
       if (editForm.logoFile) {
@@ -131,10 +134,10 @@ export default function OrgProfile({ session, organizations = [], setPage, orgId
         <button className="back" onClick={() => setPage('partners')}>
           ← Back to partners
         </button>
-        
+
         <div className="dog-profile-full" style={{ marginTop: '20px' }}>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '24px', background: '#fff', border: '1px solid var(--line)', borderRadius: '12px', padding: '32px', boxShadow: '0 4px 12px rgba(0,0,0,0.03)' }}>
-            
+
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
               <div style={{ display: 'flex', gap: '20px', alignItems: 'center' }}>
                 {org.logo_url ? (
@@ -159,42 +162,42 @@ export default function OrgProfile({ session, organizations = [], setPage, orgId
             {isEditing ? (
               <form onSubmit={handleSave} style={{ background: '#fbfaf5', padding: '24px', borderRadius: '8px', border: '1px solid var(--line)', marginTop: '16px' }}>
                 <h4 style={{ marginTop: 0, marginBottom: '20px', fontSize: '18px', color: 'var(--ink)' }}>Edit Organization Profile</h4>
-                
+
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '16px' }}>
                   <div>
                     <label style={{ display: 'block', fontSize: '13px', fontWeight: 600, color: 'var(--ink)', marginBottom: '6px' }}>Email Address</label>
-                    <input type="email" value={editForm.email} onChange={e => setEditForm({...editForm, email: e.target.value})} required style={{ width: '100%', padding: '10px', border: '1px solid var(--line)', borderRadius: '4px' }} />
+                    <input type="email" value={editForm.email} onChange={e => setEditForm({ ...editForm, email: e.target.value })} required style={{ width: '100%', padding: '10px', border: '1px solid var(--line)', borderRadius: '4px' }} />
                   </div>
                   <div>
                     <label style={{ display: 'block', fontSize: '13px', fontWeight: 600, color: 'var(--ink)', marginBottom: '6px' }}>Phone Number</label>
-                    <input type="text" value={editForm.phone} onChange={e => setEditForm({...editForm, phone: e.target.value})} required style={{ width: '100%', padding: '10px', border: '1px solid var(--line)', borderRadius: '4px' }} />
+                    <input type="text" value={editForm.phone} onChange={e => setEditForm({ ...editForm, phone: e.target.value })} required style={{ width: '100%', padding: '10px', border: '1px solid var(--line)', borderRadius: '4px' }} />
                   </div>
                 </div>
 
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '16px' }}>
                   <div>
                     <label style={{ display: 'block', fontSize: '13px', fontWeight: 600, color: 'var(--ink)', marginBottom: '6px' }}>Website</label>
-                    <input type="url" placeholder="https://" value={editForm.website} onChange={e => setEditForm({...editForm, website: e.target.value})} style={{ width: '100%', padding: '10px', border: '1px solid var(--line)', borderRadius: '4px' }} />
+                    <input type="url" placeholder="https://" value={editForm.website} onChange={e => setEditForm({ ...editForm, website: e.target.value })} style={{ width: '100%', padding: '10px', border: '1px solid var(--line)', borderRadius: '4px' }} />
                   </div>
                   <div>
                     <label style={{ display: 'block', fontSize: '13px', fontWeight: 600, color: 'var(--ink)', marginBottom: '6px' }}>Operating Hours</label>
-                    <input type="text" placeholder="Mon-Fri: 9am - 5pm" value={editForm.operating_hours} onChange={e => setEditForm({...editForm, operating_hours: e.target.value})} style={{ width: '100%', padding: '10px', border: '1px solid var(--line)', borderRadius: '4px' }} />
+                    <input type="text" placeholder="Mon-Fri: 9am - 5pm" value={editForm.operating_hours} onChange={e => setEditForm({ ...editForm, operating_hours: e.target.value })} style={{ width: '100%', padding: '10px', border: '1px solid var(--line)', borderRadius: '4px' }} />
                   </div>
                 </div>
 
                 <div style={{ marginBottom: '16px' }}>
                   <label style={{ display: 'block', fontSize: '13px', fontWeight: 600, color: 'var(--ink)', marginBottom: '6px' }}>Services Offered (comma separated)</label>
-                  <input type="text" placeholder="Spay/Neuter, Vaccinations, Trauma" value={editForm.services_offered} onChange={e => setEditForm({...editForm, services_offered: e.target.value})} style={{ width: '100%', padding: '10px', border: '1px solid var(--line)', borderRadius: '4px' }} />
+                  <input type="text" placeholder="Spay/Neuter, Vaccinations, Trauma" value={editForm.services_offered} onChange={e => setEditForm({ ...editForm, services_offered: e.target.value })} style={{ width: '100%', padding: '10px', border: '1px solid var(--line)', borderRadius: '4px' }} />
                 </div>
 
                 <div style={{ marginBottom: '16px' }}>
                   <label style={{ display: 'block', fontSize: '13px', fontWeight: 600, color: 'var(--ink)', marginBottom: '6px' }}>About / Description</label>
-                  <textarea value={editForm.description} onChange={e => setEditForm({...editForm, description: e.target.value})} rows={4} style={{ width: '100%', padding: '10px', border: '1px solid var(--line)', borderRadius: '4px', resize: 'vertical' }} />
+                  <textarea value={editForm.description} onChange={e => setEditForm({ ...editForm, description: e.target.value })} rows={4} style={{ width: '100%', padding: '10px', border: '1px solid var(--line)', borderRadius: '4px', resize: 'vertical' }} />
                 </div>
 
                 <div style={{ marginBottom: '16px' }}>
                   <label style={{ display: 'block', fontSize: '13px', fontWeight: 600, color: 'var(--ink)', marginBottom: '6px' }}>Physical Address</label>
-                  <textarea value={editForm.address} onChange={e => setEditForm({...editForm, address: e.target.value})} required rows={2} style={{ width: '100%', padding: '10px', border: '1px solid var(--line)', borderRadius: '4px', resize: 'vertical' }} />
+                  <textarea value={editForm.address} onChange={e => setEditForm({ ...editForm, address: e.target.value })} required rows={2} style={{ width: '100%', padding: '10px', border: '1px solid var(--line)', borderRadius: '4px', resize: 'vertical' }} />
                 </div>
 
                 <div style={{ marginBottom: '20px' }}>
@@ -203,11 +206,11 @@ export default function OrgProfile({ session, organizations = [], setPage, orgId
                     {(editForm.logoFile || editForm.existingLogo) ? (
                       <div style={{ position: 'relative', width: '80px', height: '80px', borderRadius: '12px', overflow: 'hidden', border: '1px solid var(--line)' }}>
                         <img src={editForm.logoFile ? URL.createObjectURL(editForm.logoFile) : editForm.existingLogo} style={{ width: '100%', height: '100%', objectFit: 'contain', background: 'white' }} alt="Logo Preview" />
-                        <button type="button" onClick={() => setEditForm({...editForm, logoFile: null, existingLogo: null})} style={{ position: 'absolute', top: '4px', right: '4px', background: 'rgba(0,0,0,0.6)', color: 'white', border: 'none', borderRadius: '50%', width: '20px', height: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', zIndex: 10, fontSize: '12px' }}>×</button>
+                        <button type="button" onClick={() => setEditForm({ ...editForm, logoFile: null, existingLogo: null })} style={{ position: 'absolute', top: '4px', right: '4px', background: 'rgba(0,0,0,0.6)', color: 'white', border: 'none', borderRadius: '50%', width: '20px', height: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', zIndex: 10, fontSize: '12px' }}>×</button>
                       </div>
                     ) : (
                       <div style={{ position: 'relative', display: 'inline-block' }}>
-                        <input type="file" accept="image/*" onChange={e => setEditForm({...editForm, logoFile: e.target.files[0]})} style={{ opacity: 0, position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, cursor: 'pointer', zIndex: 2 }} />
+                        <input type="file" accept="image/*" onChange={e => setEditForm({ ...editForm, logoFile: e.target.files[0] })} style={{ opacity: 0, position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, cursor: 'pointer', zIndex: 2 }} />
                         <button type="button" className="outline" style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '8px 16px', borderRadius: '30px' }}>
                           <span style={{ fontSize: '14px' }}>🖼️</span> Upload Logo
                         </button>
@@ -219,12 +222,12 @@ export default function OrgProfile({ session, organizations = [], setPage, orgId
                 <div style={{ marginBottom: '24px' }}>
                   <label style={{ display: 'block', fontSize: '13px', fontWeight: 600, color: 'var(--ink)', marginBottom: '12px' }}>Upload Media Gallery (Photos/Videos)</label>
                   <div style={{ position: 'relative', display: 'inline-block', marginBottom: '16px' }}>
-                    <input type="file" accept="image/*,video/*" multiple onChange={e => setEditForm({...editForm, newMediaFiles: [...editForm.newMediaFiles, ...Array.from(e.target.files)]})} style={{ opacity: 0, position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, cursor: 'pointer', zIndex: 2 }} />
+                    <input type="file" accept="image/*,video/*" multiple onChange={e => setEditForm({ ...editForm, newMediaFiles: [...editForm.newMediaFiles, ...Array.from(e.target.files)] })} style={{ opacity: 0, position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, cursor: 'pointer', zIndex: 2 }} />
                     <button type="button" className="outline" style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 20px', borderRadius: '30px' }}>
                       <span style={{ fontSize: '16px' }}>📁</span> Upload Photos & Videos
                     </button>
                   </div>
-                  
+
                   <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px' }}>
                     {editForm.existingMedia?.map((url, i) => (
                       <div key={`existing-${i}`} style={{ position: 'relative', width: '120px', height: '120px', borderRadius: '8px', overflow: 'hidden', border: '1px solid var(--line)' }}>
@@ -271,25 +274,25 @@ export default function OrgProfile({ session, organizations = [], setPage, orgId
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px', background: 'var(--soft)', padding: '24px', borderRadius: '12px', fontSize: '14px' }}>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                     <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
-                      <span style={{ fontSize: '20px' }}>✉️</span> 
+                      <span style={{ fontSize: '20px' }}>✉️</span>
                       <span>{org.email || '—'}</span>
                     </div>
                     <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
-                      <span style={{ fontSize: '20px' }}>📞</span> 
+                      <span style={{ fontSize: '20px' }}>📞</span>
                       <span>{org.phone || '—'}</span>
                     </div>
                     <div style={{ display: 'flex', gap: '12px', alignItems: 'flex-start' }}>
-                      <span style={{ fontSize: '20px', marginTop: '2px' }}>📍</span> 
+                      <span style={{ fontSize: '20px', marginTop: '2px' }}>📍</span>
                       <span style={{ lineHeight: '1.5' }}>{org.address || '—'}</span>
                     </div>
                   </div>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                     <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
-                      <span style={{ fontSize: '20px' }}>🌐</span> 
+                      <span style={{ fontSize: '20px' }}>🌐</span>
                       {org.website ? <a href={org.website} target="_blank" rel="noreferrer" style={{ color: 'var(--orange)', textDecoration: 'none', fontWeight: 600 }}>Visit Website</a> : <span>—</span>}
                     </div>
                     <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
-                      <span style={{ fontSize: '20px' }}>🕒</span> 
+                      <span style={{ fontSize: '20px' }}>🕒</span>
                       <span>{org.operating_hours || '—'}</span>
                     </div>
                   </div>

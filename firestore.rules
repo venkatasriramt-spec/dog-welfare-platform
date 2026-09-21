@@ -13,21 +13,89 @@ service cloud.firestore {
   match /databases/{database}/documents {
     function signedIn() { return request.auth != null; }
     function owns(uid) { return signedIn() && request.auth.uid == uid; }
-    function profile() { return get(/databases/$(database)/documents/Users/$(request.auth.uid)).data; }
-    function isPlatformAdmin() { return signedIn() && profile().role == 'platform_admin'; }
+
+    // Hardcoded admin bootstrap is allowed in this app, but MUST require verified email.
+    function isBootstrapAdmin() {
+      return signedIn()
+        && request.auth.token.email_verified == true
+        && request.auth.token.email == 'admin@pawpath.demo';
+    }
+
+    function userDoc(uid) { return /databases/$(database)/documents/Users/$(uid); }
+    function hasProfile(uid) { return signedIn() && exists(userDoc(uid)); }
+    function myProfile() { return hasProfile(request.auth.uid) ? get(userDoc(request.auth.uid)).data : null; }
+    function myRole() { return hasProfile(request.auth.uid) ? myProfile().role : null; }
+    function myOrg() { return hasProfile(request.auth.uid) ? myProfile().works_at : null; }
+
+    // Platform admin is either the bootstrap admin email or a server-provisioned role.
+    function isPlatformAdmin() { return isBootstrapAdmin() || (signedIn() && myRole() == 'platform_admin'); }
+    function isOrgAdmin() { return signedIn() && (myRole() in ['hospital_admin', 'agency_admin']); }
+
+    function isNonEmptyString(v, maxLen) { return v is string && v.size() > 0 && v.size() <= maxLen; }
+
+    // Optional field validators must take a FIELD NAME (string) to avoid value/name confusion.
+    function isOptionalStringField(field, maxLen) {
+      return !(field in request.resource.data)
+        || (request.resource.data[field] is string && request.resource.data[field].size() <= maxLen);
+    }
+    function changedKeys() { return request.resource.data.diff(resource.data).changedKeys(); }
 
     // --- Users ---
     match /Users/{userId} {
-      allow read: if signedIn();
-      allow create: if owns(userId);
-      allow update: if owns(userId) || isPlatformAdmin();
+      // Read rules:
+      // - Users can read their own profile.
+      // - Org admins can list/read staff within their org.
+      // - Platform admin can read all.
+      allow read: if signedIn() && (
+        owns(userId)
+        || isPlatformAdmin()
+        || (isOrgAdmin() && resource.data.works_at == myOrg())
+      );
+
+      // Create rules:
+      // Prevent role self-assignment. Only allow safe initial profile creation.
+      allow create: if owns(userId)
+        && request.resource.data.keys().hasOnly(['full_name', 'email', 'role', 'is_active', 'created_at'])
+        && isNonEmptyString(request.resource.data.full_name, 120)
+        && request.resource.data.email == request.auth.token.email
+        && request.resource.data.is_active == true
+        && (
+          request.resource.data.role == 'community_member'
+          || request.resource.data.role == 'pending_partner'
+          || (isBootstrapAdmin() && request.resource.data.role == 'platform_admin')
+        );
+
+      // Update rules:
+      // Users may only edit their own display fields; all role/org assignment is server-managed.
+      allow update: if owns(userId)
+        && changedKeys().hasOnly(['full_name'])
+        && isNonEmptyString(request.resource.data.full_name, 120);
+
       allow delete: if false;
     }
 
     // --- Organization Applications ---
     match /OrganizationApplications/{applicationId} {
-      allow read: if signedIn();
-      allow create: if signedIn();
+      // Applicants can read their own application; platform admin can read all.
+      allow read: if signedIn() && (
+        isPlatformAdmin() || resource.data.creator_uid == request.auth.uid
+      );
+
+      // Applications must be tied to the authenticated user to prevent impersonation.
+      allow create: if signedIn()
+        && request.resource.data.keys().hasOnly([
+          'organization_name', 'type', 'contact_name', 'contact_email',
+          'phone', 'address', 'creator_uid', 'status', 'created_at'
+        ])
+        && isNonEmptyString(request.resource.data.organization_name, 200)
+        && (request.resource.data.type in ['hospital', 'agency'])
+        && isNonEmptyString(request.resource.data.contact_name, 120)
+        && request.resource.data.creator_uid == request.auth.uid
+        && request.resource.data.contact_email == request.auth.token.email
+        && request.resource.data.status == 'pending'
+        && isNonEmptyString(request.resource.data.phone, 40)
+        && isNonEmptyString(request.resource.data.address, 500);
+
       allow update, delete: if false;
     }
 
@@ -35,28 +103,37 @@ service cloud.firestore {
     match /Organizations/{organizationId} {
       allow read: if true;
       allow update: if signedIn() && (
-        isPlatformAdmin() || 
-        (profile().works_at == organizationId && profile().role in ['hospital_admin', 'agency_admin'])
-      );
+        isPlatformAdmin() || (isOrgAdmin() && myOrg() == organizationId)
+      )
+      // Only allow editing non-privileged fields (prevents tampering with org type/status/admin_uid).
+      && changedKeys().hasOnly([
+        'phone', 'email', 'address', 'description', 'website', 'operating_hours',
+        'services_offered', 'social_media', 'emergency_contact', 'capacity',
+        'logo_url', 'media_urls'
+      ])
+      && isOptionalStringField('phone', 40)
+      && isOptionalStringField('email', 200)
+      && isOptionalStringField('address', 500)
+      && isOptionalStringField('description', 2000)
+      && isOptionalStringField('website', 300)
+      && isOptionalStringField('operating_hours', 200)
+      && ( !( 'capacity' in request.resource.data) || request.resource.data.capacity is int );
       allow create, delete: if false;
     }
 
     // --- Dogs ---
     match /Dogs/{dogId} {
       allow read: if true;
-      allow create: if signedIn();
-      allow update: if signedIn() && (
-        isPlatformAdmin() ||
-        profile().role in ['hospital_admin', 'veterinarian', 'agency_admin', 'agency_employee'] ||
-        owns(resource.data.registered_by)
-      );
-      allow delete: if false;
+
+      // All dog writes must go through Cloud Functions (Admin SDK bypasses rules).
+      // This prevents client-side privilege escalation and update-bypass attacks.
+      allow create, update, delete: if false;
       
       // --- Adoption Details (Private Subcollection) ---
       match /AdoptionDetails/{docId} {
         allow read: if signedIn() && (
           isPlatformAdmin() ||
-          (profile().role in ['agency_admin', 'agency_employee'] && profile().works_at == get(/databases/$(database)/documents/Dogs/$(dogId)).data.agency_id)
+          (myRole() in ['agency_admin', 'agency_employee'] && myOrg() == get(/databases/$(database)/documents/Dogs/$(dogId)).data.agency_id)
         );
         allow write: if false; // Only written via Cloud Functions
       }
@@ -64,7 +141,8 @@ service cloud.firestore {
 
     // --- Counters (server-managed, admin only via Cloud Functions) ---
     match /Counters/{counterId} {
-      allow read: if signedIn();
+      // Counters leak business-sensitive sequencing; restrict to platform admin.
+      allow read: if isPlatformAdmin();
       allow write: if false;
     }
   }

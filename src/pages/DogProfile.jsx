@@ -1,10 +1,11 @@
 import React, { useMemo, useEffect, useState } from 'react';
-import { doc, updateDoc, runTransaction, getDoc } from 'firebase/firestore';
+import { doc, getDoc } from 'firebase/firestore';
 import MedicalRecordForm from '../components/MedicalRecordForm';
 import { DOG_STATUSES } from '../constants';
 import ParticleBackground from '../components/ParticleBackground';
 import { db } from '../firebase';
 import { useMediaViewer } from '../contexts/MediaViewerContext';
+import { updateDogRecord } from '../services';
 
 export default function DogProfile({ dog, setPage, session, organizations = [], isWorkspace }) {
   const role = session?.profile?.role;
@@ -46,26 +47,19 @@ export default function DogProfile({ dog, setPage, session, organizations = [], 
 
   const handleMakePrimary = async (urlToMakePrimary) => {
     try {
-      const dogRef = doc(db, 'Dogs', dog.id);
-      await runTransaction(db, async (transaction) => {
-        const dogDoc = await transaction.get(dogRef);
-        if (!dogDoc.exists()) throw new Error('Dog record not found.');
-        
-        const data = dogDoc.data();
-        const currentPhotos = data.social_photos || [];
-        
-        if (!currentPhotos.includes(urlToMakePrimary)) {
-          throw new Error('Photo no longer exists on this profile.');
-        }
+      const currentPhotos = dog?.social_photos || [];
+      if (!currentPhotos.includes(urlToMakePrimary)) throw new Error('Photo no longer exists on this profile.');
 
-        const newPhotos = [
-          urlToMakePrimary,
-          ...Array.from(new Set(currentPhotos)).filter(url => url !== urlToMakePrimary)
-        ];
-        
-        transaction.update(dogRef, {
-          social_photos: newPhotos
-        });
+      const newPhotos = [
+        urlToMakePrimary,
+        ...Array.from(new Set(currentPhotos)).filter(url => url !== urlToMakePrimary)
+      ];
+
+      // Writes are server-side only (Cloud Functions); Firestore client updates are blocked by rules.
+      await updateDogRecord({
+        dogId: dog.id,
+        social_photos: newPhotos,
+        timeline_entry: { type: 'update', notes: 'Primary photo updated.' }
       });
     } catch (err) {
       alert('Failed to update primary photo: ' + err.message);

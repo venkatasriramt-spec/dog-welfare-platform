@@ -25,13 +25,19 @@ export function watchSession(callback) {
     const profileRef = doc(db, 'Users', user.uid);
     const snap = await getDoc(profileRef);
     if (!snap.exists()) {
-      await setDoc(profileRef, {
-        full_name: user.displayName || (user.email ? user.email.split('@')[0] : 'User'),
-        email: user.email,
-        role: user.email?.trim().toLowerCase() === 'admin@pawpath.demo' ? 'platform_admin' : 'community_member',
-        is_active: true,
-        created_at: serverTimestamp(),
-      }, { merge: true });
+      // Fail closed: never self-assign roles from the client.
+      // If the profile is missing (e.g. accounts created externally), ask the server to create a safe profile.
+      if (!functions) {
+        console.warn('[watchSession] Missing user profile and Cloud Functions is unavailable.');
+      } else {
+        try {
+          const call = httpsCallable(functions, 'createCommunityProfile');
+          const fallbackName = user.displayName || (user.email ? user.email.split('@')[0] : 'User');
+          await call({ name: fallbackName });
+        } catch (e) {
+          console.warn('[watchSession] Failed to auto-provision profile via Cloud Functions:', e);
+        }
+      }
     }
 
     unsubscribeProfile = onSnapshot(profileRef, docSnap => {
@@ -59,10 +65,12 @@ export async function registerCommunity({ name, email, password }) {
       const call = httpsCallable(functions, 'createCommunityProfile');
       await call({ name: name.trim() });
     } else {
-      await setDoc(doc(db, 'Users', result.user.uid), { full_name: name.trim(), email: result.user.email, role: 'community_member', is_active: true, created_at: serverTimestamp() });
+      // In secure mode, profile creation is always server-side.
+      // If Cloud Functions is unavailable, fail closed rather than writing privileged fields client-side.
+      throw new Error('Cloud Functions is required to finish account setup. Please try again later.');
     }
   } catch {
-    await setDoc(doc(db, 'Users', result.user.uid), { full_name: name.trim(), email: result.user.email, role: 'community_member', is_active: true, created_at: serverTimestamp() }).catch(() => {});
+    throw new Error('Could not finish account setup. Please try again.');
   }
 }
 
@@ -88,12 +96,12 @@ export async function uploadImage(file, folder = 'dog_media') {
   needFirebase();
   if (!storage) throw new Error('Cloud Storage is not available.');
   if (!file) return null;
-  
+
   const ext = file.name.split('.').pop();
   const fileName = `${folder}/${Date.now()}_${Math.random().toString(36).substring(2, 9)}.${ext}`;
   const storageRef = ref(storage, fileName);
-  
-  const metadata = { 
+
+  const metadata = {
     contentType: file.type,
     customMetadata: {
       ownerId: auth.currentUser?.uid || ''
@@ -175,11 +183,15 @@ export function watchApplications(callback) {
 // --- Application actions ---
 export async function submitApplication(data, uid) {
   needFirebase();
-  return addDoc(collection(db, 'OrganizationApplications'), {
-    organization_name: data.organization_name.trim(), type: data.type,
-    contact_name: data.contact_name.trim(), contact_email: data.contact_email.trim().toLowerCase(),
-    phone: data.phone.trim(), address: data.address.trim(),
-    creator_uid: uid, status: 'pending', created_at: serverTimestamp()
+  if (!functions) throw new Error('Cloud Functions is not available.');
+  // Always use Cloud Functions so creator_uid/contact_email are derived from auth on the server.
+  const call = httpsCallable(functions, 'createPartnerApplication');
+  return call({
+    organization_name: data.organization_name,
+    type: data.type,
+    contact_name: data.contact_name,
+    phone: data.phone,
+    address: data.address,
   });
 }
 
