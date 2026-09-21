@@ -66,7 +66,12 @@ export async function registerCommunity({ name, email, password }) {
     const call = httpsCallable(functions, 'createCommunityProfile');
     await call({ name: name.trim() });
   } catch (err) {
-    if (result.user) await deleteUser(result.user).catch(() => {});
+    if (result.user) {
+      await deleteUser(result.user).catch((cleanupErr) => {
+        console.error('Auth cleanup failed:', cleanupErr);
+        throw new Error('Account setup failed and cleanup was incomplete. Please log in later to complete setup or contact support.');
+      });
+    }
     throw new Error('Could not finish account setup. Please try again.');
   }
 }
@@ -81,7 +86,12 @@ export async function registerPartner({ organization_name, type, contact_name, c
     const call = httpsCallable(functions, 'createPartnerApplication');
     await call({ organization_name, type, contact_name, phone, address });
   } catch (err) {
-    if (result.user) await deleteUser(result.user).catch(() => {});
+    if (result.user) {
+      await deleteUser(result.user).catch((cleanupErr) => {
+        console.error('Auth cleanup failed:', cleanupErr);
+        throw new Error('Application submission failed and cleanup was incomplete. Please log in later to complete setup or contact support.');
+      });
+    }
     throw err;
   }
 }
