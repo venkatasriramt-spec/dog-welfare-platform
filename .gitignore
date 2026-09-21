@@ -76,13 +76,6 @@ dist/
 # IDE files
 .codex/
 
-# Playwright
-/test-results/
-/playwright-report/
-/blob-report/
-/playwright/.cache/
-/playwright/.auth/
-
 # OS files
 .DS_Store
 Thumbs.db
@@ -97,3 +90,7 @@ Thumbs.db
 
 # Roo Code
 .roo
+
+# Agent files
+.agents/
+skills-lock.json
